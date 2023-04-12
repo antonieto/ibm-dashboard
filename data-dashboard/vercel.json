@@ -1,0 +1,8 @@
+{
+	"crons": [
+		{
+			"path": "/api/cron/github-discussion",
+			"schedule": "41 23 * * *"
+		}
+	]
+}
