@@ -1,6 +1,5 @@
-import Head from 'next/head'
-import styles from '@/styles/Home.module.css'
-
+import Head from "next/head";
+import styles from "@/styles/Home.module.css";
 
 export default function Home() {
   return (
@@ -13,7 +12,8 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <h1>Hello world</h1>
+		aaa
       </main>
     </>
-  )
+  );
 }
