@@ -5,6 +5,7 @@ export const config = {
 }
 
 export default function handler(req: NextRequest, res: NextResponse) {
+	'a'
 	return NextResponse.json({
 		name: `Hello, from ${req.url} I'm now an Edge Function!`
 	})
