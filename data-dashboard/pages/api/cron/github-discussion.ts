@@ -11,7 +11,7 @@ Share your daily standup update with the team here. Respond to this
 discussion before the standup starts in the following format:
 
 
-\`\`\
+\`\`\`
 **What did you achieve in the last 24 hours?**:
  - 
 
@@ -26,8 +26,8 @@ discussion before the standup starts in the following format:
 \`\`\`
 
 `;
-
-const buildQuery = (repositoryId: string, title: string, body: string) => {
+ 
+const  buildQuery = (repositoryId: string, title: string, body: string) => {
   return `
 	mutation CreateDiscussion {
     createDiscussion(
