@@ -2,7 +2,7 @@
 	"crons": [
 		{
 			"path": "/api/cron/github-discussion",
-			"schedule": "45 17 * * *"
+			"schedule": "0 14 * * 1-5"
 		}
 	]
 }
