@@ -30,6 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd data-dashboard
           npm ci
 
       - name: Run ESLint
