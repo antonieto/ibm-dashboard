@@ -1,5 +1,12 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:react/recommended", "plugin:react/jsx-runtime", "plugin:react-hooks/recommended" ],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
+    "plugin:react-hooks/recommended",
+    "airbnb",
+    "airbnb/hooks"
+  ],
   "settings": {
     "react": {
       "version": "detect"
@@ -10,6 +17,12 @@
     "no-cond-assign": "error",
     "no-unused-expressions": "error",
     "no-unused-vars": "error",
-    "no-console": "warn"
+    "no-console": "warn",
+    "react/jsx-filename-extension": [
+      1,
+      { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
+    ],
+	"react/react-in-jsx-scope": "off",
+	"react/jsx-props-no-spreading": "off"
   }
 }
