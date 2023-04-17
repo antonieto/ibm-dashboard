@@ -11,28 +11,30 @@ name: ESLint
 
 on:
   push:
-    branches: [ "dev", main ]
+    branches: ["dev", main]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "dev" ]
+    branches: ["dev"]
 
 jobs:
   eslint:
-    name: Run eslint scanning
+    name: ESLint scan
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: |
-          cd data-dashboard
-          npm ci
+      - name: Install Node.js and Yarn
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install deps
+        run: npm install
+        working-directory: data-dashboard
 
       - name: Run ESLint
-        run: |
-          npm run lint
+        run: npm run lint
+        working-directory: data-dashboard
