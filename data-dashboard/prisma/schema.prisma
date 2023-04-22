@@ -15,4 +15,6 @@ model User {
   createdAt DateTime @default(now())
   email     String   @unique
   name      String?
+  lastname  String?
+  username  String?
 }
