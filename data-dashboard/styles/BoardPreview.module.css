@@ -1,0 +1,38 @@
+.boardPreviewContainer{
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    height: 60px;
+
+    cursor: pointer;
+}
+
+.boardPreviewContainer:hover{
+    background-color: #EDEDED;
+}
+
+.boardPreviewContent{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    height: 100%;
+}
+
+.boardPreviewImage{
+    width: 60px;
+    height: 45px;
+    border-radius: 5px;
+
+    background-color: #d4d4d4;
+}
+
+.boardPreviewLine{
+    width: 100%;
+    height: 1px;
+    background-color: #8D8D8D;
+    border: none;
+}
