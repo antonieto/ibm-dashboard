@@ -10,11 +10,75 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
+enum Chart_Type{
+  BAR_CHART
+  LINE_CHART
+  PIE_CHART
+}
+
+model Users {
+  user_id   String   @id @default(uuid())
   createdAt DateTime @default(now())
   email     String   @unique
-  name      String?
-  lastname  String?
-  username  String?
+  password  String
+  boards    Boards[]
 }
+
+model Boards {
+  board_id     String   @id @default(uuid())
+  createdAt    DateTime @default(now())
+  title        String 
+  owner        Users    @relation(fields: [user_id], references: [user_id])
+  user_id      String
+  data_sources Data_sources[]
+  charts       Charts[]
+}
+
+model Data_sources {
+  data_source_id  String   @id @default(uuid())
+  createdAt       DateTime @default(now())
+  file_name       String   @db.VarChar(250)
+  external_handle String   @db.VarChar(100)
+  board           Boards   @relation(fields: [board_id], references: [board_id])
+  board_id        String
+  charts          Charts[]
+}
+
+model Charts {
+  chart_id        String         @id @default(uuid())
+  board           Boards         @relation(fields: [board_id], references: [board_id])
+  board_id        String
+  data_source     Data_sources   @relation(fields: [data_source_id], references: [data_source_id])
+  data_source_id  String
+  height          Int
+  width           Int
+  title           String
+  x_index         Int
+  y_index         Int
+  type            Chart_Type
+  chart_colors    Chart_colors[]
+  chart_settings  Chart_settings[]
+}
+
+model Chart_colors {
+  chart_colors_id  String   @id @default(uuid())
+  chart            Charts   @relation(fields: [chart_id], references: [chart_id])
+  chart_id         String
+  y_color          String   @db.VarChar(7)
+}
+
+model Chart_settings {
+  chart_setting_id String   @id @default(uuid())
+  chart            Charts   @relation(fields: [chart_id], references: [chart_id])
+  chart_id         String
+  x_axis_col       Int
+  data_series      Data_series[]
+}
+
+model Data_series {
+  data_series_id   String   @id @default(uuid())
+  chart_setting    Chart_settings   @relation(fields: [chart_setting_id], references: [chart_setting_id])
+  chart_setting_id String
+  y_axis_col       Int
+}
+
