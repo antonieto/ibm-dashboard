@@ -19,3 +19,22 @@ Valores:</br>
 - Honestidad</br>
 - Confiabilidad</br>
 - Humildad</br>
+
+
+# Development
+
+Things you need to run the project:
+1. NodeJS
+2. Docker
+
+## Initialize the NextJS app
+1. Install yarn `npm i -g yarn`
+2. Run `yarn` to install dependencies
+3. Run the development server locally: `yarn dev`
+
+### To start the DB
+1. Run `docker build ./data-dashboard/prisma -t ibm-dashboard-psql`
+2. Run `docker run -p 5432:5432 ibm-dashboard-psql`
+
+### Prisma
+Create migration: npx prisma migrate dev --name username
