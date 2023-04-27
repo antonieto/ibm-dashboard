@@ -1,7 +1,13 @@
 import Head from 'next/head';
 import styles from '@/styles/Home.module.css';
+import trpc from '@/lib/hooks/trpc';
 
 export default function Home() {
+  const query = trpc.hello.useQuery({ text: 'World!' });
+  if (!query.data) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <Head>
@@ -11,7 +17,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h1>Hello world</h1>
+        <h1>{query.data.greeting}</h1>
       </main>
     </>
   );
