@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import IbmButton from '@/Components/IbmButton/IbmButton';
-import IbmSearchBar from '@/Components/IbmSearchBar/IbmSearchBar';
-import BoardList from '@/Components/BoardsList/BoardList';
+import IbmButton from '@/components/IbmButton/IbmButton';
+import IbmSearchBar from '@/components/IbmSearchBar/IbmSearchBar';
+import BoardList from '@/components/BoardsList/BoardList';
 
 const BoardContainer = styled.div`
   display: flex;
