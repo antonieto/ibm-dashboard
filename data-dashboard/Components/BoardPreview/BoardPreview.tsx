@@ -1,19 +1,59 @@
-import styles from "@/styles/BoardPreview.module.css";
+import styled from 'styled-components';
 
 interface Props {
   id: string;
   name: string;
 }
+
+const BoardPreviewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 60px;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ededed;
+  }
+`;
+
+const BoardPreviewContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+  height: 100%;
+`;
+
+const BoardPreviewImage = styled.div`
+  width: 60px;
+  height: 45px;
+  border-radius: 5px;
+
+  background-color: #d4d4d4;
+`;
+
+const BoardPreviewLine = styled.hr`
+  width: 100%;
+  height: 1px;
+  background-color: #8d8d8d;
+  border: none;
+`;
+
 export default function BoardPreview({ id, name }: Props) {
   return (
-    <div className={styles.boardPreviewContainer}>
-      <div className={styles.boardPreviewContent}>
-        <div className={styles.boardPreviewImage}></div>
+    <BoardPreviewContainer>
+      <BoardPreviewContent>
+        <BoardPreviewImage />
         <div>
           <p>{name}</p>
         </div>
-      </div>
-      <hr className={styles.boardPreviewLine} />
-    </div>
+      </BoardPreviewContent>
+      <BoardPreviewLine />
+    </BoardPreviewContainer>
   );
 }

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@carbon/icons-react": "^11.18.0",
     "@carbon/react": "^1.26.0",
     "@next/eslint-plugin-next": "^13.3.0",
     "@prisma/client": "^4.13.0",
@@ -30,6 +31,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "5.0.2",
-    "zod": "^3.21.4"
+    "zod": "^3.21.4",
+    "styled-components": "^5.3.10"
   }
 }
