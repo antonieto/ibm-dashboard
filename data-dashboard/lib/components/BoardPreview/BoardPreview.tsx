@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 interface Props {
-  id: string;
   name: string;
 }
 
@@ -44,7 +43,7 @@ const BoardPreviewLine = styled.hr`
   border: none;
 `;
 
-export default function BoardPreview({ id, name }: Props) {
+export default function BoardPreview({ name }: Props) {
   return (
     <BoardPreviewContainer>
       <BoardPreviewContent>
