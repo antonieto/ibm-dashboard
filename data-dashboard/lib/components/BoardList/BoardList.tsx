@@ -52,7 +52,7 @@ export default function BoardList() {
       </div>
       <BoardListComponent>
         {boards.map((board) => (
-          <BoardPreview key={board.id} id={board.id} name={board.name} />
+          <BoardPreview key={board.id} name={board.name} />
         ))}
       </BoardListComponent>
     </BoardListContainer>
