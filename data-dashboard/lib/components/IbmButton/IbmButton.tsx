@@ -25,6 +25,6 @@ const IbmButtonComponent = styled.button`
   }
 `;
 
-export default function IbmButton({ text }: Props) {
+export default function IbmButton({ text }: Props): JSX.Element {
   return <IbmButtonComponent>{text}</IbmButtonComponent>;
 }

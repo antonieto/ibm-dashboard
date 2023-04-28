@@ -16,6 +16,6 @@ const IbmSearchBarComponent = styled.input`
   padding-left: 16px;
 `;
 
-export default function IbmSearchBar({ placeholder }: Props) {
+export default function IbmSearchBar({ placeholder }: Props): JSX.Element {
   return <IbmSearchBarComponent type="text" placeholder={placeholder} />;
 }

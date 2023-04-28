@@ -43,7 +43,7 @@ const BoardPreviewLine = styled.hr`
   border: none;
 `;
 
-export default function BoardPreview({ name }: Props) {
+export default function BoardPreview({ name }: Props): JSX.Element {
   return (
     <BoardPreviewContainer>
       <BoardPreviewContent>

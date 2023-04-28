@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import BoardPreview from '../BoardPreview/BoardPreview';
+import { MOCK_BOARD_LIST } from './MOCK_BOARD_LIST';
 
 const BoardListContainer = styled.div`
   width: 100%;
@@ -20,29 +21,8 @@ const BoardListComponent = styled.div`
   flex-direction: column;
 `;
 
-export default function BoardList() {
-  const boards = [
-    {
-      id: '1',
-      name: 'Tablero 1',
-    },
-    {
-      id: '2',
-      name: 'Tablero 2',
-    },
-    {
-      id: '3',
-      name: 'Tablero 3',
-    },
-    {
-      id: '4',
-      name: 'Tablero 4',
-    },
-    {
-      id: '5',
-      name: 'Tablero 5',
-    },
-  ];
+export default function BoardList(): JSX.Element {
+  const boards = MOCK_BOARD_LIST;
 
   return (
     <BoardListContainer>
