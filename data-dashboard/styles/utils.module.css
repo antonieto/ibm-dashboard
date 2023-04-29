@@ -1,0 +1,112 @@
+.navbar {
+    height: 48px;
+    background-color: #161616;
+}
+
+.logo {
+    color: #FFF;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    padding-left: 16px;
+    padding-top: 14px;
+}
+
+.safeArea {
+    margin-top: 150px;
+    margin-left: 124px;
+}
+
+.mainHeader {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 20px;
+    font-weight: normal;
+    color: #161616;
+    margin-bottom: 8px;
+}
+
+.instruction {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    color: #161616;
+}
+
+.form {
+    margin-top: 56px;
+}
+
+.inputFields {
+    display: grid;
+    row-gap: 24px;
+}
+
+.field {
+    display: grid;
+    row-gap: 8px;
+    width: 288px;
+}
+
+.fieldLabel {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.textInput {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 14px;
+    height: 40px;
+    border: 0 0 1px 0 solid #8D8D8D;
+    box-sizing: border-box;
+    background-color: #F4F4F4;
+    font-weight: normal;
+    border-radius: 0;
+    padding-left: 16px;
+}
+
+.mainButton {
+    appearance: none;
+    background-color: #0F62FE;
+    width: 178px;
+    height: 48px;
+    margin-top: 40px;
+    border: 0;
+    color: #FFFFFF;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: start;
+    padding-left: 16px;
+}
+
+.redirect {
+    margin-top: 40px;
+}
+
+.condition {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    color: #393939;
+    display: inline-block;
+}
+
+.link {
+    margin-left: 44px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #0F62FE;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.image {
+    margin-top: 167px;
+    justify-self: end;
+    margin-right: 202px;
+}
