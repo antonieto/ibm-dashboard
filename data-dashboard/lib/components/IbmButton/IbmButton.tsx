@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 interface Props {
   text: string;
+  style?: React.CSSProperties;
 }
 
 const IbmButtonComponent = styled.button`
@@ -15,6 +16,7 @@ const IbmButtonComponent = styled.button`
   justify-content: flex-start;
   padding-left: 16px;
   color: white;
+  font-size: 14px;
 
   &:hover {
     background-color: #0353e9;
@@ -25,6 +27,6 @@ const IbmButtonComponent = styled.button`
   }
 `;
 
-export default function IbmButton({ text }: Props): JSX.Element {
-  return <IbmButtonComponent>{text}</IbmButtonComponent>;
+export default function IbmButton({ text, style }: Props): JSX.Element {
+  return <IbmButtonComponent style={style}>{text}</IbmButtonComponent>;
 }
