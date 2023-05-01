@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import trpc from '@/lib/hooks/trpc';
 import { IbmButton, IbmSearchBar, BoardList } from '../lib/components';
 
 const BoardContainer = styled.div`
@@ -41,6 +42,11 @@ const BoardBarContainerButton = styled.div`
 `;
 
 export default function boards() {
+  const { isLoading } = trpc.boards.useQuery();
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <BoardContainer>
       <BoardsContainerContent>
