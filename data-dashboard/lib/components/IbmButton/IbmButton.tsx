@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import React from 'react';
 
 interface Props {
   text: string;
@@ -27,6 +28,6 @@ const IbmButtonComponent = styled.button`
   }
 `;
 
-export default function IbmButton({ text, style }: Props): JSX.Element {
+export default function IbmButton({ text, style = undefined }: Props): JSX.Element {
   return <IbmButtonComponent style={style}>{text}</IbmButtonComponent>;
 }

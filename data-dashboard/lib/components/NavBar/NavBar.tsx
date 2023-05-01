@@ -14,12 +14,15 @@ const Logo = styled.h2`
   padding-top: 14px;
 `;
 
-const NavBar = () => {
+function NavBar(): JSX.Element {
   return (
     <Container>
-      <Logo>IBM <b>Insight Hub</b></Logo>
+      <Logo>
+        IBM
+        <b>Insight Hub</b>
+      </Logo>
     </Container>
   );
-};
+}
 
 export default NavBar;

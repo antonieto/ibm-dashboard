@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import React from 'react';
 
 export interface TextInputProps {
   id?: string;
@@ -15,7 +16,7 @@ export interface TextInputProps {
 
 // Could also add pattern, disabled, autofocus, value, readOnly, etc.
 
-const InputField = styled.input`
+const Field = styled.input`
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 14px;
   height: 40px;
@@ -28,9 +29,17 @@ const InputField = styled.input`
   padding-left: 16px;
 `;
 
-const TextInput = ({ id, name, type, placeholder, style, length, required }: TextInputProps) => {
+function TextInput({
+  id,
+  name,
+  type,
+  placeholder,
+  style,
+  length,
+  required,
+}: TextInputProps): JSX.Element {
   return (
-    <InputField
+    <Field
       id={id}
       name={name}
       type={type}
@@ -41,6 +50,6 @@ const TextInput = ({ id, name, type, placeholder, style, length, required }: Tex
       required={required}
     />
   );
-};
+}
 
 export default TextInput;

@@ -1,7 +1,12 @@
 import styled from 'styled-components';
 import Link from 'next/link';
 import Image from 'next/image';
-import { IbmButton, NavBar, TextInput, InputField } from '@/lib/components';
+import {
+  IbmButton,
+  NavBar,
+  TextInput,
+  InputField,
+} from '@/lib/components';
 
 const Body = styled.main`
   display: grid;
@@ -44,7 +49,7 @@ const ButtonStyle = {
   fontFamily: 'Verdana, Geneva, Tahoma, sans-serif',
   fontSize: '14px',
   fontWeight: 'normal',
-}
+};
 
 const ToSingup = styled.div`
   margin-top: 40px;
@@ -69,13 +74,12 @@ const ImageStyle = {
   marginTop: '167px',
   justifySelf: 'end',
   marginRight: '202px',
-}
+};
 
-
-const SignIn = () => {
+function SignIn() {
   return (
     <div>
-      <NavBar/>
+      <NavBar />
       <Body>
         <Content>
           <SectionHeader>Iniciar sesión</SectionHeader>
@@ -86,19 +90,29 @@ const SignIn = () => {
                 label="Correo electrónico"
                 name="email"
                 inputChild={TextInput}
-                inputProps={{ type: 'email', placeholder: 'e.g. correo@gmail.com', required: true}}
+                inputProps={{
+                  type: 'email',
+                  placeholder: 'e.g. correo@gmail.com',
+                  required: true,
+                }}
               />
               <InputField
                 label="Contraseña"
                 name="password"
                 inputChild={TextInput}
-                inputProps={{ type: 'password', placeholder: 'e.g. S3cureP@ssworD', required: true, length: { min: 8, max: 24 } }}
+                inputProps={{
+                  type: 'password',
+                  placeholder: 'e.g. S3cureP@ssworD',
+                  required: true,
+                  length: { min: 8, max: 24 },
+                }}
               />
             </InputFields>
-            <IbmButton text={'Iniciar sesión'} style={ButtonStyle} />
+            <IbmButton text="Iniciar sesión" style={ButtonStyle} />
           </Form>
           <ToSingup>
-            <Cue>¿No tienes cuenta?</Cue><Link href={'/'} style={LinkStyle}>Crear cuenta</Link>
+            <Cue>¿No tienes cuenta?</Cue>
+            <Link href="/" style={LinkStyle}>Crear cuenta</Link>
           </ToSingup>
         </Content>
         <Image src="/images/signup.png" alt="Man and Woman" width={333} height={402} style={ImageStyle} />
