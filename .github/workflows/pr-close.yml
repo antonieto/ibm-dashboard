@@ -1,0 +1,25 @@
+name: PR Cleanup
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  delete-db:
+    name: Delete preview DB
+    runs-on: ubuntu-latest
+    env:
+      POSTGRES_USER: ${{ secrets.POSTGRES_DB_USERNAME }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_DB_PASSWORD }}
+      POSTGRES_HOST: ${{ vars.POSTGRES_DB_HOST }}
+      POSTGRES_PORT: 5432
+      DATABASE_NAME: pr${{ github.event.number }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get install -y postgresql-client
+
+      - name: Drop database
+        run: |
+          psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/postgres?sslmode=require -c "DROP DATABASE $DATABASE_NAME"
