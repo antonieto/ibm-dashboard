@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import React from 'react';
 
-export interface TextInputProps {
+interface TextInputProps {
   id?: string;
   name?: string;
   type: 'text' | 'password' | 'email';

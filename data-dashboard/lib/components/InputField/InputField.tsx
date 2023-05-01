@@ -4,13 +4,14 @@
 // components yet, please add them here if you create them.
 
 import styled from 'styled-components';
-import TextInput, { TextInputProps } from '../TextInput/TextInput';
+import React from 'react';
+import TextInput from '../TextInput/TextInput';
 
 interface InputFieldProps {
   label: string;
   name?: string;
   inputChild: typeof TextInput;
-  inputProps: TextInputProps;
+  inputProps: React.ComponentProps<typeof TextInput>;
 }
 
 const Field = styled.div`
