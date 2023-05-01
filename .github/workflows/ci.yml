@@ -47,4 +47,4 @@ jobs:
 
     - name: Create new database
       run: |
-        psql postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:5432/ -c "CREATE DATABASE $DATABASE_NAME"
+        psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/postgres?sslmode=require -c "CREATE DATABASE $DATABASE_NAME"
