@@ -80,7 +80,7 @@ const LinkStyle = {
   fontWeight: 'normal',
 };
 
-function SignIn() {
+function SignUp() {
   return (
     <div>
       <NavBar />
@@ -167,4 +167,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default SignUp;
