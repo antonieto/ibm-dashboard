@@ -7,7 +7,14 @@ export interface Service {
 }
 
 export const initializeService = (): Service => {
-  const db = new PrismaClient();
+  if (process.env.DATABASE_URL === undefined) throw new Error('DATABASE_URL is undefined');
+  const db = new PrismaClient({
+    datasources: {
+      db: {
+        url: `${process.env.DATABASE_URL}?sslmode=require`,
+      },
+    },
+  });
 
   return {
     boardsRepository: new PrismaBoardRepository(db),

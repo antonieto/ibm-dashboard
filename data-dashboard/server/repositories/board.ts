@@ -13,10 +13,13 @@ export class PrismaBoardRepository implements IBoardRepository {
   }
 
   async getAll(): Promise<Board[]> {
-    const users = await this.db.users.findMany();
-    return users.map((user) => ({
-      name: user.email,
-      ownerId: user.user_id,
+    const fetchedBoards = await this.db.boards.findMany();
+    return fetchedBoards.map((board) => ({
+      boardId: board.board_id,
+      createdAt: new Date(board.createdAt),
+      name: board.title,
+      ownerId: board.user_id,
+      title: board.title,
     }));
   }
 }

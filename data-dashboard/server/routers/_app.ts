@@ -13,7 +13,7 @@ export const appRouter = router({
       greeting: `hello ${input.text}`,
     })),
   boards: procedure.query(async () => {
-    const boards = service.boardsRepository.getAll();
+    const boards = await service.boardsRepository.getAll();
     return {
       boards,
     };
