@@ -17,6 +17,16 @@
   },
   "rules": {
     "camelcase": "error",
+    "max-len": [
+      "error",
+      {
+        "code": 120,
+        "ignoreComments": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true,
+        "ignoreRegExpLiterals": true
+      }
+    ],
     "no-cond-assign": "error",
     "no-unused-expressions": "error",
     "no-unused-vars": "error",
@@ -26,6 +36,7 @@
       { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
     ],
     "react/react-in-jsx-scope": "off",
+    "react/require-default-props": "off",
     "react/jsx-props-no-spreading": "off",
     "import/extensions": [
       "error",
