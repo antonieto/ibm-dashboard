@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+import styled from 'styled-components';
 
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
-// import styled from 'styled-components';
 import { NavBar } from '../../lib/components';
 import { MOCK_CHART_LIST } from './MOCK_CHART_LIST';
+import ChartCard from '../../lib/components/ChartCard/ChartCard';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const breakpoints = {
@@ -34,11 +34,17 @@ const margin: [number, number] | { [P: string]: [number, number] } = {
   xxs: [20, 20],
 };
 
+const Container = styled.div`
+  background-color: #f4f5f5;
+  height: 100vh;
+`;
+
 export default function Board(): JSX.Element {
-  const router = useRouter();
-  const { id } = router.query;
+  // const router = useRouter();
+  // const { id } = router.query;
 
   const [layouts, setLayouts] = useState<{ [index: string]: any[] }>();
+
   const widgetArray = MOCK_CHART_LIST;
 
   const onLayoutChange = (layout: any, layouts_: any) => {
@@ -46,12 +52,11 @@ export default function Board(): JSX.Element {
   };
 
   return (
-    <div>
+    <Container>
       <NavBar />
-      <h1>{id}</h1>
       <div>
         <ResponsiveReactGridLayout
-          style={{ background: '#f0f0f0' }}
+          style={{ background: '#F4F5F5' }}
           layouts={layouts}
           preventCollision={false}
           onLayoutChange={onLayoutChange}
@@ -71,19 +76,17 @@ export default function Board(): JSX.Element {
                 w: widget?.w,
                 h: widget?.h,
                 i: widget.i,
-                minW: 2,
                 maxW: Infinity,
-                minH: 2,
                 maxH: Infinity,
                 isDraggable: true,
                 isResizable: true,
               }}
             >
-              <div>{widget.i}</div>
+              <ChartCard>{widget.i}</ChartCard>
             </div>
           ))}
         </ResponsiveReactGridLayout>
       </div>
-    </div>
+    </Container>
   );
 }
