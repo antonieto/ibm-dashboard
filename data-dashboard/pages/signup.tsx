@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   IbmButton,
   NavBar,
@@ -9,13 +8,15 @@ import {
 } from '@/lib/components';
 
 const Body = styled.main`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: center;
 `;
 
 const Content = styled.section`
-  margin-top: 150px;
-  margin-left: 124px;
+  margin-top: 92px;
+  display: inline-block;
+  width: auto;
+  height: auto;
 `;
 
 const SectionHeader = styled.h1`
@@ -24,6 +25,7 @@ const SectionHeader = styled.h1`
   font-weight: normal;
   color: #161616;
   margin-bottom: 8px;
+  display: inline-block;
 `;
 
 const Description = styled.legend`
@@ -34,12 +36,18 @@ const Description = styled.legend`
 `;
 
 const Form = styled.form`
+  display: inline-block;
   margin-top: 56px;
+  width: auto;
 `;
 
 const InputFields = styled.div`
-  display: grid;
+  display: inline-grid;
+  grid-template-rows: auto auto auto;
+  grid-auto-flow: column;
+  column-gap: 40px;
   row-gap: 24px;
+  width: auto;
 `;
 
 const ButtonStyle = {
@@ -51,8 +59,10 @@ const ButtonStyle = {
   fontWeight: 'normal',
 };
 
-const ToSingup = styled.div`
+const ToSingin = styled.div`
   margin-top: 40px;
+  width: auto;
+  display: block;
 `;
 
 const Cue = styled.span`
@@ -70,20 +80,14 @@ const LinkStyle = {
   fontWeight: 'normal',
 };
 
-const ImageStyle = {
-  marginTop: '167px',
-  justifySelf: 'end',
-  marginRight: '202px',
-};
-
 function SignIn() {
   return (
     <div>
       <NavBar />
       <Body>
         <Content>
-          <SectionHeader>Iniciar sesión</SectionHeader>
-          <Description>Ingresa tus datos para iniciar sesión</Description>
+          <SectionHeader>Crear cuenta</SectionHeader>
+          <Description>Ingresa tus datos para crear una cuenta</Description>
           <Form>
             <InputFields>
               <InputField
@@ -107,15 +111,57 @@ function SignIn() {
                   length: { min: 8, max: 24 },
                 }}
               />
+              <InputField
+                label="Confirmar contraseña"
+                name="confirmPassword"
+                inputChild={TextInput}
+                inputProps={{
+                  type: 'password',
+                  placeholder: 'e.g. S3cureP@ssworD',
+                  required: true,
+                  length: { min: 8, max: 24 },
+                }}
+              />
+              <InputField
+                label="Nombre"
+                name="name"
+                inputChild={TextInput}
+                inputProps={{
+                  type: 'text',
+                  placeholder: 'e.g. Jane',
+                  required: true,
+                }}
+              />
+              <InputField
+                label="Apellido Paterno"
+                name="firstLastName"
+                inputChild={TextInput}
+                inputProps={{
+                  type: 'text',
+                  placeholder: 'e.g. Doe',
+                  required: true,
+                }}
+              />
+              <InputField
+                label="Apellido Materno"
+                name="secondLastName"
+                inputChild={TextInput}
+                inputProps={{
+                  type: 'text',
+                  placeholder: 'e.g. Linn',
+                  required: true,
+                }}
+              />
             </InputFields>
-            <IbmButton text="Iniciar sesión" style={ButtonStyle} />
+            <IbmButton text="Crear cuenta" style={ButtonStyle} />
           </Form>
-          <ToSingup>
-            <Cue>¿No tienes cuenta?</Cue>
-            <Link href="/signup" style={LinkStyle}>Crear cuenta</Link>
-          </ToSingup>
+          <ToSingin>
+            <Cue>¿Ya tienes cuenta?</Cue>
+            <Link href="/signin" style={LinkStyle}>
+              Ingresar
+            </Link>
+          </ToSingin>
         </Content>
-        <Image src="/images/signup.png" alt="Man and Woman" width={333} height={402} style={ImageStyle} />
       </Body>
     </div>
   );
