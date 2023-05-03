@@ -1,6 +1,6 @@
+import trpc from '@/lib/hooks/trpc';
 import styled from 'styled-components';
 import BoardPreview from '../BoardPreview/BoardPreview';
-import { MOCK_BOARD_LIST } from './MOCK_BOARD_LIST';
 
 const BoardListContainer = styled.div`
   width: 100%;
@@ -22,7 +22,9 @@ const BoardListComponent = styled.div`
 `;
 
 export default function BoardList(): JSX.Element {
-  const boards = MOCK_BOARD_LIST;
+  const { data, isLoading } = trpc.boards.useQuery();
+
+  if (isLoading || !data) return <div>Loading...</div>;
 
   return (
     <BoardListContainer>
@@ -31,8 +33,8 @@ export default function BoardList(): JSX.Element {
         <BoardListLine />
       </div>
       <BoardListComponent>
-        {boards.map((board) => (
-          <BoardPreview key={board.id} name={board.name} />
+        {data.boards.map((board) => (
+          <BoardPreview key={board.boardId} name={board.name} />
         ))}
       </BoardListComponent>
     </BoardListContainer>

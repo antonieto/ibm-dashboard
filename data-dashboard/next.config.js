@@ -15,6 +15,7 @@ const getDatabaseUrl = () => {
   } else {
     throw new Error('Failed to get database name');
   }
+  process.env.DATABASE_URL = `postgres://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}`;
   return `postgres://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}/${dbName}`;
 };
 
