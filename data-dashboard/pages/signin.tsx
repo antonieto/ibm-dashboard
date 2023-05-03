@@ -112,7 +112,7 @@ function SignIn() {
           </Form>
           <ToSingup>
             <Cue>¿No tienes cuenta?</Cue>
-            <Link href="/" style={LinkStyle}>Crear cuenta</Link>
+            <Link href="/signup" style={LinkStyle}>Crear cuenta</Link>
           </ToSingup>
         </Content>
         <Image src="/images/signup.png" alt="Man and Woman" width={333} height={402} style={ImageStyle} />
