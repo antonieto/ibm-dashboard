@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Add } from '@carbon/icons-react';
+import { BarChart } from '@tremor/react';
 
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
@@ -12,28 +13,17 @@ import ChartCard from '../../lib/components/ChartCard/ChartCard';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
+
 const breakpoints = {
   lg: 1200,
-  md: 996,
-  sm: 768,
-  xs: 480,
-  xxs: 0,
 };
 
 const cols = {
   lg: 8,
-  md: 8,
-  sm: 4,
-  xs: 2,
-  xxs: 2,
 };
 
 const margin: [number, number] | { [P: string]: [number, number] } = {
   lg: [20, 20],
-  md: [20, 20],
-  sm: [20, 20],
-  xs: [20, 20],
-  xxs: [20, 20],
 };
 
 const Container = styled.div`
@@ -46,6 +36,25 @@ const AddButtonContainer = styled.div`
   bottom: 20px;
   left: 20px;
 `;
+
+const chartdata = [
+  {
+    name: 'Amphibians',
+    'Number of threatened species': 2488,
+  },
+  {
+    name: 'Birds',
+    'Number of threatened species': 1445,
+  },
+  {
+    name: 'Crustaceans',
+    'Number of threatened species': 743,
+  },
+];
+
+function dataFormatter(number: number) {
+  return `$ ${Intl.NumberFormat('us').format(number).toString()}`;
+}
 
 export default function Board(): JSX.Element {
   // const router = useRouter();
@@ -85,16 +94,29 @@ export default function Board(): JSX.Element {
                 h: widget?.h,
                 i: widget.i,
                 maxW: Infinity,
+                minW: 2,
                 maxH: Infinity,
+                minH: 3,
                 isDraggable: true,
                 isResizable: true,
               }}
             >
-              <ChartCard>{widget.i}</ChartCard>
+              <ChartCard>
+                <BarChart
+                  className="mt-6"
+                  data={chartdata}
+                  index="name"
+                  categories={['Number of threatened species']}
+                  colors={['blue']}
+                  valueFormatter={dataFormatter}
+                  yAxisWidth={48}
+                />
+              </ChartCard>
             </div>
           ))}
         </ResponsiveReactGridLayout>
       </div>
+
       <AddButtonContainer>
         <ButtonWithIcon text="Add Widget" icon={Add} />
       </AddButtonContainer>
