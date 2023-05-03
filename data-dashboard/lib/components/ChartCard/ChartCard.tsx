@@ -1,5 +1,10 @@
 import styled from 'styled-components';
-import React, { useEffect, useRef, useState } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  ReactNode,
+} from 'react';
 import { Settings, SettingsAdjust } from '@carbon/icons-react';
 import { Title, Subtitle } from '@tremor/react';
 
@@ -7,7 +12,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 interface Props {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const CardComponent = styled.div<{ readonly selected: boolean }>`
