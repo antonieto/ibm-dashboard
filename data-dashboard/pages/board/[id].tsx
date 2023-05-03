@@ -8,9 +8,9 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import { NavBar } from '../../lib/components';
-import { MOCK_CHART_LIST } from './MOCK_CHART_LIST';
 import ChartCard from '../../lib/components/ChartCard/ChartCard';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
+import { MOCK_CHART_LIST } from '../../lib/components/BoardList/MOCK_CHART_LIST';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
