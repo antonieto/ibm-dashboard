@@ -20,6 +20,9 @@ jobs:
       - name: Install PostgreSQL client
         run: sudo apt-get install -y postgresql-client
 
+      - name: Remove previous connection
+        run: psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/postgres?sslmode=require -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$DATABASE_NAME'"
+          
       - name: Drop database
         run: |
           psql postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/postgres?sslmode=require -c "DROP DATABASE $DATABASE_NAME"
