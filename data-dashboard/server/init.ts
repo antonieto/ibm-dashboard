@@ -4,6 +4,7 @@ import { PrismaBoardRepository } from './repositories/board';
 
 export interface Service {
   boardsRepository: IBoardRepository;
+  help: string;
 }
 
 export const initializeService = (): Service => {
@@ -18,6 +19,7 @@ export const initializeService = (): Service => {
 
   return {
     boardsRepository: new PrismaBoardRepository(db),
+    help: 'help',
   };
 };
 
