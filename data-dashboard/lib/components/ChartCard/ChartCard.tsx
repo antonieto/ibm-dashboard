@@ -1,5 +1,10 @@
 import styled from 'styled-components';
-import { useEffect, useRef, useState, ReactNode } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  ReactNode,
+} from 'react';
 import { Settings, SettingsAdjust } from '@carbon/icons-react';
 import { Title } from '@tremor/react';
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { BarChart, LineChart, DonutChart } from '@tremor/react';
 import ChartCard from '../ChartCard/ChartCard';
 
@@ -29,9 +30,7 @@ export default function Chart({
   chartProps,
   data,
 }: Props): JSX.Element {
-  const ChartComponent = chartTypeMap.get(
-    ChartType[type as keyof typeof ChartType]
-  );
+  const ChartComponent = chartTypeMap.get(ChartType[type as keyof typeof ChartType]);
 
   return (
     <ChartCard title={title}>
