@@ -1,7 +1,6 @@
 import { initTRPC } from '@trpc/server';
-import { TInnerContext } from './context';
+import { TContext } from './context';
 
-const t = initTRPC.context<TInnerContext>().create();
-
+const t = initTRPC.context<TContext>().create();
 export const { router } = t;
 export const { procedure: publicProcedure } = t;

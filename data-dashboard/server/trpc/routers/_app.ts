@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { service } from '@/server/init';
 import { publicProcedure, router } from '@/server/trpc';
 import authRouter from './auth';
 
@@ -13,8 +12,9 @@ export const appRouter = router({
     .query(({ input }) => ({
       greeting: `hello ${input.text}`,
     })),
-  boards: publicProcedure.query(async () => {
-    const boards = await service.boardsRepository.getAll();
+  boards: publicProcedure.query(async ({ ctx }) => {
+    const boards = await ctx.boardsRepository.getAll();
+
     return {
       boards,
     };
@@ -22,4 +22,4 @@ export const appRouter = router({
   auth: authRouter,
 });
 // export type definition of API
-export type AppRouter = typeof appRouter
+export type AppRouter = typeof appRouter;
