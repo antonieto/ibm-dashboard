@@ -76,6 +76,7 @@ const SettingsIcon = styled.div`
 const Line = styled.div`
   height: 20px;
   border-left: 2px solid #d2d3d4;
+  border-radius: 2px;
 `;
 
 export default function ChartCard({ children, title }: Props): JSX.Element {
