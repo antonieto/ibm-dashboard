@@ -1,15 +1,10 @@
-/* eslint-disable no-unused-vars */
 import { BarChart, LineChart, DonutChart } from '@tremor/react';
 import ChartCard from '../ChartCard/ChartCard';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
-export enum ChartType {
-  bar = 'bar',
-  line = 'line',
-  pie = 'pie',
-}
+type ChartType = 'bar' | 'line' | 'pie';
 
 interface Props {
   type: string;
@@ -19,9 +14,9 @@ interface Props {
 }
 
 const chartTypeMap = new Map<ChartType, any>([
-  [ChartType.bar, BarChart],
-  [ChartType.line, LineChart],
-  [ChartType.pie, DonutChart],
+  ['bar', BarChart],
+  ['line', LineChart],
+  ['pie', DonutChart],
 ]);
 
 export default function Chart({
@@ -30,7 +25,11 @@ export default function Chart({
   chartProps,
   data,
 }: Props): JSX.Element {
-  const ChartComponent = chartTypeMap.get(ChartType[type as keyof typeof ChartType]);
+  if (chartTypeMap.has(type as ChartType) === false) {
+    throw new Error(`Chart type ${type} is not supported`);
+  }
+
+  const ChartComponent = chartTypeMap.get(type as ChartType);
 
   return (
     <ChartCard title={title}>
