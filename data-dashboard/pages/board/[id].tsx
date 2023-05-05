@@ -4,6 +4,7 @@ import { Add } from '@carbon/icons-react';
 import { BarChart } from '@tremor/react';
 
 import { Responsive, WidthProvider } from 'react-grid-layout';
+import type { Layout } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
@@ -60,13 +61,9 @@ export default function Board(): JSX.Element {
   // const router = useRouter();
   // const { id } = router.query;
 
-  const [layouts, setLayouts] = useState<{ [index: string]: any[] }>();
+  const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
 
   const widgetArray = MOCK_CHART_LIST;
-
-  const onLayoutChange = (layout: any, layouts_: any) => {
-    setLayouts({ ...layouts_ });
-  };
 
   return (
     <Container>
@@ -76,7 +73,11 @@ export default function Board(): JSX.Element {
           style={{ background: '#F4F5F5' }}
           layouts={layouts}
           preventCollision={false}
-          onLayoutChange={onLayoutChange}
+          onLayoutChange={(_, allLayouts) => {
+            setLayouts({
+              ...allLayouts,
+            });
+          }}
           verticalCompact
           autoSize
           breakpoints={breakpoints}
