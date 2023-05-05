@@ -11,7 +11,7 @@ export const initializeService = (): Service => {
   const db = new PrismaClient({
     datasources: {
       db: {
-        url: `${process.env.DATABASE_URL}?sslmode=require`,
+        url: `${process.env.DATABASE_URL}`,
       },
     },
   });
