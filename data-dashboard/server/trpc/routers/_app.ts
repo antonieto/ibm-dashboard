@@ -1,9 +1,10 @@
 import { z } from 'zod';
-import { service } from '..';
-import { procedure, router } from '../trpc';
+import { service } from '@/server/init';
+import { publicProcedure, router } from '@/server/trpc';
+import authRouter from './auth';
 
 export const appRouter = router({
-  hello: procedure
+  hello: publicProcedure
     .input(
       z.object({
         text: z.string(),
@@ -12,12 +13,13 @@ export const appRouter = router({
     .query(({ input }) => ({
       greeting: `hello ${input.text}`,
     })),
-  boards: procedure.query(async () => {
+  boards: publicProcedure.query(async () => {
     const boards = await service.boardsRepository.getAll();
     return {
       boards,
     };
   }),
+  auth: authRouter,
 });
 // export type definition of API
 export type AppRouter = typeof appRouter
