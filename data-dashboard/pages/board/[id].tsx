@@ -1,16 +1,15 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Add } from '@carbon/icons-react';
-import { BarChart } from '@tremor/react';
 
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import { NavBar } from '../../lib/components';
-import ChartCard from '../../lib/components/ChartCard/ChartCard';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import { MOCK_CHART_LIST } from '../../lib/components/BoardList/MOCK_CHART_LIST';
+import Chart from '../../lib/components/Chart/Chart';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -36,25 +35,6 @@ const AddButtonContainer = styled.div`
   bottom: 20px;
   left: 20px;
 `;
-
-const chartdata = [
-  {
-    name: 'Amphibians',
-    'Number of threatened species': 2488,
-  },
-  {
-    name: 'Birds',
-    'Number of threatened species': 1445,
-  },
-  {
-    name: 'Crustaceans',
-    'Number of threatened species': 743,
-  },
-];
-
-function dataFormatter(number: number) {
-  return `$ ${Intl.NumberFormat('us').format(number).toString()}`;
-}
 
 export default function Board(): JSX.Element {
   // const router = useRouter();
@@ -86,13 +66,13 @@ export default function Board(): JSX.Element {
           {widgetArray.map((widget) => (
             <div
               className="reactGridItem"
-              key={widget.i}
+              key={widget.id}
               data-grid={{
-                x: widget?.x,
-                y: widget?.y,
-                w: widget?.w,
-                h: widget?.h,
-                i: widget.i,
+                x: widget.xIndex,
+                y: widget.yIndex,
+                w: widget.width,
+                h: widget.height,
+                i: widget.id,
                 maxW: Infinity,
                 minW: 2,
                 maxH: Infinity,
@@ -101,17 +81,7 @@ export default function Board(): JSX.Element {
                 isResizable: true,
               }}
             >
-              <ChartCard>
-                <BarChart
-                  className="mt-6"
-                  data={chartdata}
-                  index="name"
-                  categories={['Number of threatened species']}
-                  colors={['blue']}
-                  valueFormatter={dataFormatter}
-                  yAxisWidth={48}
-                />
-              </ChartCard>
+              <Chart {...widget} key={widget.id} />
             </div>
           ))}
         </ResponsiveReactGridLayout>

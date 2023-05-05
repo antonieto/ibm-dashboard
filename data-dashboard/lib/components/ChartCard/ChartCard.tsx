@@ -1,18 +1,14 @@
 import styled from 'styled-components';
-import {
-  useEffect,
-  useRef,
-  useState,
-  ReactNode,
-} from 'react';
+import { useEffect, useRef, useState, ReactNode } from 'react';
 import { Settings, SettingsAdjust } from '@carbon/icons-react';
-import { Title, Subtitle } from '@tremor/react';
+import { Title } from '@tremor/react';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 interface Props {
   children: ReactNode;
+  title: string;
 }
 
 const CardComponent = styled.div<{ readonly selected: boolean }>`
@@ -82,7 +78,7 @@ const Line = styled.div`
   border-left: 2px solid #d2d3d4;
 `;
 
-export default function ChartCard({ children }: Props): JSX.Element {
+export default function ChartCard({ children, title }: Props): JSX.Element {
   const [selected, setSelected] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -106,11 +102,7 @@ export default function ChartCard({ children }: Props): JSX.Element {
 
   return (
     <CardComponent selected={selected} onClick={handleClick} ref={ref}>
-      <Title>title</Title>
-      <Subtitle>
-        The IUCN Red List has assessed only a small share of the total known
-        species in the world.
-      </Subtitle>
+      <Title>{title}</Title>
       {children}
       {selected && (
         <SettingsContainer

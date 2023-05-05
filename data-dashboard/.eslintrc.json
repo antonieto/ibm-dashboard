@@ -17,6 +17,7 @@
   },
   "rules": {
     "camelcase": "error",
+    "no-shadow":"off",
     "max-len": [
       "error",
       {
