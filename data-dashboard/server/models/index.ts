@@ -1,7 +1,2 @@
-export type Board = {
-  name: string;
-  ownerId: string;
-  title: string;
-  boardId: string;
-  createdAt: Date;
-};
+export * from './board';
+export * from './user';

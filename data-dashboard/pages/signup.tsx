@@ -1,11 +1,9 @@
 import styled from 'styled-components';
 import Link from 'next/link';
 import {
-  IbmButton,
-  NavBar,
-  TextInput,
-  InputField,
+  IbmButton, NavBar, TextInput, InputField,
 } from '@/lib/components';
+import trpc from '@/lib/hooks/trpc';
 
 const Body = styled.main`
   display: flex;
@@ -81,6 +79,29 @@ const LinkStyle = {
 };
 
 function SignUp() {
+  const { mutate, data, isLoading } = trpc.auth.signup.useMutation();
+
+  const handleSubmit = async () => {
+    mutate({
+      email: 'something@something.com',
+      confirmPassword: 'something',
+      password: 'something',
+    });
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (data) {
+    return (
+      <div>
+        User created successfully
+        {data.user.email}
+      </div>
+    );
+  }
+
   return (
     <div>
       <NavBar />
@@ -153,7 +174,7 @@ function SignUp() {
                 }}
               />
             </InputFields>
-            <IbmButton text="Crear cuenta" style={ButtonStyle} />
+            <IbmButton text="Crear cuenta" style={ButtonStyle} onClick={handleSubmit} />
           </Form>
           <ToSingin>
             <Cue>¿Ya tienes cuenta?</Cue>
