@@ -1,10 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import type { IBoardRepository } from './repositories/board';
 import { PrismaBoardRepository } from './repositories/board';
+import { IUserRepository, PrismaUserRepository } from './repositories/user';
 
 export interface Service {
   boardsRepository: IBoardRepository;
-  help: string;
+  usersRepository: IUserRepository;
 }
 
 export const initializeService = (): Service => {
@@ -19,6 +20,6 @@ export const initializeService = (): Service => {
 
   return {
     boardsRepository: new PrismaBoardRepository(db),
-    help: 'help',
+    usersRepository: new PrismaUserRepository(db),
   };
 };

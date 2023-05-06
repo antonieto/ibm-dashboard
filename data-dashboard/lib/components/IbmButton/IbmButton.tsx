@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import React from 'react';
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLButtonElement> {
   text: string;
   style?: React.CSSProperties;
 }
@@ -28,6 +28,15 @@ const IbmButtonComponent = styled.button`
   }
 `;
 
-export default function IbmButton({ text, style = undefined }: Props): JSX.Element {
-  return <IbmButtonComponent style={style}>{text}</IbmButtonComponent>;
+export default function IbmButton(props: Props): JSX.Element {
+  const { text, style } = props;
+
+  return (
+    <IbmButtonComponent
+      {...{ ...props, text: undefined, style: undefined }}
+      style={style}
+    >
+      {text}
+    </IbmButtonComponent>
+  );
 }

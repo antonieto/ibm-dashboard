@@ -2,11 +2,9 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-  IbmButton,
-  NavBar,
-  TextInput,
-  InputField,
+  IbmButton, NavBar, TextInput, InputField,
 } from '@/lib/components';
+import trpc from '@/lib/hooks/trpc';
 
 const Body = styled.main`
   display: grid;
@@ -77,6 +75,20 @@ const ImageStyle = {
 };
 
 function SignIn() {
+  const { mutate, data, error } = trpc.auth.login.useMutation();
+  const handleSubmit = () => {
+    mutate({
+      email: 'something@something.com',
+      password: 'something',
+    });
+  };
+
+  if (data) {
+    console.log(data);
+  }
+  if (error) {
+    console.log(error);
+  }
   return (
     <div>
       <NavBar />
@@ -108,14 +120,22 @@ function SignIn() {
                 }}
               />
             </InputFields>
-            <IbmButton text="Iniciar sesión" style={ButtonStyle} />
+            <IbmButton text="Iniciar sesión" style={ButtonStyle} onClick={handleSubmit} />
           </Form>
           <ToSingup>
             <Cue>¿No tienes cuenta?</Cue>
-            <Link href="/signup" style={LinkStyle}>Crear cuenta</Link>
+            <Link href="/signup" style={LinkStyle}>
+              Crear cuenta
+            </Link>
           </ToSingup>
         </Content>
-        <Image src="/images/signup.png" alt="Man and Woman" width={333} height={402} style={ImageStyle} />
+        <Image
+          src="/images/signup.png"
+          alt="Man and Woman"
+          width={333}
+          height={402}
+          style={ImageStyle}
+        />
       </Body>
     </div>
   );
