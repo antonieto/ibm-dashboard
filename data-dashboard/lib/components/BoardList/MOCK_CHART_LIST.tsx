@@ -1,3 +1,14 @@
+import React from 'react';
+import Chart from '../Chart/Chart';
+
+type Props = {
+  id: string;
+  xIndex: number;
+  yIndex: number;
+  width: number;
+  height: number;
+};
+
 export const MOCK_CHART_LIST = [
   {
     id: 'widget1',
@@ -184,7 +195,7 @@ export const MOCK_CHART_LIST = [
       },
     ],
   },
-];
+] satisfies React.ComponentProps<typeof Chart>[] & Props[];
 
 export default {
   MOCK_CHART_LIST,

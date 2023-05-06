@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Add } from '@carbon/icons-react';
 
@@ -36,6 +36,14 @@ const AddButtonContainer = styled.div`
   left: 20px;
 `;
 
+type DataGridProps = {
+  id: string;
+  xIndex: number;
+  yIndex: number;
+  width: number;
+  height: number;
+};
+
 export default function Board(): JSX.Element {
   // const router = useRouter();
   // const { id } = router.query;
@@ -46,6 +54,38 @@ export default function Board(): JSX.Element {
 
   const onLayoutChange = (layout: any, layouts_: any) => {
     setLayouts({ ...layouts_ });
+  };
+
+  const getComponent = (
+    widget: DataGridProps & React.ComponentProps<typeof Chart>,
+  ) => {
+    const {
+      id,
+      xIndex,
+      yIndex,
+      width,
+      height,
+    } = widget;
+    return (
+      <div
+        key={id}
+        data-grid={{
+          x: xIndex,
+          y: yIndex,
+          w: width,
+          h: height,
+          i: id,
+          maxW: Infinity,
+          minW: 2,
+          maxH: Infinity,
+          minH: 3,
+          isDraggable: true,
+          isResizable: true,
+        }}
+      >
+        <Chart key={id} {...widget} />
+      </div>
+    );
   };
 
   return (
@@ -63,27 +103,7 @@ export default function Board(): JSX.Element {
           cols={cols}
           margin={margin}
         >
-          {widgetArray.map((widget) => (
-            <div
-              className="reactGridItem"
-              key={widget.id}
-              data-grid={{
-                x: widget.xIndex,
-                y: widget.yIndex,
-                w: widget.width,
-                h: widget.height,
-                i: widget.id,
-                maxW: Infinity,
-                minW: 2,
-                maxH: Infinity,
-                minH: 3,
-                isDraggable: true,
-                isResizable: true,
-              }}
-            >
-              <Chart {...widget} key={widget.id} />
-            </div>
-          ))}
+          {widgetArray.map((widget) => getComponent(widget))}
         </ResponsiveReactGridLayout>
       </div>
 
