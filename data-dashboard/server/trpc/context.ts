@@ -11,6 +11,7 @@ export const createContextInner = async () => {
 
 export const createContext = async (opts: CreateNextContextOptions) => {
   const innerContext = await createContextInner();
+
   return {
     ...innerContext,
     req: opts.req,
