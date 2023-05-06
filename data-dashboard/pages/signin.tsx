@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import Link from 'next/link';
 import Image from 'next/image';
+import { setCookie } from 'cookies-next';
 import {
   IbmButton, NavBar, TextInput, InputField,
 } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
-import { setCookie } from 'cookies-next';
 
 const Body = styled.main`
   display: grid;

@@ -7,7 +7,7 @@
     "plugin:@typescript-eslint/recommended",
     "airbnb",
     "airbnb/hooks",
-	"plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended"
   ],
   "globals": {
     "JSX": true
@@ -19,7 +19,7 @@
   },
   "rules": {
     "camelcase": "error",
-    "no-shadow":"off",
+    "no-shadow": "off",
     "max-len": [
       "error",
       {
@@ -31,21 +31,33 @@
       }
     ],
     "no-cond-assign": "error",
-	  "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-explicit-any": "error",
     "no-unused-expressions": "error",
-	"@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-unused-vars": "error",
     "no-unused-vars": "off",
     "no-console": "warn",
     "object-curly-newline": "off",
     "react/jsx-filename-extension": [
       1,
-      { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
+      {
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
+      }
     ],
     "react/react-in-jsx-scope": "off",
     "react/require-default-props": "off",
     "react/jsx-props-no-spreading": "off",
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
-	  "no-restricted-syntax": "off",
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": true
+      }
+    ],
+    "no-restricted-syntax": "off",
     "import/extensions": [
       "error",
       "ignorePackages",
