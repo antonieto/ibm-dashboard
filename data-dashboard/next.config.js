@@ -1,10 +1,12 @@
+require('./lib/env');
+
 /** @type {import('next').NextConfig} */
 
 const getDatabaseUrl = () => {
-  if (process.env.VERCEL_ENV === undefined) {
+  if (process.env.CUSTOM_ENV_NAME === 'local') {
     return process.env.DATABASE_URL;
   }
-  const env = process.env.VERCEL_ENV;
+  const env = process.env.CUSTOM_ENV_NAME;
   let dbName = '';
   if (env === 'production') {
     dbName = 'production';
