@@ -7,6 +7,9 @@
     "airbnb",
     "airbnb/hooks"
   ],
+  "globals": {
+    "JSX": true
+  },
   "settings": {
     "react": {
       "version": "detect"
@@ -14,6 +17,16 @@
   },
   "rules": {
     "camelcase": "error",
+    "max-len": [
+      "error",
+      {
+        "code": 120,
+        "ignoreComments": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true,
+        "ignoreRegExpLiterals": true
+      }
+    ],
     "no-cond-assign": "error",
     "no-unused-expressions": "error",
     "no-unused-vars": "error",
@@ -22,7 +35,19 @@
       1,
       { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
     ],
-	"react/react-in-jsx-scope": "off",
-	"react/jsx-props-no-spreading": "off"
+    "react/react-in-jsx-scope": "off",
+    "react/require-default-props": "off",
+    "react/jsx-props-no-spreading": "off",
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ]
   }
 }

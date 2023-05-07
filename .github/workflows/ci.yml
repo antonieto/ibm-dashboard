@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: ["dev", main]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: ["dev"]
+
+jobs:
+  ESLint:
+    name: ESLint check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Node.js and Yarn
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install deps
+        run: npm install
+        working-directory: data-dashboard
+
+      - name: Run ESLint
+        run: npm run lint
+        working-directory: data-dashboard
+          
+  Preview-DB:
+    # Block workflow if ESLint fails
+    needs: ESLint
+    name: Create Preview Database
+    runs-on: ubuntu-latest
+    env:
+      POSTGRES_USER: ${{ secrets.POSTGRES_DB_USERNAME }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_DB_PASSWORD }}
+      POSTGRES_HOST: ${{ vars.POSTGRES_DB_HOST }}
+      POSTGRES_PORT: 5432
+      ## Default name to pr<PR_NUMBER>
+      DATABASE_NAME: pr${{ github.event.number }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set Database Name
+        run: |
+          if [ "$GITHUB_REF" == "refs/heads/main" ]; then
+            export DATABASE_NAME=production
+          elif [ "$GITHUB_REF" == "refs/heads/dev" ]; then
+            export DATABASE_NAME=staging
+          else
+            export DATABASE_NAME=pr${{ github.event.number }}
+          fi
+          export DATABASE_URL="postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$DATABASE_NAME"
+          
+      - name: Install PostgreSQL client
+        run: sudo apt-get install -y postgresql-client
+
+      - name: Create new database
+        # Improved command: only creates DB the first time
+        run: |
+          echo "SELECT 'CREATE DATABASE $DATABASE_NAME' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '$DATABASE_NAME')\gexec" | psql "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/postgres?sslmode=require"
+ 
+      - name: Apply migrations
+        # This is silly but it works (it sets the right environment variables for the migration)
+        run: |
+          if [ "$GITHUB_REF" == "refs/heads/main" ]; then
+            export DATABASE_NAME=production
+          elif [ "$GITHUB_REF" == "refs/heads/dev" ]; then
+            export DATABASE_NAME=staging
+          else
+            export DATABASE_NAME=pr${{ github.event.number }}
+          fi
+          export DATABASE_URL="postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$DATABASE_NAME"
+          npx prisma migrate deploy
+          
+        working-directory: data-dashboard
