@@ -114,7 +114,7 @@ export default function ChartCard({ children }: Props): JSX.Element {
       {children}
       {selected && (
         <SettingsContainer
-          onClick={(e: any) => {
+          onClick={(e) => {
             e.stopPropagation();
           }}
         >
