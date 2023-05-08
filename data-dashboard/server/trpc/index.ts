@@ -19,7 +19,6 @@ const isAuthed = t.middleware(({ ctx, next }) => {
   }
 });
 
-const t = initTRPC.context<TContext>().create();
 export const { router } = t;
 export const publicProcedure = t.procedure;
 export const privateProcedure = t.procedure.use(isAuthed);
