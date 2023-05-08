@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from 'crypto';
 import { z } from 'zod';
+import { sign } from 'jsonwebtoken';
 import { router, publicProcedure } from '..';
 
 const SignupSchema = z
@@ -51,10 +52,9 @@ const authRouter = router({
       if (hashed !== user.password) {
         throw new Error('Invalid password');
       }
+      const token = sign({ userId: user.id }, 'chairesesunindividuomuyguapo', { expiresIn: '1m' });
 
-      return {
-        accessToken: 'pene',
-      };
+      return token;
     }),
 });
 
