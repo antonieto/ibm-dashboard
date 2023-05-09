@@ -1,10 +1,12 @@
+require('./lib/env');
+
 /** @type {import('next').NextConfig} */
 
 const getDatabaseUrl = () => {
-  if (process.env.VERCEL_ENV === undefined) {
-    return `postgres://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@localhost:5432/local`;
+  if (process.env.CUSTOM_ENV_NAME === 'local') {
+    return process.env.DATABASE_URL;
   }
-  const env = process.env.VERCEL_ENV;
+  const env = process.env.CUSTOM_ENV_NAME;
   let dbName = '';
   if (env === 'production') {
     dbName = 'production';
@@ -16,7 +18,7 @@ const getDatabaseUrl = () => {
     throw new Error('Failed to get database name');
   }
   process.env.DATABASE_URL = `postgres://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}`;
-  return `postgres://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}/${dbName}`;
+  return `postgres://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}/${dbName}?sslmode=require`;
 };
 
 const nextConfig = {

@@ -5,7 +5,8 @@
     "plugin:react/jsx-runtime",
     "plugin:react-hooks/recommended",
     "airbnb",
-    "airbnb/hooks"
+    "airbnb/hooks",
+	"plugin:@typescript-eslint/recommended"
   ],
   "globals": {
     "JSX": true
@@ -29,6 +30,7 @@
       }
     ],
     "no-cond-assign": "error",
+	"@typescript-eslint/no-explicit-any": "error",
     "no-unused-expressions": "error",
     "no-unused-vars": "error",
     "no-console": "warn",

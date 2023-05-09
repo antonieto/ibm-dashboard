@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-
 import { IbmButton, IbmSearchBar, BoardList } from '@/lib/components';
 
 const BoardContainer = styled.div`
