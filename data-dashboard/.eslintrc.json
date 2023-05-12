@@ -42,7 +42,8 @@
     "react/react-in-jsx-scope": "off",
     "react/require-default-props": "off",
     "react/jsx-props-no-spreading": "off",
-    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+	  "no-restricted-syntax": "off",
     "import/extensions": [
       "error",
       "ignorePackages",

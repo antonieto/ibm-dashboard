@@ -10,6 +10,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@azure/storage-blob": "^12.14.0",
     "@carbon/icons-react": "^11.19.0",
     "@next/eslint-plugin-next": "^13.3.0",
     "@prisma/client": "^4.13.0",
