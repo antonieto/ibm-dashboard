@@ -1,4 +1,5 @@
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
+import env from '@/lib/env';
 
 class StorageService {
   private readonly blobServiceClient: BlobServiceClient;
@@ -6,9 +7,8 @@ class StorageService {
   private readonly containerClient: ContainerClient;
 
   constructor(containerName: string) {
-    this.blobServiceClient = BlobServiceClient.fromConnectionString(
-      'https://ibmdashboard.blob.core.windows.net/data-sources?sp=racwl&st=2023-05-09T23:37:54Z&se=2023-05-10T07:37:54Z&sip=0.0.0.0-255.255.255.255&sv=2022-11-02&sr=c&sig=5Bvdv9zSRi0MQamLKWq%2F4a8EJvAKE3HwWHSURY%2FOHps%3D',
-    );
+    console.log({ env: env.AZURE_STORAGE_CONNECTION_STRING });
+    this.blobServiceClient = BlobServiceClient.fromConnectionString(env.AZURE_STORAGE_CONNECTION_STRING);
     this.containerClient = this.blobServiceClient.getContainerClient(containerName);
   }
 
@@ -19,9 +19,17 @@ class StorageService {
   }
 
   async getFiles() {
-    const blobs = this.containerClient.listBlobsFlat();
-    for await (const blob of blobs) {
-      console.log(`Blob: ${blob.name}`);
+    try {
+      const blobs = this.containerClient.listBlobsFlat();
+      const files = [];
+      for await (const blob of blobs) {
+        console.log(`Blob: ${blob.name}`);
+        files.push(blob.name);
+      }
+      return files;
+    } catch (e) {
+      console.error('Error: ', e);
+      return [];
     }
   }
 }

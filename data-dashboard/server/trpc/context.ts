@@ -4,6 +4,9 @@ import { initializeService } from '../init';
 
 export const createContextInner = async () => {
   const service = initializeService();
+  if (service === null) {
+    throw new Error('Service failed to initialize');
+  }
   return {
     ...service,
   };

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { privateProcedure, publicProcedure, router } from '@/server/trpc';
 import authRouter from './auth';
+import dataSourcesRouter from './dataSources';
 
 export const appRouter = router({
   hello: publicProcedure
@@ -21,6 +22,8 @@ export const appRouter = router({
   }),
   secretoDeAmor: privateProcedure.query(() => { 'aloh'; }),
   auth: authRouter,
+  dataSources: dataSourcesRouter,
+
 });
 // export type definition of API
 export type AppRouter = typeof appRouter;

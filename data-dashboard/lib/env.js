@@ -9,6 +9,7 @@ const EnvSchema = z.object({
   DATABASE_PORT: z.string(),
   DATABASE_HOST: z.string(),
   CUSTOM_ENV_NAME: z.string(),
+  AZURE_STORAGE_CONNECTION_STRING: z.string(),
 });
 
 const env = EnvSchema.parse(process.env);
