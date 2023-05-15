@@ -4,6 +4,7 @@
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
     "plugin:react-hooks/recommended",
+    "plugin:@typescript-eslint/recommended",
     "airbnb",
     "airbnb/hooks",
 	"plugin:@typescript-eslint/recommended"
@@ -31,7 +32,8 @@
     "no-cond-assign": "error",
 	"@typescript-eslint/no-explicit-any": "error",
     "no-unused-expressions": "error",
-    "no-unused-vars": "error",
+	"@typescript-eslint/no-unused-vars": "error",
+    "no-unused-vars": "off",
     "no-console": "warn",
     "react/jsx-filename-extension": [
       1,
@@ -41,6 +43,7 @@
     "react/require-default-props": "off",
     "react/jsx-props-no-spreading": "off",
     "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+	  "no-restricted-syntax": "off",
     "import/extensions": [
       "error",
       "ignorePackages",
