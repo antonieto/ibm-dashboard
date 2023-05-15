@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import type { IBoardRepository } from './repositories/board';
 import { PrismaBoardRepository } from './repositories/board';
 import { IUserRepository, PrismaUserRepository } from './repositories/user';
-import StorageService from './services/storageService';
+import { StorageService, AzureStorageService } from './services/storageService';
 
 const FILE_STORAGE_CONTAINER_NAME = 'data-sources';
 
@@ -25,7 +25,7 @@ export const initializeService = (): Service | null => {
 
     const boardsRepository = new PrismaBoardRepository(db);
     const usersRepository = new PrismaUserRepository(db);
-    const fileStorage = new StorageService(FILE_STORAGE_CONTAINER_NAME);
+    const fileStorage = new AzureStorageService(FILE_STORAGE_CONTAINER_NAME);
 
     return {
       boardsRepository,

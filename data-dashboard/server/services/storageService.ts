@@ -1,7 +1,12 @@
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
 import env from '@/lib/env';
 
-class StorageService {
+export interface StorageService {
+  uploadFile(file: File): Promise<void>;
+  getFiles(): Promise<string[]>;
+}
+
+export class AzureStorageService implements StorageService {
   private readonly blobServiceClient: BlobServiceClient;
 
   private readonly containerClient: ContainerClient;
@@ -33,5 +38,3 @@ class StorageService {
     }
   }
 }
-
-export default StorageService;
