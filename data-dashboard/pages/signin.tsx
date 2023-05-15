@@ -6,7 +6,6 @@ import {
   IbmButton, NavBar, TextInput, InputField,
 } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
-import { setCookie } from 'cookies-next';
 
 const Body = styled.main`
   display: grid;
@@ -79,7 +78,7 @@ const ImageStyle = {
 function SignIn() {
   const { mutate, data, error } = trpc.auth.login.useMutation({
     onSuccess(token) {
-      setCookie('accessToken', token);
+      setCookie('access-token', token, { httpOnly: true });
     },
   });
   const handleSubmit = () => {

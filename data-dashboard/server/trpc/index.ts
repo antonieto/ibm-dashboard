@@ -7,7 +7,9 @@ const t = initTRPC.context<TContext>().create();
 const isAuthed = t.middleware(({ ctx, next }) => {
   try {
     const { req } = ctx;
-    const token = req.headers.authorization?.split(' ')[1]; // actual token
+    const token = req.cookies.get('access-token')?.value;
+
+    console.log(token);
 
     if (!token) throw new TRPCError({ code: 'UNAUTHORIZED' });
 
@@ -19,6 +21,6 @@ const isAuthed = t.middleware(({ ctx, next }) => {
   }
 });
 
-export const { router } = t;
+export const { router, middleware } = t;
 export const publicProcedure = t.procedure;
 export const privateProcedure = t.procedure.use(isAuthed);

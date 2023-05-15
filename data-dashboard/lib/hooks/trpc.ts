@@ -2,7 +2,6 @@ import { httpBatchLink } from '@trpc/client';
 import { createTRPCNext } from '@trpc/next';
 import { getCookie } from 'cookies-next';
 import type { AppRouter } from '@/server/trpc/routers/_app';
-import { getCookie } from 'cookies-next';
 
 function getBaseUrl() {
   if (typeof window !== 'undefined') {
@@ -38,7 +37,7 @@ export default createTRPCNext<AppRouter>({
           // You can pass any HTTP headers you wish here
           async headers() {
             return {
-              Authorization: `Bearer ${getCookie('accessToken')}`,
+              Authorization: `Bearer ${getCookie('access-token')}`,
             };
           },
         }),
