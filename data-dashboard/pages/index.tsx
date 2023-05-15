@@ -4,8 +4,29 @@ import trpc from '@/lib/hooks/trpc';
 
 export default function Home() {
   const query = trpc.hello.useQuery({ text: 'World!' });
+  const { data: blobs, error, isLoading } = trpc.dataSources.listDataSources.useQuery();
   if (!query.data) {
     return <div>Loading...</div>;
+  }
+  console.log(error, blobs);
+
+  if (isLoading) {
+    return (
+      <div>
+        Loading...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div>
+        <p>
+          Failed to fetch
+          {error.message}
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -16,8 +37,22 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <p className="text-white bg-red-200">
+        something
+      </p>
       <main className={styles.main}>
         <h1>{query.data.greeting}</h1>
+        <ul>
+          {blobs.fileNames.map((name, idx) => (
+            <li key={name}>
+              {idx}
+              {' '}
+              -
+              {' '}
+              {name}
+            </li>
+          ))}
+        </ul>
       </main>
     </>
   );

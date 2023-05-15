@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { IbmButton, IbmSearchBar, BoardList } from '@/lib/components';
+import trpc from '@/lib/hooks/trpc';
 
 const BoardContainer = styled.div`
   display: flex;
@@ -40,6 +41,7 @@ const BoardBarContainerButton = styled.div`
 `;
 
 export default function boards() {
+  trpc.secretoDeAmor.useQuery();
   return (
     <BoardContainer>
       <BoardsContainerContent>
