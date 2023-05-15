@@ -53,20 +53,11 @@ export default function Board(): JSX.Element {
 
   const widgetArray = MOCK_CHART_LIST;
 
-  const onLayoutChange = (layout: any, layouts_: any) => {
-    setLayouts({ ...layouts_ });
-  };
-
   const getComponent = (
     widget: DataGridProps & React.ComponentProps<typeof Chart>,
   ) => {
-    const {
-      id,
-      xIndex,
-      yIndex,
-      width,
-      height,
-    } = widget;
+    const { id, xIndex, yIndex, width, height } = widget;
+
     return (
       <div
         key={id}

@@ -1,4 +1,6 @@
-const { z } = require('zod');
+const zod = require('zod');
+
+const { z } = zod;
 
 const EnvSchema = z.object({
   GITHUB_PERSONAL_ACCESS_TOKEN: z.string(),
