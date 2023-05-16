@@ -41,7 +41,7 @@ const BoardBarContainerButton = styled.div`
 `;
 
 export default function boards() {
-  trpc.secretoDeAmor.useQuery();
+  trpc.testPrivateProcedure.useQuery();
   return (
     <BoardContainer>
       <BoardsContainerContent>

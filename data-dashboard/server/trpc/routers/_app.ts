@@ -20,7 +20,7 @@ export const appRouter = router({
       boards,
     };
   }),
-  secretoDeAmor: privateProcedure.query(() => { 'aloh'; }),
+  testPrivateProcedure: privateProcedure.query(() => ({ message: 'aloh' })),
   auth: authRouter,
   dataSources: dataSourcesRouter,
 

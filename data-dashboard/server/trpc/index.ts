@@ -7,13 +7,8 @@ const t = initTRPC.context<TContext>().create();
 const isAuthed = t.middleware(({ ctx, next }) => {
   try {
     const { req } = ctx;
-    const token = req.cookies.get('access-token')?.value;
-
-    console.log(token);
-
-    if (!token) throw new TRPCError({ code: 'UNAUTHORIZED' });
-
-    verify(token, 'chairesesunindividuomuyguapo');
+    const token = String(req.cookies['access-token']);
+    verify(token, String(process.env.JWT_SECRET));
 
     return next();
   } catch (error) {
