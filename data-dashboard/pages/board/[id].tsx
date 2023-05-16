@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Add } from '@carbon/icons-react';
-import { BarChart } from '@tremor/react';
 
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import type { Layout } from 'react-grid-layout';
@@ -9,9 +8,9 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import { NavBar } from '../../lib/components';
-import ChartCard from '../../lib/components/ChartCard/ChartCard';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import { MOCK_CHART_LIST } from '../../lib/components/BoardList/MOCK_CHART_LIST';
+import Chart from '../../lib/components/Chart/Chart';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -38,24 +37,13 @@ const AddButtonContainer = styled.div`
   left: 20px;
 `;
 
-const chartdata = [
-  {
-    name: 'Amphibians',
-    'Number of threatened species': 2488,
-  },
-  {
-    name: 'Birds',
-    'Number of threatened species': 1445,
-  },
-  {
-    name: 'Crustaceans',
-    'Number of threatened species': 743,
-  },
-];
-
-function dataFormatter(number: number) {
-  return `$ ${Intl.NumberFormat('us').format(number).toString()}`;
-}
+type DataGridProps = {
+  id: string;
+  xIndex: number;
+  yIndex: number;
+  width: number;
+  height: number;
+};
 
 export default function Board(): JSX.Element {
   // const router = useRouter();
@@ -64,6 +52,33 @@ export default function Board(): JSX.Element {
   const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
 
   const widgetArray = MOCK_CHART_LIST;
+
+  const getComponent = (
+    widget: DataGridProps & React.ComponentProps<typeof Chart>,
+  ) => {
+    const { id, xIndex, yIndex, width, height } = widget;
+
+    return (
+      <div
+        key={id}
+        data-grid={{
+          x: xIndex,
+          y: yIndex,
+          w: width,
+          h: height,
+          i: id,
+          maxW: Infinity,
+          minW: 2,
+          maxH: Infinity,
+          minH: 3,
+          isDraggable: true,
+          isResizable: true,
+        }}
+      >
+        <Chart key={id} {...widget} />
+      </div>
+    );
+  };
 
   return (
     <Container>
@@ -84,37 +99,7 @@ export default function Board(): JSX.Element {
           cols={cols}
           margin={margin}
         >
-          {widgetArray.map((widget) => (
-            <div
-              className="reactGridItem"
-              key={widget.i}
-              data-grid={{
-                x: widget?.x,
-                y: widget?.y,
-                w: widget?.w,
-                h: widget?.h,
-                i: widget.i,
-                maxW: Infinity,
-                minW: 2,
-                maxH: Infinity,
-                minH: 3,
-                isDraggable: true,
-                isResizable: true,
-              }}
-            >
-              <ChartCard>
-                <BarChart
-                  className="mt-6"
-                  data={chartdata}
-                  index="name"
-                  categories={['Number of threatened species']}
-                  colors={['blue']}
-                  valueFormatter={dataFormatter}
-                  yAxisWidth={48}
-                />
-              </ChartCard>
-            </div>
-          ))}
+          {widgetArray.map((widget) => getComponent(widget))}
         </ResponsiveReactGridLayout>
       </div>
 

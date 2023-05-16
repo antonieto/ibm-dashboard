@@ -6,11 +6,12 @@ interface Props {
   text: string;
   icon: CarbonIconType;
   style?: React.CSSProperties;
+  iconLeft?: boolean;
 }
 
-const ButtonComponent = styled.button`
+const ButtonComponent = styled.button<{ readonly iconLeft: boolean }>`
   display: flex;
-  flex-direction: row;
+  flex-direction: ${(props) => (props.iconLeft ? 'row-reverse' : 'row')};
   align-items: center;
   justify-content: center;
 
@@ -19,7 +20,7 @@ const ButtonComponent = styled.button`
   padding-left: 16px;
   padding-right: 10px;
 
-  background-color: transparent;
+  background-color: white;
   border: 2px solid #0f62fe;
   cursor: pointer;
   height: 48px;
@@ -47,11 +48,12 @@ export default function ButtonWithIcon({
   text,
   icon: Icon,
   style = undefined,
+  iconLeft = false,
 }: Props): JSX.Element {
   return (
-    <ButtonComponent style={style}>
+    <ButtonComponent style={style} iconLeft={iconLeft}>
       {text}
-      <Icon aria-label="Add" size={24} />
+      <Icon aria-label={text} size={24} />
     </ButtonComponent>
   );
 }
