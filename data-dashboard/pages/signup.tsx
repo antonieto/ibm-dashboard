@@ -2,13 +2,10 @@ import { useState } from 'react';
 import type { ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
-import { TRPCClientError } from '@trpc/client';
 import {
   IbmButton, NavBar, TextInput, InputField,
 } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
-import { AppRouter } from '@/server/trpc/routers/_app';
-import { publicProcedure } from '@/server/trpc';
 
 const Body = styled.main`
   display: flex;
