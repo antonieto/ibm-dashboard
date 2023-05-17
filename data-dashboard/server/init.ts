@@ -2,9 +2,15 @@ import { PrismaClient } from '@prisma/client';
 import type { IBoardRepository } from './repositories/board';
 import { PrismaBoardRepository } from './repositories/board';
 import { IUserRepository, PrismaUserRepository } from './repositories/user';
-import { StorageService, AzureStorageService } from './services/storageService';
+
+import AzureStorageService from './services/storageService';
 
 const FILE_STORAGE_CONTAINER_NAME = 'data-sources';
+
+interface StorageService {
+  uploadFile(filePath: string): Promise<void>;
+  getFiles(): Promise<string[]>;
+}
 
 export interface Service {
   boardsRepository: IBoardRepository;
