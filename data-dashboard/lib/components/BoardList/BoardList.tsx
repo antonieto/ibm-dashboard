@@ -1,7 +1,7 @@
 import trpc from '@/lib/hooks/trpc';
 import styled from 'styled-components';
-import BoardPreview from '../BoardPreview/BoardPreview';
 import { Board } from '@/server/models';
+import BoardPreview from '../BoardPreview/BoardPreview';
 
 const BoardListContainer = styled.div`
   width: 100%;

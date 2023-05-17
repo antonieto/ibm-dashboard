@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import type { Board, User } from '../models';
+import type { Board } from '../models';
 
 export interface IBoardRepository {
   getAll(): Promise<Board[]>;
   findOne(id: string): Promise<Board>;
-  create(board: Pick<Board, "title" | "ownerId">): Promise<Board>;
+  create(board: Pick<Board, 'title' | 'ownerId'>): Promise<Board>;
 }
 
 export class PrismaBoardRepository implements IBoardRepository {
@@ -38,7 +38,7 @@ export class PrismaBoardRepository implements IBoardRepository {
     }
   }
   
-  async create(board: Pick<Board, "title" | "ownerId">): Promise<Board> {
+  async create(board: Pick<Board, 'title' | 'ownerId'>): Promise<Board> {
     const newBoard = await this.db.boards.create({
       data: {
         title: board.title,
