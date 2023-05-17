@@ -4,9 +4,8 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import Image from 'next/image';
 import { setCookie } from 'cookies-next';
-import {
-  IbmButton, TextInput, InputField,
-} from '@/lib/components';
+import { useRouter } from 'next/navigation';
+import { IbmButton, NavBar, TextInput, InputField } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
 
 const Body = styled.main`
@@ -78,13 +77,11 @@ const ImageStyle = {
 };
 
 function SignIn() {
+  //const router = useRouter();
   const { mutate } = trpc.auth.login.useMutation({
     onSuccess(token) {
       console.log(token);
-      setCookie(
-        'access-token',
-        token,
-      );
+      setCookie('access-token', token);
     },
     onError(error) {
       console.log(error);
@@ -146,7 +143,11 @@ function SignIn() {
                 }}
               />
             </InputFields>
-            <IbmButton text="Iniciar sesión" style={ButtonStyle} onClick={handleSubmit} />
+            <IbmButton
+              text="Iniciar sesión"
+              style={ButtonStyle}
+              onClick={handleSubmit}
+            />
           </Form>
           <ToSingup>
             <Cue>¿No tienes cuenta?</Cue>

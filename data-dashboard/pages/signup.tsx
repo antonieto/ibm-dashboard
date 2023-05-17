@@ -2,10 +2,10 @@ import { useState } from 'react';
 import type { ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
-import {
-  IbmButton, TextInput, InputField,
-} from '@/lib/components';
+import { IbmButton, NavBar, TextInput, InputField } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
+import { TRPCClientErrorLike } from '@trpc/client';
+import { AppRouter } from '@/server/trpc/routers/_app';
 import { TRPCError } from '@trpc/server';
 
 const Body = styled.main`
@@ -83,9 +83,11 @@ const LinkStyle = {
 
 function SignUp() {
   const { mutate, data, isLoading } = trpc.auth.signup.useMutation({
-    onError(error) {
-      const errorData = JSON.parse(error.message);
-      errorData.map((element: TRPCError) => window.alert(element.message));
+    onError(error: TRPCClientErrorLike<AppRouter>) {
+      const errorData = eval(error.message);
+      errorData.map((element: TRPCError) => {
+        window.alert(element.message);
+      });
     },
   });
 
@@ -208,7 +210,11 @@ function SignUp() {
                 }}
               />
             </InputFields>
-            <IbmButton text="Crear cuenta" style={ButtonStyle} onClick={handleSubmit} />
+            <IbmButton
+              text="Crear cuenta"
+              style={ButtonStyle}
+              onClick={handleSubmit}
+            />
           </Form>
           <ToSingin>
             <Cue>¿Ya tienes cuenta?</Cue>
