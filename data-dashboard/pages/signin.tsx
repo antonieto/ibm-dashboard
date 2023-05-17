@@ -82,10 +82,10 @@ function SignIn() {
   const router = useRouter();
   const { mutate } = trpc.auth.login.useMutation({
     onSuccess(token) {
+      console.log(token)
       setCookie(
         'access-token',
         token,
-        { httpOnly: true },
       );
     },
     onError(error) {
