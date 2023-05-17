@@ -20,7 +20,7 @@ export const appRouter = router({
       boards,
     };
   }),
-  testPrivateProcedure: privateProcedure.query(() => ({ message: 'aloh' })),
+  testPrivateProcedure: privateProcedure.query(() => ({ message: 'hola' })),
   auth: authRouter,
   dataSources: dataSourcesRouter,
 
