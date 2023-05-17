@@ -8,7 +8,6 @@ export default function Home() {
   if (!query.data) {
     return <div>Loading...</div>;
   }
-  console.log(error, blobs);
 
   if (isLoading) {
     return (

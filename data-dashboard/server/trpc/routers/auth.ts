@@ -52,7 +52,7 @@ const authRouter = router({
       if (hashed !== user.password) {
         throw new Error('Invalid password');
       }
-      const token = sign({ userId: user.id }, 'chairesesunindividuomuyguapo', { expiresIn: '1m' });
+      const token = sign({ userId: user.id }, String(process.env.JWT_SECRET), { expiresIn: '1d' });
 
       return token;
     }),

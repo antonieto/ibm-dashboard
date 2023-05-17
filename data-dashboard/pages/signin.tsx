@@ -1,11 +1,14 @@
+import { useEffect, useState } from 'react';
+import type { MouseEvent, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import Image from 'next/image';
+import { setCookie } from 'cookies-next';
+import { useRouter } from 'next/navigation';
 import {
   IbmButton, NavBar, TextInput, InputField,
 } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
-import { setCookie } from 'cookies-next';
 
 const Body = styled.main`
   display: grid;
@@ -76,24 +79,41 @@ const ImageStyle = {
 };
 
 function SignIn() {
-  const { mutate, data, error } = trpc.auth.login.useMutation({
+  const router = useRouter();
+  const { mutate } = trpc.auth.login.useMutation({
     onSuccess(token) {
-      setCookie('accessToken', token);
+      console.log(token)
+      setCookie(
+        'access-token',
+        token,
+      );
+    },
+    onError(error) {
+      console.log(error);
     },
   });
-  const handleSubmit = () => {
+
+  const [credentials, setCredentials] = useState({
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setCredentials((prevCredentials) => ({
+      ...prevCredentials,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     mutate({
-      email: 'something@something.com',
-      password: 'something',
+      email: credentials.email,
+      password: credentials.password,
     });
   };
 
-  if (data) {
-    console.log(data);
-  }
-  if (error) {
-    console.log(error);
-  }
   return (
     <div>
       <NavBar />
@@ -109,6 +129,8 @@ function SignIn() {
                 inputChild={TextInput}
                 inputProps={{
                   type: 'email',
+                  value: credentials.email,
+                  onChange: handleChange,
                   placeholder: 'e.g. correo@gmail.com',
                   required: true,
                 }}
@@ -119,6 +141,8 @@ function SignIn() {
                 inputChild={TextInput}
                 inputProps={{
                   type: 'password',
+                  value: credentials.password,
+                  onChange: handleChange,
                   placeholder: 'e.g. S3cureP@ssworD',
                   required: true,
                   length: { min: 8, max: 24 },

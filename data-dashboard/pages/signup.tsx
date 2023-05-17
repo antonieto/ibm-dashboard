@@ -1,9 +1,14 @@
+import { useState } from 'react';
+import type { ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import {
   IbmButton, NavBar, TextInput, InputField,
 } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
+import { TRPCClientErrorLike } from '@trpc/client';
+import { AppRouter } from '@/server/trpc/routers/_app';
+import { TRPCError } from '@trpc/server';
 
 const Body = styled.main`
   display: flex;
@@ -79,13 +84,35 @@ const LinkStyle = {
 };
 
 function SignUp() {
-  const { mutate, data, isLoading } = trpc.auth.signup.useMutation();
+  const { mutate, data, isLoading } = trpc.auth.signup.useMutation({
+    onError(error: TRPCClientErrorLike<AppRouter>) {
+      const errorData = eval(error.message)
+      errorData.map((element: TRPCError) => {
+        window.alert(element.message)
+      })
+    },
+  });
+
+  const [credentials, setCredentials] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setCredentials((prevCredentials) => ({
+      ...prevCredentials,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = async () => {
     mutate({
-      email: 'something@something.com',
-      confirmPassword: 'something',
-      password: 'something',
+      email: credentials.email,
+      password: credentials.password,
+      confirmPassword: credentials.confirmPassword,
     });
   };
 
@@ -117,6 +144,8 @@ function SignUp() {
                 inputChild={TextInput}
                 inputProps={{
                   type: 'email',
+                  value: credentials.email,
+                  onChange: handleChange,
                   placeholder: 'e.g. correo@gmail.com',
                   required: true,
                 }}
@@ -127,6 +156,8 @@ function SignUp() {
                 inputChild={TextInput}
                 inputProps={{
                   type: 'password',
+                  value: credentials.password,
+                  onChange: handleChange,
                   placeholder: 'e.g. S3cureP@ssworD',
                   required: true,
                   length: { min: 8, max: 24 },
@@ -138,6 +169,8 @@ function SignUp() {
                 inputChild={TextInput}
                 inputProps={{
                   type: 'password',
+                  value: credentials.confirmPassword,
+                  onChange: handleChange,
                   placeholder: 'e.g. S3cureP@ssworD',
                   required: true,
                   length: { min: 8, max: 24 },
@@ -149,6 +182,8 @@ function SignUp() {
                 inputChild={TextInput}
                 inputProps={{
                   type: 'text',
+                  value: credentials.name,
+                  onChange: handleChange,
                   placeholder: 'e.g. Jane',
                   required: true,
                 }}
@@ -159,6 +194,8 @@ function SignUp() {
                 inputChild={TextInput}
                 inputProps={{
                   type: 'text',
+                  value: credentials.name,
+                  onChange: handleChange,
                   placeholder: 'e.g. Doe',
                   required: true,
                 }}
@@ -169,6 +206,8 @@ function SignUp() {
                 inputChild={TextInput}
                 inputProps={{
                   type: 'text',
+                  value: credentials.name,
+                  onChange: handleChange,
                   placeholder: 'e.g. Linn',
                   required: true,
                 }}

@@ -13,14 +13,13 @@ export const appRouter = router({
     .query(({ input }) => ({
       greeting: `hello ${input.text}`,
     })),
-  boards: publicProcedure.query(async ({ ctx }) => {
+  boards: privateProcedure.query(async ({ ctx }) => {
     const boards = await ctx.boardsRepository.getAll();
 
     return {
       boards,
     };
   }),
-  secretoDeAmor: privateProcedure.query(() => { 'aloh'; }),
   auth: authRouter,
   dataSources: dataSourcesRouter,
 

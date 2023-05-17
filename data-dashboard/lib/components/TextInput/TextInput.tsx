@@ -1,16 +1,18 @@
 import styled from 'styled-components';
-import React from 'react';
+import type { ChangeEvent } from 'react';
 
 interface TextInputProps {
   id?: string;
   name?: string;
   type: 'text' | 'password' | 'email';
+  value: string;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   style?: React.CSSProperties;
   length?: {
     min: number;
     max: number;
-  }
+  };
   required?: boolean;
 }
 
@@ -33,6 +35,8 @@ function TextInput({
   id,
   name,
   type,
+  value,
+  onChange,
   placeholder,
   style,
   length,
@@ -43,6 +47,8 @@ function TextInput({
       id={id}
       name={name}
       type={type}
+      value={value}
+      onChange={onChange}
       placeholder={placeholder}
       style={style}
       minLength={length?.min}
