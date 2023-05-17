@@ -41,7 +41,6 @@ const BoardBarContainerButton = styled.div`
 `;
 
 export default function boards() {
-  trpc.testPrivateProcedure.useQuery();
   return (
     <BoardContainer>
       <BoardsContainerContent>

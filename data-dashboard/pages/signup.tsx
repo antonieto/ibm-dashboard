@@ -6,6 +6,9 @@ import {
   IbmButton, NavBar, TextInput, InputField,
 } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
+import { TRPCClientErrorLike } from '@trpc/client';
+import { AppRouter } from '@/server/trpc/routers/_app';
+import { TRPCError } from '@trpc/server';
 
 const Body = styled.main`
   display: flex;
@@ -82,8 +85,11 @@ const LinkStyle = {
 
 function SignUp() {
   const { mutate, data, isLoading } = trpc.auth.signup.useMutation({
-    onError(error) {
-      console.log(error);
+    onError(error: TRPCClientErrorLike<AppRouter>) {
+      const errorData = eval(error.message)
+      errorData.map((element: TRPCError) => {
+        window.alert(element.message)
+      })
     },
   });
 
