@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { MouseEvent, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
@@ -87,7 +87,6 @@ function SignIn() {
         token,
         { httpOnly: true },
       );
-      router.push('/boards');
     },
     onError(error) {
       console.log(error);
