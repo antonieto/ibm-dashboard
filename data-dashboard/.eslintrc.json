@@ -17,6 +17,11 @@
       "version": "detect"
     }
   },
+  "paths": {
+    "@/*": [
+      "./*"
+    ]
+  },
   "rules": {
     "camelcase": "error",
     "no-shadow": "off",
