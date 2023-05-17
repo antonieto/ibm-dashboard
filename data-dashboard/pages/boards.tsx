@@ -47,7 +47,7 @@ function Boards() {
       <BoardsContainerContent>
         <BoardsBarContainer>
           <BoardBarContainerButton>
-            <IbmButton text="Crear un tablero" />
+            <IbmButton text="Crear un tablero" onClick={handleCreateBoard} />
           </BoardBarContainerButton>
           <IbmSearchBar placeholder="Search" />
         </BoardsBarContainer>

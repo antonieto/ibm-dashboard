@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import type { Board } from '../models';
+import type { Board, User } from '../models';
 
 export interface IBoardRepository {
   getAll(): Promise<Board[]>;
@@ -37,5 +37,22 @@ export class PrismaBoardRepository implements IBoardRepository {
     } catch (e) {
       throw new Error('Failed to find board');
     }
+  }
+  
+  async create(board: Board, owner: User): Promise<Board> {
+    const newBoard = await this.db.boards.create({
+      data: {
+        title: board.title,
+        user_id: owner.id,
+      },
+    });
+
+    return {
+      boardId: newBoard.board_id,
+      createdAt: newBoard.createdAt,
+      name: newBoard.title,
+      ownerId: newBoard.user_id,
+      title: newBoard.title,
+    };
   }
 }
