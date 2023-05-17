@@ -7,8 +7,6 @@ import {
 } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
 import { TRPCError } from '@trpc/server';
-import TopLayout from '@/lib/components/TopLayout/TopLayout';
-import { NextPageWithLayout } from './_app';
 
 const Body = styled.main`
   display: flex;

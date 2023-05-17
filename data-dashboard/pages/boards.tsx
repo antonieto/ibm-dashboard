@@ -42,6 +42,10 @@ const BoardBarContainerButton = styled.div`
 `;
 
 function Boards() {
+  const handleCreateBoard = () => {
+    // todo
+  };
+
   return (
     <BoardContainer>
       <BoardsContainerContent>

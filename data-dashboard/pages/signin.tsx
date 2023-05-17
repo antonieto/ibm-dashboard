@@ -1,15 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { MouseEvent, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import Image from 'next/image';
 import { setCookie } from 'cookies-next';
+import { useRouter } from 'next/navigation';
 import {
   IbmButton, TextInput, InputField,
 } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
-import TopLayout from '@/lib/components/TopLayout/TopLayout';
-import { NextPageWithLayout } from './_app';
 
 const Body = styled.main`
   display: grid;
@@ -80,9 +79,10 @@ const ImageStyle = {
 };
 
 function SignIn() {
+  const router = useRouter();
   const { mutate } = trpc.auth.login.useMutation({
     onSuccess(token) {
-      console.log(token);
+      console.log(token)
       setCookie(
         'access-token',
         token,
