@@ -1,4 +1,4 @@
-import fileToBase64 from '@/lib/base64';
+import { fileToBase64 } from '@/lib/base64';
 import trpc from '@/lib/hooks/trpc';
 import { useState } from 'react';
 
@@ -18,6 +18,7 @@ export default function DataSourcesPage() {
           setFileBuffer(file);
           const encoded = await fileToBase64(file);
           mutate({
+            boardId: '1',
             encodedFile: encoded,
           });
         }}

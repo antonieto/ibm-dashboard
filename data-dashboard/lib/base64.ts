@@ -1,4 +1,5 @@
-export default async function fileToBase64(file: File): Promise<string> {
+
+export async function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -8,4 +9,13 @@ export default async function fileToBase64(file: File): Promise<string> {
     };
     reader.onerror = reject;
   });
+}
+
+export class Base64File {
+  public buffer: Buffer;
+  constructor(public base64encoded: string, public filename: string) {
+    this.buffer = Buffer.from(base64encoded.split(',')[1], 'base64');
+  }
+
+
 }

@@ -1,6 +1,11 @@
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
 import env from '@/lib/env';
-import * as fs from 'fs';
+import {DataSourceHandle} from '../models';
+
+interface AzureFileHandle {
+  fileName: string;
+  blobName: string;
+}
 
 export default class AzureStorageService {
   private readonly blobServiceClient: BlobServiceClient;
@@ -12,15 +17,15 @@ export default class AzureStorageService {
     this.containerClient = this.blobServiceClient.getContainerClient(containerName);
   }
 
-  async uploadFile(filePath: string) {
-    const file = fs.readFileSync(filePath);
-
-    console.log(file.toString());
-
-    const blobName = filePath;
-
+  async uploadFile(fileName: string, fileBuffer: Buffer): Promise<DataSourceHandle> {
+    const blobName = this.generateBlobName(fileName)
     const blockBlobClient = this.containerClient.getBlockBlobClient(blobName);
-    await blockBlobClient.upload(file, file.length);
+    await blockBlobClient.upload(fileBuffer, fileBuffer.length);
+    console.log(blockBlobClient.name)
+    return {
+      resourceUri: blockBlobClient.url,
+      fileName,
+    }
   }
 
   async getFiles() {
@@ -34,5 +39,9 @@ export default class AzureStorageService {
     } catch (e) {
       return [];
     }
+  }
+
+  private generateBlobName(fileName: string): string {
+    return fileName;
   }
 }
