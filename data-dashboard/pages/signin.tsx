@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { MouseEvent, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import Image from 'next/image';
 import { setCookie } from 'cookies-next';
-import { useRouter } from 'next/navigation';
 import {
   IbmButton, NavBar, TextInput, InputField,
 } from '@/lib/components';
@@ -79,10 +78,9 @@ const ImageStyle = {
 };
 
 function SignIn() {
-  const router = useRouter();
   const { mutate } = trpc.auth.login.useMutation({
     onSuccess(token) {
-      console.log(token)
+      console.log(token);
       setCookie(
         'access-token',
         token,
