@@ -22,7 +22,7 @@ const BoardListComponent = styled.div`
 `;
 
 export default function BoardList(): JSX.Element {
-  const { data, isLoading } = trpc.boards.useQuery();
+  const { data, isLoading } = trpc.boards.getBoards.useQuery();
 
   if (isLoading || !data) return <div>Loading...</div>;
 
@@ -34,7 +34,7 @@ export default function BoardList(): JSX.Element {
       </div>
       <BoardListComponent>
         {data.boards.map((board) => (
-          <BoardPreview key={board.boardId} name={board.name} />
+          <BoardPreview key={board.boardId} name={board.title} />
         ))}
       </BoardListComponent>
     </BoardListContainer>
