@@ -33,9 +33,9 @@ export class PrismaBoardRepository implements IBoardRepository {
         name: board.title,
         ownerId: board.user_id,
         title: board.title,
-      }
+      };
     } catch (e) {
-      throw new Error('Failed to find board')
+      throw new Error('Failed to find board');
     }
   }
 }

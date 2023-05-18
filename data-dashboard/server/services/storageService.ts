@@ -1,11 +1,5 @@
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
 import env from '@/lib/env';
-import {DataSourceHandle} from '../models';
-
-interface AzureFileHandle {
-  fileName: string;
-  blobName: string;
-}
 
 export default class AzureStorageService {
   private readonly blobServiceClient: BlobServiceClient;
@@ -13,18 +7,23 @@ export default class AzureStorageService {
   private readonly containerClient: ContainerClient;
 
   constructor(containerName: string) {
-    this.blobServiceClient = BlobServiceClient.fromConnectionString(env.AZURE_STORAGE_CONNECTION_STRING);
+    this.blobServiceClient = BlobServiceClient.fromConnectionString(
+      env.AZURE_STORAGE_CONNECTION_STRING,
+    );
     this.containerClient = this.blobServiceClient.getContainerClient(containerName);
   }
 
-  async uploadFile(fileName: string, fileBuffer: Buffer): Promise<DataSourceHandle> {
-    const blobName = this.generateBlobName(fileName)
-    const blockBlobClient = this.containerClient.getBlockBlobClient(blobName);
-    await blockBlobClient.upload(fileBuffer, fileBuffer.length);
-    console.log(blockBlobClient.name)
-    return {
-      resourceUri: blockBlobClient.url,
-      fileName,
+  async uploadFile(fileName: string, fileBuffer: Buffer): Promise<string> {
+    try {
+      const blobName = AzureStorageService.generateBlobName(fileName);
+
+      await this.containerClient
+        .getBlockBlobClient(blobName)
+        .upload(fileBuffer, fileBuffer.length);
+
+      return blobName;
+    } catch (err) {
+      throw new Error('Failed to upload file');
     }
   }
 
@@ -41,7 +40,9 @@ export default class AzureStorageService {
     }
   }
 
-  private generateBlobName(fileName: string): string {
-    return fileName;
+  static generateBlobName(fileName: string): string {
+    // Generate random string
+    const randomString = Math.random().toString(36).substring(2, 15);
+    return `${randomString}-${fileName}`;
   }
 }
