@@ -1,9 +1,10 @@
+/* eslint-disable arrow-body-style */
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { IbmButton, IbmSearchBar, BoardList } from '@/lib/components';
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
 import { NextPageWithLayout } from './_app';
 import trpc from '@/lib/hooks/trpc';
-import { useEffect, useState } from 'react';
 import { Board } from '@/server/models';
 
 const BoardContainer = styled.div`
