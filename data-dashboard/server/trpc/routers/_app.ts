@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { privateProcedure, publicProcedure, router } from '@/server/trpc';
 import authRouter from './auth';
 import dataSourcesRouter from './dataSources';
+import boardRouter from './boards';
 
 export const appRouter = router({
   hello: publicProcedure
@@ -13,13 +14,7 @@ export const appRouter = router({
     .query(({ input }) => ({
       greeting: `hello ${input.text}`,
     })),
-  boards: privateProcedure.query(async ({ ctx }) => {
-    const boards = await ctx.boardsRepository.getAll();
-
-    return {
-      boards,
-    };
-  }),
+  boards: boardRouter,
   auth: authRouter,
   dataSources: dataSourcesRouter,
 

@@ -4,6 +4,7 @@ import type { Board, User } from '../models';
 export interface IBoardRepository {
   getAll(): Promise<Board[]>;
   findOne(id: string): Promise<Board>;
+  create(board: Pick<Board, "title" | "ownerId">): Promise<Board>;
 }
 
 export class PrismaBoardRepository implements IBoardRepository {
@@ -18,7 +19,6 @@ export class PrismaBoardRepository implements IBoardRepository {
     return fetchedBoards.map((board) => ({
       boardId: board.board_id,
       createdAt: new Date(board.createdAt),
-      name: board.title,
       ownerId: board.user_id,
       title: board.title,
     }));
@@ -30,7 +30,6 @@ export class PrismaBoardRepository implements IBoardRepository {
       return {
         boardId: board.board_id,
         createdAt: new Date(board.createdAt),
-        name: board.title,
         ownerId: board.user_id,
         title: board.title,
       };
@@ -39,18 +38,17 @@ export class PrismaBoardRepository implements IBoardRepository {
     }
   }
   
-  async create(board: Board, owner: User): Promise<Board> {
+  async create(board: Pick<Board, "title" | "ownerId">): Promise<Board> {
     const newBoard = await this.db.boards.create({
       data: {
         title: board.title,
-        user_id: owner.id,
+        user_id: board.ownerId,
       },
     });
 
     return {
       boardId: newBoard.board_id,
       createdAt: newBoard.createdAt,
-      name: newBoard.title,
       ownerId: newBoard.user_id,
       title: newBoard.title,
     };
