@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { IbmButton, IbmSearchBar, BoardList } from '@/lib/components';
-import trpc from '@/lib/hooks/trpc';
 
 const BoardContainer = styled.div`
   display: flex;
