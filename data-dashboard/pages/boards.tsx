@@ -42,8 +42,19 @@ const BoardBarContainerButton = styled.div`
 `;
 
 function Boards() {
+  const { mutate: createBoard } = trpc.boards.createBoard.useMutation({
+    onSuccess: (board) => {
+      console.log('Board created succesfully: ', board);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
   const handleCreateBoard = () => {
-    // todo
+    createBoard({
+      title: 'New Board',
+    });
   };
 
   return (
