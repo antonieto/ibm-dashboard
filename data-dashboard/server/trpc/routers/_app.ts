@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { privateProcedure, publicProcedure, router } from '@/server/trpc';
+import { publicProcedure, router } from '@/server/trpc';
 import authRouter from './auth';
 import dataSourcesRouter from './dataSources';
 import boardRouter from './boards';

@@ -34,7 +34,6 @@ const BoardsBarContainer = styled.div`
 
   width: 100%;
   height: 50px;
-
   margin-top: 25%;
   margin-bottom: 20px;
 

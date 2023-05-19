@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
 import type { Board } from '../models';
 
 export interface IBoardRepository {
@@ -26,7 +27,9 @@ export class PrismaBoardRepository implements IBoardRepository {
 
   async findOne(id: string): Promise<Board> {
     try {
-      const board = await this.db.boards.findFirstOrThrow({ where: { board_id: id } });
+      const board = await this.db.boards.findFirstOrThrow({
+        where: { board_id: id },
+      });
       return {
         boardId: board.board_id,
         createdAt: new Date(board.createdAt),
@@ -37,20 +40,27 @@ export class PrismaBoardRepository implements IBoardRepository {
       throw new Error('Failed to find board');
     }
   }
-  
-  async create(board: Pick<Board, 'title' | 'ownerId'>): Promise<Board> {
-    const newBoard = await this.db.boards.create({
-      data: {
-        title: board.title,
-        user_id: board.ownerId,
-      },
-    });
 
-    return {
-      boardId: newBoard.board_id,
-      createdAt: newBoard.createdAt,
-      ownerId: newBoard.user_id,
-      title: newBoard.title,
-    };
+  async create(board: Pick<Board, 'title' | 'ownerId'>): Promise<Board> {
+    try {
+      const newBoard = await this.db.boards.create({
+        data: {
+          title: board.title,
+          user_id: board.ownerId,
+        },
+      });
+
+      return {
+        boardId: newBoard.board_id,
+        createdAt: newBoard.createdAt,
+        ownerId: newBoard.user_id,
+        title: newBoard.title,
+      };
+    } catch (e) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to create board',
+      });
+    }
   }
 }

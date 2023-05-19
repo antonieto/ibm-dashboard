@@ -48,9 +48,6 @@ type DataGridProps = {
 };
 
 function Board() {
-  // const router = useRouter();
-  // const { id } = router.query;
-
   const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
 
   const widgetArray = MOCK_CHART_LIST;

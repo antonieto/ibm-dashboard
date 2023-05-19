@@ -1,12 +1,10 @@
-import { useState } from 'react';
-import type { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
-import { IbmButton, NavBar, TextInput, InputField } from '@/lib/components';
+import { IbmButton, TextInput, InputField } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
-import { TRPCClientErrorLike } from '@trpc/client';
-import { AppRouter } from '@/server/trpc/routers/_app';
-import { TRPCError } from '@trpc/server';
+import TopLayout from '@/lib/components/TopLayout/TopLayout';
+import { NextPageWithLayout } from './_app';
 
 const Body = styled.main`
   display: flex;
@@ -82,14 +80,7 @@ const LinkStyle = {
 };
 
 function SignUp() {
-  const { mutate, data, isLoading } = trpc.auth.signup.useMutation({
-    onError(error: TRPCClientErrorLike<AppRouter>) {
-      const errorData = eval(error.message);
-      errorData.map((element: TRPCError) => {
-        window.alert(element.message);
-      });
-    },
-  });
+  const { mutate, data, isLoading } = trpc.auth.signup.useMutation();
 
   const [credentials, setCredentials] = useState({
     name: '',
@@ -229,10 +220,6 @@ function SignUp() {
 }
 
 const SignUpPage: NextPageWithLayout = SignUp;
-SignUpPage.getLayout = (page) => (
-  <TopLayout>
-    {page}
-  </TopLayout>
-);
+SignUpPage.getLayout = (page) => <TopLayout>{page}</TopLayout>;
 
 export default SignUpPage;

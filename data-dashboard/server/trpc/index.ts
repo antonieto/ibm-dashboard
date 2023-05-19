@@ -15,7 +15,7 @@ const isAuthed = t.middleware(async ({ ctx, next }) => {
       ctx: {
         ...ctx,
         user: () => ctx.usersRepository.findById(userId),
-      }
+      },
     });
   } catch (error) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });

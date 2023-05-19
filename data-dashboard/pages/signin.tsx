@@ -4,9 +4,10 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import Image from 'next/image';
 import { setCookie } from 'cookies-next';
-import { useRouter } from 'next/navigation';
-import { IbmButton, NavBar, TextInput, InputField } from '@/lib/components';
+import { IbmButton, TextInput, InputField } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
+import TopLayout from '@/lib/components/TopLayout/TopLayout';
+import { NextPageWithLayout } from './_app';
 
 const Body = styled.main`
   display: grid;
@@ -77,7 +78,7 @@ const ImageStyle = {
 };
 
 function SignIn() {
-  //const router = useRouter();
+  // const router = useRouter();
   const { mutate } = trpc.auth.login.useMutation({
     onSuccess(token) {
       console.log(token);

@@ -1,11 +1,9 @@
 import { z } from 'zod';
 import { privateProcedure, publicProcedure, router } from '..';
 
-
 const CreateBoardSchema = z.object({
   title: z.string(),
 });
-
 
 const boardRouter = router({
   getBoards: publicProcedure.query(async ({ ctx }) => {
@@ -23,14 +21,13 @@ const boardRouter = router({
       const { title } = input;
       const user = await ctx.user();
       const board = await ctx.boardsRepository.create({
-        title: title,
+        title,
         ownerId: user.id,
       });
       return {
         board,
       };
-    }
-  ),
+    }),
 });
 
 export default boardRouter;

@@ -1,4 +1,3 @@
-import trpc from '@/lib/hooks/trpc';
 import styled from 'styled-components';
 import { Board } from '@/server/models';
 import BoardPreview from '../BoardPreview/BoardPreview';
