@@ -1,6 +1,7 @@
 import trpc from '@/lib/hooks/trpc';
 import styled from 'styled-components';
 import BoardPreview from '../BoardPreview/BoardPreview';
+import { Board } from '@/server/models';
 
 const BoardListContainer = styled.div`
   width: 100%;
@@ -21,11 +22,11 @@ const BoardListComponent = styled.div`
   flex-direction: column;
 `;
 
-export default function BoardList(): JSX.Element {
-  const { data, isLoading } = trpc.boards.getBoards.useQuery();
+interface Props {
+  boards: Board[];
+}
 
-  if (isLoading || !data) return <div>Loading...</div>;
-
+export default function BoardList({ boards }: Props): JSX.Element {
   return (
     <BoardListContainer>
       <div>
@@ -33,7 +34,7 @@ export default function BoardList(): JSX.Element {
         <BoardListLine />
       </div>
       <BoardListComponent>
-        {data.boards.map((board) => (
+        {boards.map((board) => (
           <BoardPreview key={board.boardId} name={board.title} />
         ))}
       </BoardListComponent>
