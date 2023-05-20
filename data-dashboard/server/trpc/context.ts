@@ -1,7 +1,7 @@
 import { inferAsyncReturnType } from '@trpc/server';
 import { CreateNextContextOptions } from '@trpc/server/adapters/next';
 import { initializeService } from '../init';
-import {User} from '../models';
+import { User } from '../models';
 
 export const createContextInner = async () => {
   const service = initializeService();
@@ -15,7 +15,7 @@ export const createContextInner = async () => {
 
 export const createContext = async (opts: CreateNextContextOptions) => {
   const innerContext = await createContextInner();
-  let user: () => Promise<User | null> = async () => null;
+  const user: () => Promise<User | null> = async () => null;
   return {
     ...innerContext,
     req: opts.req,

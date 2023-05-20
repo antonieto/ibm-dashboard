@@ -1,26 +1,30 @@
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
 import env from '@/lib/env';
 
-export interface StorageService {
-  uploadFile(file: File): Promise<void>;
-  getFiles(): Promise<string[]>;
-}
-
-export class AzureStorageService implements StorageService {
+export default class AzureStorageService {
   private readonly blobServiceClient: BlobServiceClient;
 
   private readonly containerClient: ContainerClient;
 
   constructor(containerName: string) {
-    console.log({ env: env.AZURE_STORAGE_CONNECTION_STRING });
-    this.blobServiceClient = BlobServiceClient.fromConnectionString(env.AZURE_STORAGE_CONNECTION_STRING);
+    this.blobServiceClient = BlobServiceClient.fromConnectionString(
+      env.AZURE_STORAGE_CONNECTION_STRING,
+    );
     this.containerClient = this.blobServiceClient.getContainerClient(containerName);
   }
 
-  async uploadFile(file: File) {
-    const containerClient = this.blobServiceClient.getContainerClient('images');
-    const blobClient = containerClient.getBlockBlobClient(file.name);
-    await blobClient.uploadFile(file.webkitRelativePath);
+  async uploadFile(fileName: string, fileBuffer: Buffer): Promise<string> {
+    try {
+      const blobName = AzureStorageService.generateBlobName(fileName);
+
+      await this.containerClient
+        .getBlockBlobClient(blobName)
+        .upload(fileBuffer, fileBuffer.length);
+
+      return blobName;
+    } catch (err) {
+      throw new Error('Failed to upload file');
+    }
   }
 
   async getFiles() {
@@ -28,13 +32,17 @@ export class AzureStorageService implements StorageService {
       const blobs = this.containerClient.listBlobsFlat();
       const files = [];
       for await (const blob of blobs) {
-        console.log(`Blob: ${blob.name}`);
         files.push(blob.name);
       }
       return files;
     } catch (e) {
-      console.error('Error: ', e);
       return [];
     }
+  }
+
+  static generateBlobName(fileName: string): string {
+    // Generate random string
+    const randomString = Math.random().toString(36).substring(2, 15);
+    return `${randomString}-${fileName}`;
   }
 }
