@@ -1,12 +1,8 @@
-import { useState } from 'react';
-import type { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
-import {
-  IbmButton, TextInput, InputField,
-} from '@/lib/components';
+import { IbmButton, TextInput, InputField } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
-import { TRPCError } from '@trpc/server';
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
 import { NextPageWithLayout } from './_app';
 
@@ -84,12 +80,7 @@ const LinkStyle = {
 };
 
 function SignUp() {
-  const { mutate, data, isLoading } = trpc.auth.signup.useMutation({
-    onError(error) {
-      const errorData = JSON.parse(error.message);
-      errorData.map((element: TRPCError) => window.alert(element.message));
-    },
-  });
+  const { mutate, data, isLoading } = trpc.auth.signup.useMutation();
 
   const [credentials, setCredentials] = useState({
     name: '',
@@ -210,7 +201,11 @@ function SignUp() {
                 }}
               />
             </InputFields>
-            <IbmButton text="Crear cuenta" style={ButtonStyle} onClick={handleSubmit} />
+            <IbmButton
+              text="Crear cuenta"
+              style={ButtonStyle}
+              onClick={handleSubmit}
+            />
           </Form>
           <ToSingin>
             <Cue>¿Ya tienes cuenta?</Cue>
@@ -225,10 +220,6 @@ function SignUp() {
 }
 
 const SignUpPage: NextPageWithLayout = SignUp;
-SignUpPage.getLayout = (page) => (
-  <TopLayout>
-    {page}
-  </TopLayout>
-);
+SignUpPage.getLayout = (page) => <TopLayout>{page}</TopLayout>;
 
 export default SignUpPage;

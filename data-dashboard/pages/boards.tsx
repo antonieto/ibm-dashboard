@@ -1,6 +1,10 @@
+/* eslint-disable arrow-body-style */
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { IbmButton, IbmSearchBar, BoardList } from '@/lib/components';
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
+import trpc from '@/lib/hooks/trpc';
+import { Board } from '@/server/models';
 import { NextPageWithLayout } from './_app';
 
 const BoardContainer = styled.div`
@@ -30,7 +34,6 @@ const BoardsBarContainer = styled.div`
 
   width: 100%;
   height: 50px;
-
   margin-top: 25%;
   margin-bottom: 20px;
 
@@ -42,16 +45,55 @@ const BoardBarContainerButton = styled.div`
 `;
 
 function Boards() {
+  const [boards, setBoards] = useState<Board[]>([]);
+  const { data, isLoading } = trpc.boards.getBoards.useQuery();
+  const { mutate: createBoard } = trpc.boards.createBoard.useMutation({
+    onSuccess: (res) => {
+      console.log('Board created succesfully: ', res);
+      const board = {
+        ...res.board,
+        createdAt: new Date(res.board.createdAt),
+      };
+      setBoards([...boards, board]);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  useEffect(() => {
+    if (data) {
+      const boards = data.boards.map((board) => {
+        return {
+          ...board,
+          createdAt: new Date(board.createdAt),
+        };
+      });
+      setBoards(boards);
+    }
+  }, [data]);
+
+  const handleCreateBoard = () => {
+    createBoard({
+      title: 'New Board',
+    });
+  };
+
   return (
     <BoardContainer>
       <BoardsContainerContent>
         <BoardsBarContainer>
           <BoardBarContainerButton>
-            <IbmButton text="Crear un tablero" />
+            <IbmButton text="Crear un tablero" onClick={handleCreateBoard} />
           </BoardBarContainerButton>
           <IbmSearchBar placeholder="Search" />
         </BoardsBarContainer>
-        <BoardList />
+
+        {isLoading || !data ? (
+          <div>Loading...</div>
+        ) : (
+          <BoardList boards={boards} />
+        )}
       </BoardsContainerContent>
     </BoardContainer>
   );

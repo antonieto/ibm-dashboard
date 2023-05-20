@@ -8,13 +8,14 @@ const isAuthed = t.middleware(async ({ ctx, next }) => {
   try {
     const { req } = ctx;
     const token = String(req.cookies['access-token']);
+
     const decoded = verify(token, String(process.env.JWT_SECRET));
     const { userId } = decoded as { userId: string };
     return next({
       ctx: {
         ...ctx,
         user: () => ctx.usersRepository.findById(userId),
-      }
+      },
     });
   } catch (error) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
