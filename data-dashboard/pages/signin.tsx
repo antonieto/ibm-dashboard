@@ -5,9 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { setCookie } from 'cookies-next';
 import {
-  IbmButton, NavBar, TextInput, InputField,
+  IbmButton, TextInput, InputField,
 } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
+import TopLayout from '@/lib/components/TopLayout/TopLayout';
+import { NextPageWithLayout } from './_app';
 
 const Body = styled.main`
   display: grid;
@@ -114,7 +116,6 @@ function SignIn() {
 
   return (
     <div>
-      <NavBar />
       <Body>
         <Content>
           <SectionHeader>Iniciar sesión</SectionHeader>
@@ -168,4 +169,11 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+const SignInPage: NextPageWithLayout = SignIn;
+SignInPage.getLayout = (page) => (
+  <TopLayout>
+    {page}
+  </TopLayout>
+);
+
+export default SignInPage;

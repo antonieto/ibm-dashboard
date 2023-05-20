@@ -7,10 +7,12 @@ import type { Layout } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
+import TopLayout from '@/lib/components/TopLayout/TopLayout';
 import { NavBar } from '../../lib/components';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import { MOCK_CHART_LIST } from '../../lib/components/BoardList/MOCK_CHART_LIST';
 import Chart from '../../lib/components/Chart/Chart';
+import { NextPageWithLayout } from '../_app';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -45,7 +47,7 @@ type DataGridProps = {
   height: number;
 };
 
-export default function Board(): JSX.Element {
+function Board() {
   // const router = useRouter();
   // const { id } = router.query;
 
@@ -109,3 +111,12 @@ export default function Board(): JSX.Element {
     </Container>
   );
 }
+
+const BoardPage: NextPageWithLayout = Board;
+
+BoardPage.getLayout = (page) => (
+  <TopLayout>
+    {page}
+  </TopLayout>
+);
+export default BoardPage;

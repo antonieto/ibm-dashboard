@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import { IbmButton, IbmSearchBar, BoardList } from '@/lib/components';
+import TopLayout from '@/lib/components/TopLayout/TopLayout';
+import { NextPageWithLayout } from './_app';
 
 const BoardContainer = styled.div`
   display: flex;
@@ -39,7 +41,7 @@ const BoardBarContainerButton = styled.div`
   width: 35%;
 `;
 
-export default function boards() {
+function Boards() {
   return (
     <BoardContainer>
       <BoardsContainerContent>
@@ -54,3 +56,12 @@ export default function boards() {
     </BoardContainer>
   );
 }
+
+const BoardsPage: NextPageWithLayout = Boards;
+BoardsPage.getLayout = (page) => (
+  <TopLayout>
+    {page}
+  </TopLayout>
+);
+
+export default BoardsPage;
