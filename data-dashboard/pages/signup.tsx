@@ -3,10 +3,12 @@ import type { ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import {
-  IbmButton, NavBar, TextInput, InputField,
+  IbmButton, TextInput, InputField,
 } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
 import { TRPCError } from '@trpc/server';
+import TopLayout from '@/lib/components/TopLayout/TopLayout';
+import { NextPageWithLayout } from './_app';
 
 const Body = styled.main`
   display: flex;
@@ -127,7 +129,6 @@ function SignUp() {
 
   return (
     <div>
-      <NavBar />
       <Body>
         <Content>
           <SectionHeader>Crear cuenta</SectionHeader>
@@ -223,4 +224,11 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+const SignUpPage: NextPageWithLayout = SignUp;
+SignUpPage.getLayout = (page) => (
+  <TopLayout>
+    {page}
+  </TopLayout>
+);
+
+export default SignUpPage;

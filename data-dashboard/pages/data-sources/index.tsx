@@ -1,10 +1,12 @@
 import fileToBase64 from '@/lib/base64';
+import TopLayout from '@/lib/components/TopLayout/TopLayout';
 import trpc from '@/lib/hooks/trpc';
+import { NextPageWithLayout } from '../_app';
 
 // Note: this board id exists only in local DB
 const MOCK_BOARD_ID = '90b2dbcd-383e-4504-92c7-a5fd977eab71';
 
-export default function DataSourcesPage() {
+function DataSources() {
   const { mutate } = trpc.dataSources.createDataSource.useMutation();
   const { data, isLoading } = trpc.dataSources.listDataSources.useQuery();
 
@@ -44,3 +46,11 @@ export default function DataSourcesPage() {
     </div>
   );
 }
+
+const DataSourcesPage: NextPageWithLayout = DataSources;
+DataSourcesPage.getLayout = (page) => (
+  <TopLayout>
+    {page}
+  </TopLayout>
+);
+export default DataSourcesPage;
