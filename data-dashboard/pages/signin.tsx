@@ -165,10 +165,6 @@ function SignIn() {
 }
 
 const SignInPage: NextPageWithLayout = SignIn;
-SignInPage.getLayout = (page) => (
-  <TopLayout>
-    {page}
-  </TopLayout>
-);
+SignInPage.getLayout = (page) => <TopLayout>{page}</TopLayout>;
 
 export default SignInPage;

@@ -6,6 +6,7 @@ import TopLayout from '@/lib/components/TopLayout/TopLayout';
 import trpc from '@/lib/hooks/trpc';
 import { Board } from '@/server/models';
 import { NextPageWithLayout } from './_app';
+import BoardTitleModal from '@/lib/components/BoardTitleModal/BoardTitleModal';
 
 const BoardContainer = styled.div`
   display: flex;
@@ -46,6 +47,7 @@ const BoardBarContainerButton = styled.div`
 
 function Boards() {
   const [boards, setBoards] = useState<Board[]>([]);
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const { data, isLoading } = trpc.boards.getBoards.useQuery();
   const { mutate: createBoard } = trpc.boards.createBoard.useMutation({
     onSuccess: (res) => {
@@ -73,10 +75,20 @@ function Boards() {
     }
   }, [data]);
 
+  /*
   const handleCreateBoard = () => {
     createBoard({
       title: 'New Board',
     });
+  };
+  */
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
   };
 
   return (
@@ -84,7 +96,7 @@ function Boards() {
       <BoardsContainerContent>
         <BoardsBarContainer>
           <BoardBarContainerButton>
-            <IbmButton text="Crear un tablero" onClick={handleCreateBoard} />
+            <IbmButton text="Crear un tablero" onClick={handleOpenModal} />
           </BoardBarContainerButton>
           <IbmSearchBar placeholder="Search" />
         </BoardsBarContainer>
@@ -95,6 +107,7 @@ function Boards() {
           <BoardList boards={boards} />
         )}
       </BoardsContainerContent>
+      <BoardTitleModal open={openModal} onClose={handleCloseModal} />
     </BoardContainer>
   );
 }

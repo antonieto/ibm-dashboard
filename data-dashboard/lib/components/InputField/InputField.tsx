@@ -17,7 +17,7 @@ interface InputFieldProps {
 const Field = styled.div`
   display: grid;
   row-gap: 8px;
-  width: 288px;
+  width: 100%;
 `;
 
 const FieldLabel = styled.label`
