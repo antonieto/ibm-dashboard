@@ -7,8 +7,7 @@ const t = initTRPC.context<TContext>().create();
 const isAuthed = t.middleware(async ({ ctx, next }) => {
   try {
     const { req } = ctx;
-    const token = String(req.cookies['access-token']);
-
+    const token = String(req.cookies['auth-token']);
     const decoded = verify(token, String(process.env.JWT_SECRET));
     const { userId } = decoded as { userId: string };
     return next({

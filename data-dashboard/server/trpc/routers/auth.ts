@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'crypto';
 import { z } from 'zod';
 import { sign } from 'jsonwebtoken';
+import { serialize } from 'cookie';
 import { router, publicProcedure } from '..';
 
 const SignupSchema = z
@@ -53,7 +54,8 @@ const authRouter = router({
         throw new Error('Invalid password');
       }
       const token = sign({ userId: user.id }, String(process.env.JWT_SECRET), { expiresIn: '1d' });
-
+      const cookie = serialize('auth-token', token, { httpOnly: true, path: '/' });
+      ctx.res.setHeader('Set-Cookie', cookie);
       return token;
     }),
 });
