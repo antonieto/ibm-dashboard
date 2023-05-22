@@ -5,8 +5,8 @@ import { IbmButton, IbmSearchBar, BoardList } from '@/lib/components';
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
 import trpc from '@/lib/hooks/trpc';
 import { Board } from '@/server/models';
-import { NextPageWithLayout } from './_app';
 import BoardTitleModal from '@/lib/components/BoardTitleModal/BoardTitleModal';
+import { NextPageWithLayout } from './_app';
 
 const BoardContainer = styled.div`
   display: flex;
@@ -75,13 +75,11 @@ function Boards() {
     }
   }, [data]);
 
-  /*
-  const handleCreateBoard = () => {
+  const handleCreateBoard = (title: string) => {
     createBoard({
-      title: 'New Board',
+      title,
     });
   };
-  */
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -107,7 +105,11 @@ function Boards() {
           <BoardList boards={boards} />
         )}
       </BoardsContainerContent>
-      <BoardTitleModal open={openModal} onClose={handleCloseModal} />
+      <BoardTitleModal
+        open={openModal}
+        onClose={handleCloseModal}
+        onConfirm={handleCreateBoard}
+      />
     </BoardContainer>
   );
 }

@@ -1,8 +1,8 @@
 import React, { ChangeEvent, useState } from 'react';
 import styled from 'styled-components';
 import { Close } from '@carbon/icons-react';
-import ModalContainer from '../ModalContainer/ModalContainer';
 import { TextInput, InputField, IbmButton } from '@/lib/components';
+import ModalContainer from '../ModalContainer/ModalContainer';
 
 const Modal = styled.div`
   width: 30vw;
@@ -51,21 +51,34 @@ const ButtonContainer = styled.div`
 interface Props {
   open: boolean;
   onClose: () => void;
+  onConfirm: (title: string) => void;
 }
 
-export default function BoardTitleModal({ open, onClose }: Props): JSX.Element {
+export default function BoardTitleModal({
+  open,
+  onClose,
+  onConfirm,
+}: Props): JSX.Element {
   const [title, setTitle] = useState('');
+  const handleOnClose = () => {
+    setTitle('');
+    onClose();
+  };
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setTitle(value);
   };
+
   const handleOnConfirm = () => {
-    onClose();
+    onConfirm(title);
+    handleOnClose();
   };
+
   return (
-    <ModalContainer open={open} onClose={onClose}>
+    <ModalContainer open={open} onClose={handleOnClose}>
       <Modal>
-        <CloseIcon onClick={onClose}>
+        <CloseIcon onClick={handleOnClose}>
           <Close aria-label="Add" size={24} />
         </CloseIcon>
         <Title>Nuevo tablero</Title>
