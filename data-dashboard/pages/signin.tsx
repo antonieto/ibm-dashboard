@@ -3,7 +3,6 @@ import type { MouseEvent, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import Image from 'next/image';
-import { setCookie } from 'cookies-next';
 import { IbmButton, TextInput, InputField } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
@@ -80,10 +79,6 @@ const ImageStyle = {
 function SignIn() {
   // const router = useRouter();
   const { mutate } = trpc.auth.login.useMutation({
-    onSuccess(token) {
-      console.log(token);
-      setCookie('access-token', token);
-    },
     onError(error) {
       console.log(error);
     },
