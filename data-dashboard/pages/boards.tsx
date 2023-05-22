@@ -100,10 +100,6 @@ function Boards() {
 }
 
 const BoardsPage: NextPageWithLayout = Boards;
-BoardsPage.getLayout = (page) => (
-  <TopLayout>
-    {page}
-  </TopLayout>
-);
+BoardsPage.getLayout = (page) => <TopLayout>{page}</TopLayout>;
 
 export default BoardsPage;
