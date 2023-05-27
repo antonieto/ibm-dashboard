@@ -1,0 +1,90 @@
+import React from 'react';
+import styled from 'styled-components';
+import { ChartColumn, ChartLine, ChartPie, Close } from '@carbon/icons-react';
+
+const MenuContainer = styled.div`
+  background-color: #ffffff;
+
+  height: fit-content;
+
+  min-width: 287px;
+  width: fit-content;
+
+  display: flex;
+  flex-direction: column;
+
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+`;
+
+const MenuItem = styled.div`
+  padding: 10px;
+  border-bottom: 1px solid #d2d3d4;
+  transition: all 0.2s ease-in-out;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  color: #393939;
+  font-size: 14px;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: #d2d3d4;
+  }
+
+  &:active {
+    background-color: #a6a7a8;
+  }
+`;
+
+const MenuTitle = styled.div`
+  font-size: 12px;
+  font-weight: 500;
+  color: #393939;
+
+  padding: 10px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #d2d3d4;
+`;
+
+interface Props {
+  onSelect: (type: 'bar' | 'line' | 'pie') => void;
+  onClose: () => void;
+}
+
+export default function ChartTypeMenu({
+  onSelect,
+  onClose,
+}: Props): JSX.Element {
+  return (
+    <MenuContainer>
+      <MenuTitle>
+        Tipo de grafica
+        <Close
+          aria-label="Close"
+          size={16}
+          style={{ cursor: 'pointer' }}
+          onClick={onClose}
+        />
+      </MenuTitle>
+      <MenuItem onClick={() => onSelect('bar')}>
+        Barras
+        <ChartColumn aria-label="ChartColumn" size={24} />
+      </MenuItem>
+      <MenuItem onClick={() => onSelect('line')}>
+        Linea
+        <ChartLine aria-label="ChartLine" size={24} />
+      </MenuItem>
+      <MenuItem onClick={() => onSelect('pie')}>
+        Pastel
+        <ChartPie aria-label="ChartPie" size={24} />
+      </MenuItem>
+    </MenuContainer>
+  );
+}
