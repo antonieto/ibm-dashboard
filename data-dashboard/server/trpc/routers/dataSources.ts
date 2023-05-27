@@ -11,10 +11,23 @@ const CreateDataSourceSchema = z.object({
 });
 
 const dataSourcesRouter = router({
-  listDataSources: privateProcedure.query(async ({ ctx }) => {
+  listPrivateDataSources: privateProcedure.query(async ({ ctx }) => {
     try {
       const user = await ctx.user();
       const dataSources = await ctx.dataSourcesRepository.listByUserId(user.id);
+      return {
+        dataSources,
+      };
+    } catch (e) {
+      console.error(e);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+      });
+    }
+  }),
+  listPublicDataSorces: privateProcedure.query(async ({ ctx }) => {
+    try {
+      const dataSources = await ctx.dataSourcesRepository.listPublic();
       return {
         dataSources,
       };

@@ -4,5 +4,5 @@ export type DataSource = {
   createdAt: Date;
   externalHandle: string;
   fileName: string;
-  boardId: string;
+  boardId: string | null;
 };
