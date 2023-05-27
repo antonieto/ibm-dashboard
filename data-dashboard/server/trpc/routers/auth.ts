@@ -56,6 +56,7 @@ const authRouter = router({
       const token = sign({ userId: user.id }, String(process.env.JWT_SECRET), { expiresIn: '1d' });
       const cookie = serialize('auth-token', token, { httpOnly: true, path: '/' });
       ctx.res.setHeader('Set-Cookie', cookie);
+
       return token;
     }),
   logout: privateProcedure
@@ -63,6 +64,12 @@ const authRouter = router({
       const cookie = serialize('auth-token', '', { httpOnly: true, path: '/' });
       ctx.res.setHeader('Set-Cookie', cookie);
     }),
+  me: privateProcedure.query(async ({ ctx }) => {
+    const user = await ctx.user();
+    return {
+      user,
+    };
+  }),
 });
 
 export default authRouter;
