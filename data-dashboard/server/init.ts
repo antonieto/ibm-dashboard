@@ -4,6 +4,7 @@ import { PrismaBoardRepository } from './repositories/board';
 import { IUserRepository, PrismaUserRepository } from './repositories/user';
 import { DataSourceRepository, PrismaDataSourceRepository } from './repositories/dataSource';
 import AzureStorageService from './services/storageService';
+import { IChartRepository, PrismaChartRepository } from './repositories/chart';
 
 const FILE_STORAGE_CONTAINER_NAME = 'data-sources';
 
@@ -17,6 +18,7 @@ export interface Service {
   usersRepository: IUserRepository;
   fileStorage: StorageService;
   dataSourcesRepository: DataSourceRepository;
+  chartsRepository: IChartRepository;
 }
 
 export const initializeService = (): Service | null => {
@@ -34,11 +36,13 @@ export const initializeService = (): Service | null => {
     const usersRepository = new PrismaUserRepository(db);
     const fileStorage = new AzureStorageService(FILE_STORAGE_CONTAINER_NAME);
     const dataSourcesRepository = new PrismaDataSourceRepository(db);
+    const chartsRepository = new PrismaChartRepository(db);
     return {
       boardsRepository,
       usersRepository,
       fileStorage,
       dataSourcesRepository,
+      chartsRepository,
     };
   } catch (e) {
     console.error(e);
