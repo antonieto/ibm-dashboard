@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef } from 'react';
 
 export default function useOutsideClick(callback: () => void) {
-  const ref = useRef<any>();
+  const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const handleClick = (event: any) => {
-      if (ref.current && !ref.current.contains(event.target)) {
+    const handleClick = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
         callback();
       }
     };
