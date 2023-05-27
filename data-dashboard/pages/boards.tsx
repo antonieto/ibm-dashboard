@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { IbmButton, IbmSearchBar, BoardList } from '@/lib/components';
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
-import { trpc, useAuth } from '@/lib/hooks';
+import { trpc } from '@/lib/hooks';
 import { Board } from '@/server/models';
 import BoardTitleModal from '@/lib/components/BoardTitleModal/BoardTitleModal';
 import { NextPageWithLayout } from './_app';
