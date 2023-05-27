@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Add } from '@carbon/icons-react';
+import { Add, DataVolume } from '@carbon/icons-react';
 
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import type { Layout } from 'react-grid-layout';
@@ -11,6 +11,8 @@ import TopLayout from '@/lib/components/TopLayout/TopLayout';
 import ChartTypeMenu, {
   ChartType,
 } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
+import { DataSourcesMenuModal } from '@/lib/components';
+import { useRouter } from 'next/router';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import { MOCK_CHART_LIST } from '../../lib/components/BoardList/MOCK_CHART_LIST';
 import Chart from '../../lib/components/Chart/Chart';
@@ -57,7 +59,9 @@ type DataGridProps = {
 
 function Board() {
   const [openChartTypeMenu, setOpenChartTypeMenu] = useState(false);
+  const [isDataSourcesModalOpen, setIsDataSourcesModalOpen] = useState(false);
   const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
+  const router = useRouter();
 
   const widgetArray = MOCK_CHART_LIST;
 
@@ -71,6 +75,11 @@ function Board() {
 
   const onAddChart = (type: ChartType) => {
     console.log('onAddChart', type);
+  };
+
+  const handleShowDataSources = () => {
+    setIsDataSourcesModalOpen(true);
+    console.log('handling');
   };
 
   const getComponent = (
@@ -100,8 +109,14 @@ function Board() {
     );
   };
 
+  const boardId = router.query.id as string;
   return (
     <Container>
+      <DataSourcesMenuModal
+        boardId={boardId}
+        isOpen={isDataSourcesModalOpen}
+        onClose={() => setIsDataSourcesModalOpen(false)}
+      />
       <div>
         <ResponsiveReactGridLayout
           style={{ background: '#F4F5F5' }}
@@ -133,6 +148,12 @@ function Board() {
           text="Agregar grafica"
           icon={Add}
           onClick={toggleChartTypeMenu}
+        />
+        <ButtonWithIcon
+          text="Data sources"
+          icon={DataVolume}
+          onClick={handleShowDataSources}
+          style={{ marginTop: '10px' }}
         />
       </AddButtonContainer>
     </Container>
