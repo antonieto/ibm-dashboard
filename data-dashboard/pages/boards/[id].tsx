@@ -8,11 +8,11 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
+import ChartTypeMenu from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import { MOCK_CHART_LIST } from '../../lib/components/BoardList/MOCK_CHART_LIST';
 import Chart from '../../lib/components/Chart/Chart';
 import { NextPageWithLayout } from '../_app';
-import ChartTypeMenu from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
