@@ -86,7 +86,7 @@ function SignIn() {
       console.log(error);
     },
     onSuccess() {
-      toast.info('Whooooowww');
+      toast.info('Successfully signed in!');
       router.push('/boards');
     },
   });
