@@ -4,6 +4,8 @@ import { Add, DataVolume } from '@carbon/icons-react';
 
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import type { Layout } from 'react-grid-layout';
+import { useRouter } from 'next/router';
+import trpc from '@/lib/hooks/trpc';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
@@ -14,7 +16,7 @@ import ChartTypeMenu, {
 import { DataSourcesMenuModal } from '@/lib/components';
 import { useRouter } from 'next/router';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
-import { MOCK_CHART_LIST } from '../../lib/components/BoardList/MOCK_CHART_LIST';
+// import { MOCK_CHART_LIST } from '../../lib/components/BoardList/MOCK_CHART_LIST';
 import Chart from '../../lib/components/Chart/Chart';
 import { NextPageWithLayout } from '../_app';
 
@@ -58,12 +60,16 @@ type DataGridProps = {
 };
 
 function Board() {
+  const params = useRouter().query;
   const [openChartTypeMenu, setOpenChartTypeMenu] = useState(false);
   const [isDataSourcesModalOpen, setIsDataSourcesModalOpen] = useState(false);
   const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
   const router = useRouter();
 
-  const widgetArray = MOCK_CHART_LIST;
+  // const widgetArray = MOCK_CHART_LIST;
+  const { data: widgetArray } = trpc.charts.getCharts.useQuery({
+    boardId: params.id! as string,
+  });
 
   const toggleChartTypeMenu = () => {
     setOpenChartTypeMenu(!openChartTypeMenu);
@@ -110,6 +116,32 @@ function Board() {
   };
 
   const boardId = router.query.id as string;
+  const chartProps = {
+    className: 'mt-6',
+    index: 'name',
+    categories: ['Number of threatened species'],
+    colors: ['blue'],
+    yAxisWidth: 48,
+  };
+
+  const data = [
+    {
+      name: 'Mammals',
+      'Number of threatened species': 10,
+    },
+    {
+      name: 'Birds',
+      'Number of threatened species': 20,
+    },
+    {
+      name: 'Reptiles',
+      'Number of threatened species': 30,
+    },
+    {
+      name: 'Amphibians',
+      'Number of threatened species': 40,
+    },
+  ];
   return (
     <Container>
       <DataSourcesMenuModal
@@ -133,7 +165,16 @@ function Board() {
           cols={cols}
           margin={margin}
         >
-          {widgetArray.map((widget) => getComponent(widget))}
+          {widgetArray !== undefined &&
+            widgetArray.charts.map((widget) =>
+              getComponent({
+                ...widget,
+                xIndex: widget.x,
+                yIndex: widget.y,
+                data,
+                chartProps,
+              }),
+            )}
         </ResponsiveReactGridLayout>
       </div>
 

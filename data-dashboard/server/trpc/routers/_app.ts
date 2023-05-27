@@ -3,6 +3,7 @@ import { publicProcedure, router } from '@/server/trpc';
 import authRouter from './auth';
 import dataSourcesRouter from './dataSources';
 import boardRouter from './boards';
+import chartsRouter from './charts';
 
 export const appRouter = router({
   hello: publicProcedure
@@ -17,6 +18,7 @@ export const appRouter = router({
   boards: boardRouter,
   auth: authRouter,
   dataSources: dataSourcesRouter,
+  charts: chartsRouter,
 
 });
 // export type definition of API
