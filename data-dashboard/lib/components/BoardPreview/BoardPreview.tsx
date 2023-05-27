@@ -1,7 +1,9 @@
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 
 interface Props {
   name: string;
+  id: string;
 }
 
 const BoardPreviewContainer = styled.div`
@@ -43,9 +45,13 @@ const BoardPreviewLine = styled.hr`
   border: none;
 `;
 
-export default function BoardPreview({ name }: Props): JSX.Element {
+export default function BoardPreview({ name, id }: Props): JSX.Element {
+  const router = useRouter();
+  const handleClick = () => {
+    router.push(`boards/${id}`);
+  };
   return (
-    <BoardPreviewContainer>
+    <BoardPreviewContainer onClick={handleClick}>
       <BoardPreviewContent>
         <BoardPreviewImage />
         <div>

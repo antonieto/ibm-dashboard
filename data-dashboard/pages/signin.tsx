@@ -3,6 +3,8 @@ import type { MouseEvent, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { toast } from 'react-toastify';
 import { IbmButton, TextInput, InputField } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
@@ -35,6 +37,7 @@ const Description = styled.legend`
 
 const Form = styled.form`
   margin-top: 56px;
+  max-width: 500px;
 `;
 
 const InputFields = styled.div`
@@ -77,10 +80,14 @@ const ImageStyle = {
 };
 
 function SignIn() {
-  // const router = useRouter();
+  const router = useRouter();
   const { mutate } = trpc.auth.login.useMutation({
     onError(error) {
       console.log(error);
+    },
+    onSuccess() {
+      toast.info('Successfully signed in!');
+      router.push('/boards');
     },
   });
 
@@ -161,6 +168,7 @@ function SignIn() {
         />
       </Body>
     </div>
+
   );
 }
 

@@ -1,6 +1,7 @@
 /* eslint-disable arrow-body-style */
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 import { IbmButton, IbmSearchBar, BoardList } from '@/lib/components';
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
 import trpc from '@/lib/hooks/trpc';
@@ -46,6 +47,8 @@ const BoardBarContainerButton = styled.div`
 `;
 
 function Boards() {
+  const router = useRouter();
+
   const [boards, setBoards] = useState<Board[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const { data, isLoading } = trpc.boards.getBoards.useQuery();
@@ -56,7 +59,7 @@ function Boards() {
         ...res.board,
         createdAt: new Date(res.board.createdAt),
       };
-      setBoards([...boards, board]);
+      router.push(`boards/${board.boardId}`);
     },
     onError: (error) => {
       console.log(error);
