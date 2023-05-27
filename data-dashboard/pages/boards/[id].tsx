@@ -116,9 +116,81 @@ function Board() {
   };
 
   const boardId = router.query.id as string;
-  const chartProps = {
+  interface ChartProps {
+    className: string;
+    index: string;
+    categories: string[];
+    colors: (
+      | 'blue'
+      | 'cyan'
+      | 'fuchsia'
+      | 'gray'
+      | 'green'
+      | 'indigo'
+      | 'lime'
+      | 'orange'
+      | 'pink'
+      | 'purple'
+      | 'red'
+      | 'teal'
+      | 'violet'
+      | 'yellow'
+      | 'slate'
+      | 'zinc'
+      | 'neutral'
+      | 'stone'
+      | 'amber'
+      | 'emerald'
+      | 'sky'
+      | 'rose'
+    )[];
+    yAxisWidth: number;
+  }
+
+  const chartProps: ChartProps = {
     className: 'mt-6',
     index: 'name',
+    categories: ['Number of threatened species'],
+    colors: ['blue'],
+    yAxisWidth: 48,
+  };
+
+  interface ChartPropsPie {
+    className: string;
+    index: string;
+    // category: string,
+    categories: string[];
+    colors: (
+      | 'blue'
+      | 'cyan'
+      | 'fuchsia'
+      | 'gray'
+      | 'green'
+      | 'indigo'
+      | 'lime'
+      | 'orange'
+      | 'pink'
+      | 'purple'
+      | 'red'
+      | 'teal'
+      | 'violet'
+      | 'yellow'
+      | 'slate'
+      | 'zinc'
+      | 'neutral'
+      | 'stone'
+      | 'amber'
+      | 'emerald'
+      | 'sky'
+      | 'rose'
+    )[];
+    yAxisWidth: number;
+  }
+
+  const chartPropsPie: ChartPropsPie = {
+    className: 'mt-6',
+    index: 'name',
+    // category: 'Number of threatened species',
     categories: ['Number of threatened species'],
     colors: ['blue'],
     yAxisWidth: 48,
@@ -171,8 +243,8 @@ function Board() {
                 ...widget,
                 xIndex: widget.x,
                 yIndex: widget.y,
-                data,
-                chartProps,
+                data: data,
+                chartProps: chartProps,
               }),
             )}
         </ResponsiveReactGridLayout>
