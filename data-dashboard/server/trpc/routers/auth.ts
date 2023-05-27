@@ -53,16 +53,31 @@ const authRouter = router({
       if (hashed !== user.password) {
         throw new Error('Invalid password');
       }
-      const token = sign({ userId: user.id }, String(process.env.JWT_SECRET), { expiresIn: '1d' });
-      const cookie = serialize('auth-token', token, { httpOnly: true, path: '/' });
+      const token = sign({ userId: user.id }, String(process.env.JWT_SECRET), {
+        expiresIn: '1d',
+      });
+      const cookie = serialize('auth-token', token, {
+        httpOnly: true,
+        path: '/',
+      });
       ctx.res.setHeader('Set-Cookie', cookie);
+
       return token;
     }),
-  logout: privateProcedure
-    .mutation(async ({ ctx }) => {
-      const cookie = serialize('auth-token', '', { httpOnly: true, path: '/' });
-      ctx.res.setHeader('Set-Cookie', cookie);
-    }),
+  logout: privateProcedure.mutation(async ({ ctx }) => {
+    const cookie = serialize('auth-token', '', { httpOnly: true, path: '/' });
+    ctx.res.setHeader('Set-Cookie', cookie);
+  }),
+  me: privateProcedure.query(async ({ ctx }) => {
+    const user = await ctx.user();
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        createdAt: user.createdAt,
+      },
+    };
+  }),
 });
 
 export default authRouter;

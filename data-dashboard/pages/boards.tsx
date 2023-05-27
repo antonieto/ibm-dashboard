@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { IbmButton, IbmSearchBar, BoardList } from '@/lib/components';
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
-import trpc from '@/lib/hooks/trpc';
+import { trpc } from '@/lib/hooks';
 import { Board } from '@/server/models';
 import BoardTitleModal from '@/lib/components/BoardTitleModal/BoardTitleModal';
 import { NextPageWithLayout } from './_app';
@@ -54,7 +54,6 @@ function Boards() {
   const { data, isLoading } = trpc.boards.getBoards.useQuery();
   const { mutate: createBoard } = trpc.boards.createBoard.useMutation({
     onSuccess: (res) => {
-      console.log('Board created succesfully: ', res);
       const board = {
         ...res.board,
         createdAt: new Date(res.board.createdAt),
