@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { toast } from 'react-toastify';
 import { IbmButton, TextInput, InputField } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
@@ -85,6 +86,7 @@ function SignIn() {
       console.log(error);
     },
     onSuccess() {
+      toast.info('Whooooowww');
       router.push('/boards');
     },
   });
@@ -166,6 +168,7 @@ function SignIn() {
         />
       </Body>
     </div>
+
   );
 }
 

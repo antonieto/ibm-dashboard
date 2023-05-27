@@ -1,3 +1,4 @@
+import { ToastContainer } from 'react-toastify';
 import NavBar from '../NavBar/NavBar';
 
 interface TopLayoutProps {

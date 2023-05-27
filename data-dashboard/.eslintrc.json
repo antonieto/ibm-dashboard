@@ -1,4 +1,7 @@
 {
+  "plugins": [
+    "import"
+  ],
   "extends": [
     "next/core-web-vitals",
     "plugin:react/recommended",
@@ -16,6 +19,35 @@
   "settings": {
     "react": {
       "version": "detect"
+    },
+    "import/parsers": {
+      "@typescript-eslint/parser": [
+        ".ts",
+        ".tsx"
+      ]
+    },
+    "import/resolver": {
+      "alias": {
+        "map": [
+          [
+            "@",
+            "./src"
+          ]
+        ],
+        "extensions": [
+          ".ts",
+          ".tsx"
+        ]
+      },
+      "node": {
+        "moduleDirectory": [
+          "node_modules",
+          "/"
+        ]
+      },
+      "typescript": {
+        "alwaysTryTypes": true // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
+      }
     }
   },
   "rules": {
