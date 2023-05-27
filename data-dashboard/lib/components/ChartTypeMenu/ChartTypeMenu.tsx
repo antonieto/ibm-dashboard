@@ -54,8 +54,10 @@ const MenuTitle = styled.div`
   border-bottom: 1px solid #d2d3d4;
 `;
 
+export type ChartType = 'bar' | 'line' | 'pie';
+
 interface Props {
-  onSelect: (type: 'bar' | 'line' | 'pie') => void;
+  onSelect: (type: ChartType) => void;
   onClose: () => void;
 }
 
@@ -65,7 +67,7 @@ export default function ChartTypeMenu({
 }: Props): JSX.Element {
   const menuRef = useOutsideClick(onClose);
 
-  const handleSelect = (type: 'bar' | 'line' | 'pie') => {
+  const handleSelect = (type: ChartType) => {
     onSelect(type);
     onClose();
   };
