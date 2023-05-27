@@ -1,6 +1,6 @@
 import { trpc } from '@/lib/hooks';
 import styled from 'styled-components';
-import { DataSource } from '@/server/models';
+import fileToBase64 from '@/lib/base64';
 import ModalContainer from '../ModalContainer/ModalContainer';
 import IbmTabs, { Tab } from '../IbmTabs';
 import DataSourceItem from '../DataSourceItem/DataSourceItem';
@@ -36,33 +36,13 @@ const RowContainer = styled.div`
   margin: 12px 0;
 `;
 
-const MOCK_DATA_SOURCE_LIST: DataSource[] = [
-  {
-    id: '1',
-    boardId: 'boardId',
-    fileName: 'test.xlsx',
-    createdAt: new Date(),
-    name: 'El data source',
-    externalHandle: 'externalHandle',
-  },
-  {
-    id: '2',
-    boardId: 'boardId',
-    fileName: 'test.xlsx',
-    createdAt: new Date(),
-    name: 'El data source',
-    externalHandle: 'externalHandle',
-  },
-];
-
 export default function DataSourcesMenuModal({
   boardId,
   isOpen,
   onClose,
 }: Props) {
   const { data } = trpc.dataSources.listDataSources.useQuery();
-
-  console.log(data, boardId);
+  const { mutate } = trpc.dataSources.createDataSource.useMutation();
 
   return (
     <ModalContainer open={isOpen} onClose={onClose}>
@@ -75,13 +55,19 @@ export default function DataSourcesMenuModal({
         <TabsContainer>
           <IbmTabs>
             <Tab title="Tus fuentes de datos">
-              <AddNewDataSourceRow onSelectFile={(file) => {
-                console.log(file);
-              }}
+              <AddNewDataSourceRow
+                onSelectFile={async (file) => {
+                  const encoded = await fileToBase64(file);
+                  mutate({ boardId, fileName: file.name, encodedFile: encoded });
+                }}
               />
-              {MOCK_DATA_SOURCE_LIST.map((dataSource) => (
+              {data?.dataSources.map((dataSource) => (
                 <RowContainer>
-                  <DataSourceItem id={dataSource.id} fileName={dataSource.fileName} createdAt={dataSource.createdAt} />
+                  <DataSourceItem
+                    id={dataSource.id}
+                    fileName={dataSource.fileName}
+                    createdAt={new Date(dataSource.createdAt)}
+                  />
                 </RowContainer>
               ))}
             </Tab>

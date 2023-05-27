@@ -7,7 +7,6 @@ const Row = styled.div`
   flex-direction: row;
   justify-content: start;
   padding: 8px;
-  margin-top: 8px;
   cursor: pointer;
   &:hover {
     background-color: #f4f5f5;
@@ -45,6 +44,7 @@ export default function AddNewDataSourceRow({ onSelectFile }: Props) {
     <>
       <HiddenFileInput
         type="file"
+        accept=".xlsx"
         ref={fileInputRef}
         onChange={(e) => {
           if (e.target.files && e.target.files.length > 0) {

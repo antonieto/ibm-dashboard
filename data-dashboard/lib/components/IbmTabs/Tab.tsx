@@ -3,9 +3,10 @@ interface Props {
   title: string;
 }
 
-export default function Tab({ children }: Props) {
+export default function Tab({ children, title: _ }: Props) {
   return (
-    <div>
+    // Note: this is done to avoid eslint unused title error
+    <div id={_}>
       {children}
     </div>
   );
