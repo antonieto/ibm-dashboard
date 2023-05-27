@@ -75,7 +75,10 @@ export default function DataSourcesMenuModal({
         <TabsContainer>
           <IbmTabs>
             <Tab title="Tus fuentes de datos">
-              <AddNewDataSourceRow />
+              <AddNewDataSourceRow onSelectFile={(file) => {
+                console.log(file);
+              }}
+              />
               {MOCK_DATA_SOURCE_LIST.map((dataSource) => (
                 <RowContainer>
                   <DataSourceItem id={dataSource.id} fileName={dataSource.fileName} createdAt={dataSource.createdAt} />

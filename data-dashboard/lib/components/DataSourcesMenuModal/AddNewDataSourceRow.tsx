@@ -1,4 +1,5 @@
 import { DocumentAdd } from '@carbon/icons-react';
+import { useRef } from 'react';
 import styled from 'styled-components';
 
 const Row = styled.div`
@@ -30,14 +31,34 @@ const DescriptionContainer = styled.div`
   margin-left: 20px;
 `;
 
-export default function AddNewDataSourceRow() {
+const HiddenFileInput = styled.input`
+  visibility: hidden;
+`;
+
+interface Props {
+  onSelectFile: (file:File) => void;
+}
+
+export default function AddNewDataSourceRow({ onSelectFile }: Props) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   return (
-    <Row>
-      <DocumentAdd height={64} width={64} />
-      <DescriptionContainer>
-        <RowTitle>Agregar fuente de datos</RowTitle>
-        <RowSubtitle>Max 16MB</RowSubtitle>
-      </DescriptionContainer>
-    </Row>
+    <>
+      <HiddenFileInput
+        type="file"
+        ref={fileInputRef}
+        onChange={(e) => {
+          if (e.target.files && e.target.files.length > 0) {
+            onSelectFile(e.target.files[0]);
+          }
+        }}
+      />
+      <Row onClick={() => fileInputRef.current?.click()}>
+        <DocumentAdd height={64} width={64} />
+        <DescriptionContainer>
+          <RowTitle>Agregar fuente de datos</RowTitle>
+          <RowSubtitle>Max 16MB</RowSubtitle>
+        </DescriptionContainer>
+      </Row>
+    </>
   );
 }
