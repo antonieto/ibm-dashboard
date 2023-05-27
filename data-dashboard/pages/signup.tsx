@@ -1,6 +1,8 @@
 import { ChangeEvent, useState } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import type { MouseEvent } from 'react';
 import { IbmButton, TextInput, InputField } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
@@ -80,7 +82,12 @@ const LinkStyle = {
 };
 
 function SignUp() {
-  const { mutate, data, isLoading } = trpc.auth.signup.useMutation();
+  const router = useRouter();
+  const { mutate, data, isLoading } = trpc.auth.signup.useMutation({
+    onSuccess() {
+      router.push('/boards');
+    },
+  });
 
   const [credentials, setCredentials] = useState({
     name: '',
@@ -97,7 +104,8 @@ function SignUp() {
     }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     mutate({
       email: credentials.email,
       password: credentials.password,

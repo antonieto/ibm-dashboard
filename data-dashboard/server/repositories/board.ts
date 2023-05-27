@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import type { Board } from '../models';
+import type { Board, User } from '../models';
 
 export interface IBoardRepository {
-  getAll(): Promise<Board[]>;
+  getAll(user: User): Promise<Board[]>;
   findOne(id: string): Promise<Board>;
   create(board: Pick<Board, 'title' | 'ownerId'>): Promise<Board>;
 }
@@ -15,8 +15,8 @@ export class PrismaBoardRepository implements IBoardRepository {
     this.db = db;
   }
 
-  async getAll(): Promise<Board[]> {
-    const fetchedBoards = await this.db.boards.findMany();
+  async getAll(user: User): Promise<Board[]> {
+    const fetchedBoards = await this.db.boards.findMany({ where: { user_id: user.id } });
     return fetchedBoards.map((board) => ({
       boardId: board.board_id,
       createdAt: new Date(board.createdAt),

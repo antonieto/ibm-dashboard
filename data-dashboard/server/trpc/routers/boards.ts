@@ -1,13 +1,14 @@
 import { z } from 'zod';
-import { privateProcedure, publicProcedure, router } from '..';
+import { privateProcedure, router } from '..';
 
 const CreateBoardSchema = z.object({
   title: z.string(),
 });
 
 const boardRouter = router({
-  getBoards: publicProcedure.query(async ({ ctx }) => {
-    const boards = await ctx.boardsRepository.getAll();
+  getBoards: privateProcedure.query(async ({ ctx }) => {
+    const user = await ctx.user();
+    const boards = await ctx.boardsRepository.getAll(user);
     return {
       boards,
     };

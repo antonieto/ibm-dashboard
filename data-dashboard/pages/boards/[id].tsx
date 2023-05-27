@@ -8,7 +8,6 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
-import { NavBar } from '../../lib/components';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import { MOCK_CHART_LIST } from '../../lib/components/BoardList/MOCK_CHART_LIST';
 import Chart from '../../lib/components/Chart/Chart';
@@ -81,7 +80,6 @@ function Board() {
 
   return (
     <Container>
-      <NavBar />
       <div>
         <ResponsiveReactGridLayout
           style={{ background: '#F4F5F5' }}

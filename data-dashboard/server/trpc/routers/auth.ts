@@ -2,7 +2,7 @@ import { createHash, randomUUID } from 'crypto';
 import { z } from 'zod';
 import { sign } from 'jsonwebtoken';
 import { serialize } from 'cookie';
-import { router, publicProcedure } from '..';
+import { router, publicProcedure, privateProcedure } from '..';
 
 const SignupSchema = z
   .object({
@@ -57,6 +57,11 @@ const authRouter = router({
       const cookie = serialize('auth-token', token, { httpOnly: true, path: '/' });
       ctx.res.setHeader('Set-Cookie', cookie);
       return token;
+    }),
+  logout: privateProcedure
+    .mutation(async ({ ctx }) => {
+      const cookie = serialize('auth-token', '', { httpOnly: true, path: '/' });
+      ctx.res.setHeader('Set-Cookie', cookie);
     }),
 });
 
