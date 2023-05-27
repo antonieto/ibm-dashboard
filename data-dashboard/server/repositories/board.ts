@@ -3,7 +3,7 @@ import { TRPCError } from '@trpc/server';
 import type { Board, User } from '../models';
 
 export interface IBoardRepository {
-  getAll(user: User): Promise<Board[]>;
+  getAllByUserId(userId: string): Promise<Board[]>;
   findOne(id: string): Promise<Board>;
   create(board: Pick<Board, 'title' | 'ownerId'>): Promise<Board>;
 }
@@ -15,8 +15,8 @@ export class PrismaBoardRepository implements IBoardRepository {
     this.db = db;
   }
 
-  async getAll(user: User): Promise<Board[]> {
-    const fetchedBoards = await this.db.boards.findMany({ where: { user_id: user.id } });
+  async getAllByUserId(userId: string): Promise<Board[]> {
+    const fetchedBoards = await this.db.boards.findMany({ where: { user_id: userId } });
     return fetchedBoards.map((board) => ({
       boardId: board.board_id,
       createdAt: new Date(board.createdAt),

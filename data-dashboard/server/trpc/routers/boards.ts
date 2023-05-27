@@ -8,7 +8,7 @@ const CreateBoardSchema = z.object({
 const boardRouter = router({
   getBoards: privateProcedure.query(async ({ ctx }) => {
     const user = await ctx.user();
-    const boards = await ctx.boardsRepository.getAll(user);
+    const boards = await ctx.boardsRepository.getAllByUserId(user.id);
     return {
       boards,
     };
