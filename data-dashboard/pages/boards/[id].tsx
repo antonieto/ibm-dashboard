@@ -8,6 +8,9 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
+import ChartTypeMenu, {
+  ChartType,
+} from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import { MOCK_CHART_LIST } from '../../lib/components/BoardList/MOCK_CHART_LIST';
 import Chart from '../../lib/components/Chart/Chart';
@@ -38,6 +41,12 @@ const AddButtonContainer = styled.div`
   left: 20px;
 `;
 
+const ChartTypeMenuContainer = styled.div`
+  position: absolute;
+  bottom: 80px;
+  left: 20px;
+`;
+
 type DataGridProps = {
   id: string;
   xIndex: number;
@@ -47,9 +56,22 @@ type DataGridProps = {
 };
 
 function Board() {
+  const [openChartTypeMenu, setOpenChartTypeMenu] = useState(false);
   const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
 
   const widgetArray = MOCK_CHART_LIST;
+
+  const toggleChartTypeMenu = () => {
+    setOpenChartTypeMenu(!openChartTypeMenu);
+  };
+
+  const closeChartTypeMenu = () => {
+    setOpenChartTypeMenu(false);
+  };
+
+  const onAddChart = (type: ChartType) => {
+    console.log('onAddChart', type);
+  };
 
   const getComponent = (
     widget: DataGridProps & React.ComponentProps<typeof Chart>,
@@ -100,8 +122,18 @@ function Board() {
         </ResponsiveReactGridLayout>
       </div>
 
+      {openChartTypeMenu && (
+        <ChartTypeMenuContainer>
+          <ChartTypeMenu onSelect={onAddChart} onClose={closeChartTypeMenu} />
+        </ChartTypeMenuContainer>
+      )}
+
       <AddButtonContainer>
-        <ButtonWithIcon text="Add Widget" icon={Add} />
+        <ButtonWithIcon
+          text="Agregar grafica"
+          icon={Add}
+          onClick={toggleChartTypeMenu}
+        />
       </AddButtonContainer>
     </Container>
   );
@@ -109,9 +141,5 @@ function Board() {
 
 const BoardPage: NextPageWithLayout = Board;
 
-BoardPage.getLayout = (page) => (
-  <TopLayout>
-    {page}
-  </TopLayout>
-);
+BoardPage.getLayout = (page) => <TopLayout>{page}</TopLayout>;
 export default BoardPage;

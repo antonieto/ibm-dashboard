@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import React from 'react';
 import { CarbonIconType } from '@carbon/icons-react';
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLButtonElement> {
   text: string;
   icon: CarbonIconType;
   style?: React.CSSProperties;
@@ -44,14 +44,10 @@ const ButtonComponent = styled.button<{ readonly iconLeft: boolean }>`
   }
 `;
 
-export default function ButtonWithIcon({
-  text,
-  icon: Icon,
-  style = undefined,
-  iconLeft = false,
-}: Props): JSX.Element {
+export default function ButtonWithIcon(props: Props): JSX.Element {
+  const { text, icon: Icon, style = undefined, iconLeft = false } = props;
   return (
-    <ButtonComponent style={style} iconLeft={iconLeft}>
+    <ButtonComponent style={style} iconLeft={iconLeft} {...props}>
       {text}
       <Icon aria-label={text} size={24} />
     </ButtonComponent>
