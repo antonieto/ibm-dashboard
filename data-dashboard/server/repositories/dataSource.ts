@@ -4,6 +4,7 @@ import type { DataSource } from '../models';
 export interface DataSourceRepository {
   list(): Promise<DataSource[]>;
   listByUserId(userId: string): Promise<DataSource[]>;
+  listPublic(): Promise<DataSource[]>;
   create(dataSource: Pick<DataSource, 'externalHandle' | 'fileName' | 'boardId'>): Promise<DataSource>;
 }
 
@@ -32,6 +33,22 @@ export class PrismaDataSourceRepository implements DataSourceRepository {
         board: {
           user_id: userId,
         },
+      },
+    });
+    return dataSources.map((dataSource) => ({
+      id: dataSource.data_source_id,
+      createdAt: new Date(dataSource.createdAt),
+      externalHandle: dataSource.external_handle,
+      fileName: dataSource.file_name,
+      name: dataSource.file_name,
+      boardId: dataSource.board_id,
+    }));
+  }
+
+  async listPublic(): Promise<DataSource[]> {
+    const dataSources = await this.db.data_sources.findMany({
+      where: {
+        isPublic: true,
       },
     });
     return dataSources.map((dataSource) => ({

@@ -35,13 +35,14 @@ model Boards {
 }
 
 model Data_sources {
-  data_source_id  String   @id @default(uuid())
-  createdAt       DateTime @default(now())
-  file_name       String   @db.VarChar(250)
-  external_handle String   @db.VarChar(100)
-  board           Boards   @relation(fields: [board_id], references: [board_id])
-  board_id        String
+  data_source_id  String    @id @default(uuid())
+  createdAt       DateTime  @default(now())
+  file_name       String    @db.VarChar(250)
+  external_handle String    @db.VarChar(100)
+  board           Boards?   @relation(fields: [board_id], references: [board_id])
+  board_id        String?
   charts          Charts[]
+  isPublic        Boolean   @default(false)
 }
 
 model Charts {

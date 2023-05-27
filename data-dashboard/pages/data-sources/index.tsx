@@ -30,17 +30,17 @@ function DataSources() {
         }}
       />
 
-      { isLoading && <div>Loading...</div> }
+      {isLoading && <div>Loading...</div>}
 
       <ul>
-        { data !== undefined && data.dataSources.map((dataSource) => (
+        {data !== undefined && data.dataSources.map((dataSource) => (
           <li>
             {dataSource.fileName}
             {' '}
             -
             {dataSource.createdAt}
           </li>
-        )) }
+        ))}
       </ul>
 
     </div>
