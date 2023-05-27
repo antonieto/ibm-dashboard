@@ -8,7 +8,7 @@ const MOCK_BOARD_ID = '90b2dbcd-383e-4504-92c7-a5fd977eab71';
 
 function DataSources() {
   const { mutate } = trpc.dataSources.createDataSource.useMutation();
-  const { data, isLoading } = trpc.dataSources.listDataSources.useQuery();
+  const { data, isLoading } = trpc.dataSources.listPrivateDataSources.useQuery();
 
   return (
     <div className="border flex flex-col items-center mt-4 py-8">
