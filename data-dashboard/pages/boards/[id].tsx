@@ -88,21 +88,6 @@ function Board() {
     },
   });
 
-  /*
-  const { mutate: createBoard } = trpc.boards.createBoard.useMutation({
-    onSuccess: (res) => {
-      const board = {
-        ...res.board,
-        createdAt: new Date(res.board.createdAt),
-      };
-      router.push(`boards/${board.boardId}`);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
-  */
-
   const toggleChartTypeMenu = () => {
     setOpenChartTypeMenu(!openChartTypeMenu);
   };
@@ -112,22 +97,21 @@ function Board() {
   };
 
   const onAddChart = (type: ChartType) => {
-    console.log('onAddChart', type);
+    const yIndex = Math.floor(widgetArray.length / cols.lg) * 3;
     createChart({
       boardId: params.id! as string,
       type,
       title: 'New Chart',
-      x: 0,
-      y: 0,
-      width: 4,
-      height: 4,
+      x: (widgetArray.length * 2) % cols.lg,
+      y: yIndex,
+      width: 2,
+      height: 3,
       data_source_id: '6d463973-8fa3-4841-b610-f493d52ea089',
     });
   };
 
   const handleShowDataSources = () => {
     setIsDataSourcesModalOpen(true);
-    console.log('handling');
   };
 
   const getComponent = (
@@ -200,8 +184,7 @@ function Board() {
   interface ChartPropsPie {
     className: string;
     index: string;
-    // category: string,
-    categories: string[];
+    category: string;
     colors: (
       | 'blue'
       | 'cyan'
@@ -232,8 +215,7 @@ function Board() {
   const chartPropsPie: ChartPropsPie = {
     className: 'mt-6',
     index: 'name',
-    // category: 'Number of threatened species',
-    categories: ['Number of threatened species'],
+    category: 'Number of threatened species',
     colors: ['blue'],
     yAxisWidth: 48,
   };
@@ -256,6 +238,7 @@ function Board() {
       'Number of threatened species': 40,
     },
   ];
+
   return (
     <Container>
       <DataSourcesMenuModal
@@ -280,16 +263,26 @@ function Board() {
           margin={margin}
         >
           {widgetArray !== undefined &&
-            widgetArray.map((widget: ChartModel) =>
-              getComponent({
+            widgetArray.map((widget: ChartModel) => {
+              if (widget.type === 'pie') {
+                return getComponent({
+                  ...widget,
+                  xIndex: widget.x,
+                  yIndex: widget.y,
+                  type: widget.type,
+                  data,
+                  chartProps: chartPropsPie,
+                });
+              }
+              return getComponent({
                 ...widget,
                 xIndex: widget.x,
                 yIndex: widget.y,
-                type: 'bar',
+                type: widget.type,
                 data,
-                chartProps: widget.type === 'pie' ? chartPropsPie : chartProps,
-              }),
-            )}
+                chartProps,
+              });
+            })}
         </ResponsiveReactGridLayout>
       </div>
 
@@ -320,3 +313,24 @@ const BoardPage: NextPageWithLayout = Board;
 
 BoardPage.getLayout = (page) => <TopLayout>{page}</TopLayout>;
 export default BoardPage;
+
+/*
+
+    const xIndexArray = widgetArray.map((widget) => widget.x);
+    const yIndexArray = widgetArray.map((widget) => widget.y);
+    const maxXIndex = Math.max(...xIndexArray);
+    const maxYIndex = Math.max(...yIndexArray);
+
+    if (maxXIndex < 7) {
+      return {
+        xIndex: maxXIndex + 2,
+        yIndex: maxYIndex,
+      };
+    }
+    return {
+      xIndex: maxXIndex - 7,
+      yIndex: maxYIndex + 3,
+    };
+
+
+*/
