@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ["dev", main]
+    branches: ["dev", "master"]
   pull_request:
     # The branches below must be a subset of the branches above
     branches: ["dev"]
@@ -48,7 +48,7 @@ jobs:
 
       - name: Set Database Name
         run: |
-          if [ "$GITHUB_REF" == "refs/heads/main" ]; then
+          if [ "$GITHUB_REF" == "refs/heads/master" ]; then
             export DATABASE_NAME=production
           elif [ "$GITHUB_REF" == "refs/heads/dev" ]; then
             export DATABASE_NAME=staging
@@ -68,7 +68,7 @@ jobs:
       - name: Apply migrations
         # This is silly but it works (it sets the right environment variables for the migration)
         run: |
-          if [ "$GITHUB_REF" == "refs/heads/main" ]; then
+          if [ "$GITHUB_REF" == "refs/heads/master" ]; then
             export DATABASE_NAME=production
           elif [ "$GITHUB_REF" == "refs/heads/dev" ]; then
             export DATABASE_NAME=staging
