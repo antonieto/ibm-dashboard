@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Add, DataVolume } from '@carbon/icons-react';
 
@@ -19,6 +20,7 @@ import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 // import { MOCK_CHART_LIST } from '../../lib/components/BoardList/MOCK_CHART_LIST';
 import Chart from '../../lib/components/Chart/Chart';
 import { NextPageWithLayout } from '../_app';
+// import { Chart } from '@/server/models';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -67,9 +69,41 @@ function Board() {
   const router = useRouter();
 
   // const widgetArray = MOCK_CHART_LIST;
-  const { data: widgetArray } = trpc.charts.getCharts.useQuery({
+  const { data: widgetArrayRes } = trpc.charts.getCharts.useQuery({
     boardId: params.id! as string,
   });
+  const [widgetArray, setWidgetArray] = useState<any>();
+
+  useEffect(() => {
+    if (widgetArrayRes) {
+      setWidgetArray(widgetArrayRes);
+    }
+  }, [widgetArrayRes]);
+
+  const { mutate: createChart } = trpc.charts.addChart.useMutation({
+    onSuccess: (res) => {
+      console.log(res);
+      setWidgetArray([...widgetArray, res]);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  /*
+  const { mutate: createBoard } = trpc.boards.createBoard.useMutation({
+    onSuccess: (res) => {
+      const board = {
+        ...res.board,
+        createdAt: new Date(res.board.createdAt),
+      };
+      router.push(`boards/${board.boardId}`);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+  */
 
   const toggleChartTypeMenu = () => {
     setOpenChartTypeMenu(!openChartTypeMenu);
@@ -81,6 +115,16 @@ function Board() {
 
   const onAddChart = (type: ChartType) => {
     console.log('onAddChart', type);
+    createChart({
+      boardId: params.id! as string,
+      type,
+      title: 'New Chart',
+      x: 0,
+      y: 0,
+      width: 4,
+      height: 4,
+      data_source_id: '1',
+    });
   };
 
   const handleShowDataSources = () => {
@@ -238,13 +282,14 @@ function Board() {
           margin={margin}
         >
           {widgetArray !== undefined &&
-            widgetArray.charts.map((widget) =>
+            widgetArray.charts.map((widget: any) =>
               getComponent({
                 ...widget,
                 xIndex: widget.x,
                 yIndex: widget.y,
-                data: data,
-                chartProps: chartProps,
+                type: 'bar',
+                data,
+                chartProps: widget.type === 'pie' ? chartPropsPie : chartProps,
               }),
             )}
         </ResponsiveReactGridLayout>

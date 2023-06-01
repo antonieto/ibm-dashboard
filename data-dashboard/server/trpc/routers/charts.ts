@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
+import { randomUUID } from 'crypto';
 import { privateProcedure, router } from '..';
 
 const GetAllByBoardIdSchema = z.object({
@@ -12,6 +14,17 @@ const DeleteChartSchema = z.object({
 
 const ChartSchema = z.object({
   id: z.string(),
+  boardId: z.string(),
+  data_source_id: z.string(),
+  height: z.number(),
+  width: z.number(),
+  title: z.string(),
+  x: z.number(),
+  y: z.number(),
+  type: z.string(),
+});
+
+const AddChartSchema = z.object({
   boardId: z.string(),
   data_source_id: z.string(),
   height: z.number(),
@@ -48,7 +61,7 @@ const chartRouter = router({
     }),
   updateChart: privateProcedure
     .input(ChartSchema)
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       try {
         const chartType: 'bar' | 'line' | 'pie' = input.type as 'bar' | 'line' | 'pie';
         const chart = await ctx.chartsRepository.updateChart({
@@ -72,12 +85,11 @@ const chartRouter = router({
       }
     }),
   addChart: privateProcedure
-    .input(ChartSchema)
-    .query(async ({ ctx, input }) => {
+    .input(AddChartSchema)
+    .mutation(async ({ ctx, input }) => {
       try {
         const chartType: 'bar' | 'line' | 'pie' = input.type as 'bar' | 'line' | 'pie';
         const chart = await ctx.chartsRepository.addChart({
-          id: input.id,
           boardId: input.boardId,
           data_source_id: input.data_source_id,
           height: input.height,
@@ -86,14 +98,15 @@ const chartRouter = router({
           x: input.x,
           y: input.y,
           type: chartType,
+          id: randomUUID(),
         });
         return {
           success: true,
           chart,
         };
-      } catch (error) {
+      } catch (error:any) {
         console.log(error);
-        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message });
       }
     }),
 

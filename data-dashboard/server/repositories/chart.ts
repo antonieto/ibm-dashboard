@@ -45,7 +45,7 @@ export class PrismaChartRepository implements IChartRepository {
     }));
   }
 
-  async addChart(chart: Chart): Promise<Chart> {
+  async addChart(chart: Omit<Chart, 'id'>): Promise<Chart> {
     try {
       let chartType: 'BAR_CHART' | 'LINE_CHART' | 'PIE_CHART' = 'BAR_CHART';
       if (ChartTypeMap.has(chart.type)) {
@@ -54,6 +54,8 @@ export class PrismaChartRepository implements IChartRepository {
           chartType = mappedType;
         }
       }
+
+      console.log('chart: ', chart);
 
       const newChart = await this.db.charts.create({
         data: {
@@ -79,6 +81,7 @@ export class PrismaChartRepository implements IChartRepository {
         type: ChartTypeMapInverted.get(newChart.type) || 'bar',
       };
     } catch (e) {
+      console.error(e);
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to create chart',
