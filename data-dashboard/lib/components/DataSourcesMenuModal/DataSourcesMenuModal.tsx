@@ -41,7 +41,7 @@ export default function DataSourcesMenuModal({
   isOpen,
   onClose,
 }: Props) {
-  const { data } = trpc.dataSources.listDataSources.useQuery();
+  const { data } = trpc.dataSources.listPrivateDataSources.useQuery();
   const { mutate } = trpc.dataSources.createDataSource.useMutation();
 
   return (
