@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Add, DataVolume } from '@carbon/icons-react';
@@ -16,10 +15,10 @@ import ChartTypeMenu, {
 } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 import { DataSourcesMenuModal } from '@/lib/components';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
-// import { MOCK_CHART_LIST } from '../../lib/components/BoardList/MOCK_CHART_LIST';
 import Chart from '../../lib/components/Chart/Chart';
 import { NextPageWithLayout } from '../_app';
-// import { Chart } from '@/server/models';
+
+import { Chart as ChartModel } from '@/server/models';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -48,7 +47,7 @@ const AddButtonContainer = styled.div`
 
 const ChartTypeMenuContainer = styled.div`
   position: absolute;
-  bottom: 80px;
+  bottom: 130px;
   left: 20px;
 `;
 
@@ -71,18 +70,18 @@ function Board() {
   const { data: widgetArrayRes } = trpc.charts.getCharts.useQuery({
     boardId: params.id! as string,
   });
-  const [widgetArray, setWidgetArray] = useState<any>();
+  const [widgetArray, setWidgetArray] = useState<ChartModel[]>([]);
 
   useEffect(() => {
     if (widgetArrayRes) {
-      setWidgetArray(widgetArrayRes);
+      setWidgetArray(widgetArrayRes.charts);
     }
   }, [widgetArrayRes]);
 
   const { mutate: createChart } = trpc.charts.addChart.useMutation({
     onSuccess: (res) => {
-      console.log(res);
-      setWidgetArray([...widgetArray, res]);
+      console.log('Success!', res);
+      setWidgetArray([...widgetArray, res.chart]);
     },
     onError: (error) => {
       console.log(error);
@@ -122,7 +121,7 @@ function Board() {
       y: 0,
       width: 4,
       height: 4,
-      data_source_id: '1',
+      data_source_id: '6d463973-8fa3-4841-b610-f493d52ea089',
     });
   };
 
@@ -281,7 +280,7 @@ function Board() {
           margin={margin}
         >
           {widgetArray !== undefined &&
-            widgetArray.charts.map((widget: any) =>
+            widgetArray.map((widget: ChartModel) =>
               getComponent({
                 ...widget,
                 xIndex: widget.x,
