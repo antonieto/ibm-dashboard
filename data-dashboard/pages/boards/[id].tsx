@@ -15,7 +15,6 @@ import ChartTypeMenu, {
   ChartType,
 } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 import { DataSourcesMenuModal } from '@/lib/components';
-import { useRouter } from 'next/router';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 // import { MOCK_CHART_LIST } from '../../lib/components/BoardList/MOCK_CHART_LIST';
 import Chart from '../../lib/components/Chart/Chart';
