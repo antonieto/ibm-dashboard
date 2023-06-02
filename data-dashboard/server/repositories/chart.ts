@@ -7,7 +7,7 @@ export interface IChartRepository {
   getAllByBoardId(boardId: string): Promise<Chart[]>;
   addChart(chart: Chart): Promise<Chart>;
   deleteChart(chartId: string): Promise<{id:string}>;
-  updateChart(chart: Chart): Promise<Chart>;
+  updateChart(chart: Pick<Chart, 'id' | 'x' | 'y' | 'width' | 'height'>): Promise<Chart>;
 }
 
 const ChartTypeMap = new Map<string, 'BAR_CHART' | 'LINE_CHART' | 'PIE_CHART'>([
@@ -108,29 +108,17 @@ export class PrismaChartRepository implements IChartRepository {
     }
   }
 
-  async updateChart(chart: Chart): Promise<Chart> {
+  async updateChart(chart: Pick<Chart, 'id' | 'x' | 'y' | 'width' | 'height'>): Promise<Chart> {
     try {
-      let chartType: 'BAR_CHART' | 'LINE_CHART' | 'PIE_CHART' = 'BAR_CHART';
-      if (ChartTypeMap.has(chart.type)) {
-        const mappedType = ChartTypeMap.get(chart.type);
-        if (mappedType) {
-          chartType = mappedType;
-        }
-      }
-
       const updatedChart = await this.db.charts.update({
         where: {
           chart_id: chart.id,
         },
         data: {
-          board_id: chart.boardId,
-          data_source_id: chart.data_source_id,
           height: chart.height,
           width: chart.width,
-          title: chart.title,
           x_index: chart.x,
           y_index: chart.y,
-          type: chartType,
         },
       });
       return {

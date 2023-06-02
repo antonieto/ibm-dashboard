@@ -100,6 +100,15 @@ function Board() {
     },
   });
 
+  const { mutate: updateChart } = trpc.charts.updateChart.useMutation({
+    onSuccess: () => {
+      console.log('Update Success!');
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
   const toggleChartTypeMenu = () => {
     setOpenChartTypeMenu(!openChartTypeMenu);
   };
@@ -267,9 +276,24 @@ function Board() {
           style={{ background: '#F4F5F5' }}
           layouts={layouts}
           preventCollision={false}
-          onLayoutChange={(_, allLayouts) => {
+          onLayoutChange={(currentLayout, allLayouts) => {
             setLayouts({
               ...allLayouts,
+            });
+
+            widgetArray.forEach((widget) => {
+              const newLayout = currentLayout.find(
+                (layout) => layout.i === widget.id,
+              );
+              if (newLayout) {
+                updateChart({
+                  id: newLayout.i,
+                  x: newLayout.x,
+                  y: newLayout.y,
+                  width: newLayout.w,
+                  height: newLayout.h,
+                });
+              }
             });
           }}
           verticalCompact
