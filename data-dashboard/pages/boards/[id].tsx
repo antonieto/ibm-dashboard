@@ -14,12 +14,11 @@ import ChartTypeMenu, {
   ChartType,
 } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 import { DataSourcesMenuModal } from '@/lib/components';
+import { Chart as ChartModel } from '@/server/models';
+import TemporalDataSourcesListModal from '@/lib/components/TemporalDataSourcesListModal/TemporalDataSourcesListModal';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import Chart from '../../lib/components/Chart/Chart';
 import { NextPageWithLayout } from '../_app';
-
-import { Chart as ChartModel } from '@/server/models';
-import TemporalDataSourcesListModal from '@/lib/components/TemporalDataSourcesListModal/TemporalDataSourcesListModal';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -64,8 +63,7 @@ function Board() {
   const params = useRouter().query;
   const [openChartTypeMenu, setOpenChartTypeMenu] = useState(false);
   const [isDataSourcesModalOpen, setIsDataSourcesModalOpen] = useState(false);
-  const [isTemporalDataSourcesModalOpen, setIsTemporalDataSourcesModalOpen] =
-    useState(false);
+  const [selectDataSource, setIsTemporalDataSourcesModalOpen] = useState(false);
   const [chartTypeCreate, setChartTypeCreate] = useState<ChartType>('bar');
   const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
   const router = useRouter();
@@ -276,7 +274,7 @@ function Board() {
         onClose={() => setIsDataSourcesModalOpen(false)}
       />
       <TemporalDataSourcesListModal
-        isOpen={isTemporalDataSourcesModalOpen}
+        isOpen={selectDataSource}
         onClose={() => setIsTemporalDataSourcesModalOpen(false)}
         onSelectDataSource={(dataSourceId) => {
           onAddChart(chartTypeCreate, dataSourceId);
@@ -314,8 +312,8 @@ function Board() {
           cols={cols}
           margin={margin}
         >
-          {widgetArray !== undefined &&
-            widgetArray.map((widget: ChartModel) => {
+          {widgetArray !== undefined
+            && widgetArray.map((widget: ChartModel) => {
               if (widget.type === 'pie') {
                 return getComponent({
                   ...widget,

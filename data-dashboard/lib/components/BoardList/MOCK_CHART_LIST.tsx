@@ -18,6 +18,9 @@ export const MOCK_CHART_LIST = [
     width: 2,
     height: 3,
     type: 'bar',
+    removeChart: () => {
+      console.log('remove chart');
+    },
     chartProps: {
       className: 'mt-6',
       index: 'name',
@@ -52,6 +55,9 @@ export const MOCK_CHART_LIST = [
     width: 2,
     height: 3,
     type: 'line',
+    removeChart: () => {
+      console.log('remove chart');
+    },
     chartProps: {
       className: 'mt-6',
       index: 'year',
@@ -90,6 +96,9 @@ export const MOCK_CHART_LIST = [
     width: 2,
     height: 3,
     type: 'pie',
+    removeChart: () => {
+      console.log('remove chart');
+    },
     chartProps: {
       className: 'mt-6',
       index: 'name',
@@ -131,6 +140,9 @@ export const MOCK_CHART_LIST = [
     width: 2,
     height: 3,
     type: 'bar',
+    removeChart: () => {
+      console.log('remove chart');
+    },
     chartProps: {
       className: 'mt-6',
       index: 'name',
@@ -165,6 +177,9 @@ export const MOCK_CHART_LIST = [
     width: 2,
     height: 3,
     type: 'line',
+    removeChart: () => {
+      console.log('remove chart');
+    },
     chartProps: {
       className: 'mt-6',
       index: 'year',
