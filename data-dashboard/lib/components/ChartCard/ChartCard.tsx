@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useEffect, useRef, useState, ReactNode } from 'react';
-import { Settings, SettingsAdjust } from '@carbon/icons-react';
+import { Settings, SettingsAdjust, TrashCan } from '@carbon/icons-react';
 import { Title } from '@tremor/react';
 
 import 'react-grid-layout/css/styles.css';
@@ -9,6 +9,7 @@ import 'react-resizable/css/styles.css';
 interface Props {
   children: ReactNode;
   title: string;
+  removeChart: () => void;
 }
 
 const CardComponent = styled.div<{ readonly selected: boolean }>`
@@ -79,7 +80,11 @@ const Line = styled.div`
   border-radius: 2px;
 `;
 
-export default function ChartCard({ children, title }: Props): JSX.Element {
+export default function ChartCard({
+  children,
+  title,
+  removeChart,
+}: Props): JSX.Element {
   const [selected, setSelected] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -112,11 +117,15 @@ export default function ChartCard({ children, title }: Props): JSX.Element {
           }}
         >
           <SettingsIcon>
-            <Settings aria-label="Add" size={24} />
+            <Settings aria-label="Settings" size={24} />
           </SettingsIcon>
           <Line />
           <SettingsIcon>
-            <SettingsAdjust aria-label="Add" size={24} />
+            <SettingsAdjust aria-label="Adjusts" size={24} />
+          </SettingsIcon>
+          <Line />
+          <SettingsIcon onClick={removeChart}>
+            <TrashCan aria-label="Add" size={24} />
           </SettingsIcon>
         </SettingsContainer>
       )}

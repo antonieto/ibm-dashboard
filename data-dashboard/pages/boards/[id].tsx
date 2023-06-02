@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Add, DataVolume } from '@carbon/icons-react';
 
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import type { Layout } from 'react-grid-layout';
+import { useRouter } from 'next/router';
+import trpc from '@/lib/hooks/trpc';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
@@ -12,9 +14,13 @@ import ChartTypeMenu, {
   ChartType,
 } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 import { DataSourcesMenuModal } from '@/lib/components';
-import { useRouter } from 'next/router';
+import { Chart as ChartModel } from '@/server/models';
+import TemporalDataSourcesListModal from '@/lib/components/TemporalDataSourcesListModal/TemporalDataSourcesListModal';
+import {
+  ChartProps,
+  ChartPropsPie,
+} from '@/lib/components/BoardList/MOCK_CHART_PROPS';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
-import { MOCK_CHART_LIST } from '../../lib/components/BoardList/MOCK_CHART_LIST';
 import Chart from '../../lib/components/Chart/Chart';
 import { NextPageWithLayout } from '../_app';
 
@@ -45,7 +51,7 @@ const AddButtonContainer = styled.div`
 
 const ChartTypeMenuContainer = styled.div`
   position: absolute;
-  bottom: 80px;
+  bottom: 130px;
   left: 20px;
 `;
 
@@ -58,12 +64,40 @@ type DataGridProps = {
 };
 
 function Board() {
+  const params = useRouter().query;
   const [openChartTypeMenu, setOpenChartTypeMenu] = useState(false);
   const [isDataSourcesModalOpen, setIsDataSourcesModalOpen] = useState(false);
+  const [selectDataSource, setIsTemporalDataSourcesModalOpen] = useState(false);
+  const [chartTypeCreate, setChartTypeCreate] = useState<ChartType>('bar');
   const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
   const router = useRouter();
 
-  const widgetArray = MOCK_CHART_LIST;
+  const { data: widgetArrayRes } = trpc.charts.getCharts.useQuery({
+    boardId: params.id! as string,
+  });
+  const [widgetArray, setWidgetArray] = useState<ChartModel[]>([]);
+
+  useEffect(() => {
+    if (widgetArrayRes) {
+      setWidgetArray(widgetArrayRes.charts);
+    }
+  }, [widgetArrayRes]);
+
+  const { mutate: createChart } = trpc.charts.addChart.useMutation({
+    onSuccess: (res) => {
+      setWidgetArray([...widgetArray, res.chart]);
+    },
+  });
+
+  const { mutate: deleteChart } = trpc.charts.deleteChart.useMutation({
+    onSuccess: (res) => {
+      setWidgetArray(
+        widgetArray.filter((widget) => widget.id !== res.chart.id),
+      );
+    },
+  });
+
+  const { mutate: updateChart } = trpc.charts.updateChart.useMutation({});
 
   const toggleChartTypeMenu = () => {
     setOpenChartTypeMenu(!openChartTypeMenu);
@@ -73,13 +107,26 @@ function Board() {
     setOpenChartTypeMenu(false);
   };
 
-  const onAddChart = (type: ChartType) => {
-    console.log('onAddChart', type);
+  const onAddChart = (type: ChartType, dataSourceId: string) => {
+    const yIndex = Math.floor(widgetArray.length / cols.lg) * 3;
+    createChart({
+      boardId: params.id! as string,
+      type,
+      title: 'New Chart',
+      x: (widgetArray.length * 2) % cols.lg,
+      y: yIndex,
+      width: 2,
+      height: 3,
+      data_source_id: dataSourceId,
+    });
   };
 
   const handleShowDataSources = () => {
     setIsDataSourcesModalOpen(true);
-    console.log('handling');
+  };
+
+  const handleRemoveChart = (id: string) => {
+    deleteChart({ chartId: id });
   };
 
   const getComponent = (
@@ -110,6 +157,42 @@ function Board() {
   };
 
   const boardId = router.query.id as string;
+
+  const chartProps: ChartProps = {
+    className: 'mt-6',
+    index: 'name',
+    categories: ['Number of threatened species'],
+    colors: ['blue'],
+    yAxisWidth: 48,
+  };
+
+  const chartPropsPie: ChartPropsPie = {
+    className: 'mt-6',
+    index: 'name',
+    category: 'Number of threatened species',
+    colors: ['blue'],
+    yAxisWidth: 48,
+  };
+
+  const data = [
+    {
+      name: 'Mammals',
+      'Number of threatened species': 10,
+    },
+    {
+      name: 'Birds',
+      'Number of threatened species': 20,
+    },
+    {
+      name: 'Reptiles',
+      'Number of threatened species': 30,
+    },
+    {
+      name: 'Amphibians',
+      'Number of threatened species': 40,
+    },
+  ];
+
   return (
     <Container>
       <DataSourcesMenuModal
@@ -117,14 +200,37 @@ function Board() {
         isOpen={isDataSourcesModalOpen}
         onClose={() => setIsDataSourcesModalOpen(false)}
       />
+      <TemporalDataSourcesListModal
+        isOpen={selectDataSource}
+        onClose={() => setIsTemporalDataSourcesModalOpen(false)}
+        onSelectDataSource={(dataSourceId) => {
+          onAddChart(chartTypeCreate, dataSourceId);
+          setIsTemporalDataSourcesModalOpen(false);
+        }}
+      />
       <div>
         <ResponsiveReactGridLayout
           style={{ background: '#F4F5F5' }}
           layouts={layouts}
           preventCollision={false}
-          onLayoutChange={(_, allLayouts) => {
+          onLayoutChange={(currentLayout, allLayouts) => {
             setLayouts({
               ...allLayouts,
+            });
+
+            widgetArray.forEach((widget) => {
+              const newLayout = currentLayout.find(
+                (layout) => layout.i === widget.id,
+              );
+              if (newLayout) {
+                updateChart({
+                  id: newLayout.i,
+                  x: newLayout.x,
+                  y: newLayout.y,
+                  width: newLayout.w,
+                  height: newLayout.h,
+                });
+              }
             });
           }}
           verticalCompact
@@ -133,13 +239,41 @@ function Board() {
           cols={cols}
           margin={margin}
         >
-          {widgetArray.map((widget) => getComponent(widget))}
+          {widgetArray !== undefined
+            && widgetArray.map((widget: ChartModel) => {
+              if (widget.type === 'pie') {
+                return getComponent({
+                  ...widget,
+                  xIndex: widget.x,
+                  yIndex: widget.y,
+                  type: widget.type,
+                  data,
+                  chartProps: chartPropsPie,
+                  removeChart: handleRemoveChart,
+                });
+              }
+              return getComponent({
+                ...widget,
+                xIndex: widget.x,
+                yIndex: widget.y,
+                type: widget.type,
+                data,
+                chartProps,
+                removeChart: handleRemoveChart,
+              });
+            })}
         </ResponsiveReactGridLayout>
       </div>
 
       {openChartTypeMenu && (
         <ChartTypeMenuContainer>
-          <ChartTypeMenu onSelect={onAddChart} onClose={closeChartTypeMenu} />
+          <ChartTypeMenu
+            onSelect={(type: ChartType) => {
+              setChartTypeCreate(type);
+              setIsTemporalDataSourcesModalOpen(true);
+            }}
+            onClose={closeChartTypeMenu}
+          />
         </ChartTypeMenuContainer>
       )}
 
