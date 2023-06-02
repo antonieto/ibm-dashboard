@@ -68,6 +68,7 @@ type Props = {
   id: string;
   title: string;
   data: ChartData[];
+  removeChart: (id: string) => void;
 } & TypeChartProps;
 
 const chartTypeMap = new Map<ChartType, any>([
@@ -77,17 +78,24 @@ const chartTypeMap = new Map<ChartType, any>([
 ]);
 
 export default function Chart({
+  id,
   type,
   title,
   chartProps,
   data,
+  removeChart,
 }: Props): JSX.Element {
   if (chartTypeMap.has(type as ChartType) === false) {
     throw new Error(`Chart type ${type} is not supported`);
   }
 
   return (
-    <ChartCard title={title}>
+    <ChartCard
+      title={title}
+      removeChart={() => {
+        removeChart(id);
+      }}
+    >
       {type === 'bar' && <BarChart {...chartProps} data={data} />}
       {type === 'line' && <LineChart {...chartProps} data={data} />}
       {type === 'pie' && <DonutChart {...chartProps} data={data} />}

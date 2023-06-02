@@ -51,9 +51,13 @@ const chartRouter = router({
     }),
   deleteChart: privateProcedure
     .input(DeleteChartSchema)
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       try {
-        await ctx.chartsRepository.deleteChart(input.chartId);
+        const res = await ctx.chartsRepository.deleteChart(input.chartId);
+        return {
+          success: true,
+          chart: res,
+        };
       } catch (error) {
         console.log(error);
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });

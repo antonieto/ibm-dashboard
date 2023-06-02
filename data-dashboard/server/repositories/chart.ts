@@ -1,11 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import type { Chart } from '../models';
+import { type } from 'os';
 
 export interface IChartRepository {
   getAllByBoardId(boardId: string): Promise<Chart[]>;
   addChart(chart: Chart): Promise<Chart>;
-  deleteChart(chartId: string): Promise<void>;
+  deleteChart(chartId: string): Promise<{id:string}>;
   updateChart(chart: Chart): Promise<Chart>;
 }
 
@@ -89,13 +90,16 @@ export class PrismaChartRepository implements IChartRepository {
     }
   }
 
-  async deleteChart(chartId: string): Promise<void> {
+  async deleteChart(chartId: string): Promise<{id:string}> {
     try {
       await this.db.charts.delete({
         where: {
           chart_id: chartId,
         },
       });
+      return {
+        id: chartId,
+      };
     } catch (e) {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',

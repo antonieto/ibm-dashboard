@@ -88,6 +88,18 @@ function Board() {
     },
   });
 
+  const { mutate: deleteChart } = trpc.charts.deleteChart.useMutation({
+    onSuccess: (res) => {
+      console.log('Success!');
+      setWidgetArray(
+        widgetArray.filter((widget) => widget.id !== res.chart.id),
+      );
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
   const toggleChartTypeMenu = () => {
     setOpenChartTypeMenu(!openChartTypeMenu);
   };
@@ -112,6 +124,10 @@ function Board() {
 
   const handleShowDataSources = () => {
     setIsDataSourcesModalOpen(true);
+  };
+
+  const handleRemoveChart = (id: string) => {
+    deleteChart({ chartId: id });
   };
 
   const getComponent = (
@@ -272,6 +288,7 @@ function Board() {
                   type: widget.type,
                   data,
                   chartProps: chartPropsPie,
+                  removeChart: handleRemoveChart,
                 });
               }
               return getComponent({
@@ -281,6 +298,7 @@ function Board() {
                 type: widget.type,
                 data,
                 chartProps,
+                removeChart: handleRemoveChart,
               });
             })}
         </ResponsiveReactGridLayout>
@@ -331,6 +349,5 @@ export default BoardPage;
       xIndex: maxXIndex - 7,
       yIndex: maxYIndex + 3,
     };
-
 
 */
