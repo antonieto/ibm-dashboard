@@ -19,6 +19,7 @@ import Chart from '../../lib/components/Chart/Chart';
 import { NextPageWithLayout } from '../_app';
 
 import { Chart as ChartModel } from '@/server/models';
+import TemporalDataSourcesListModal from '@/lib/components/TemporalDataSourcesListModal/TemporalDataSourcesListModal';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -63,6 +64,9 @@ function Board() {
   const params = useRouter().query;
   const [openChartTypeMenu, setOpenChartTypeMenu] = useState(false);
   const [isDataSourcesModalOpen, setIsDataSourcesModalOpen] = useState(false);
+  const [isTemporalDataSourcesModalOpen, setIsTemporalDataSourcesModalOpen] =
+    useState(false);
+  const [chartTypeCreate, setChartTypeCreate] = useState<ChartType>('bar');
   const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
   const router = useRouter();
 
@@ -117,7 +121,7 @@ function Board() {
     setOpenChartTypeMenu(false);
   };
 
-  const onAddChart = (type: ChartType) => {
+  const onAddChart = (type: ChartType, dataSourceId: string) => {
     const yIndex = Math.floor(widgetArray.length / cols.lg) * 3;
     createChart({
       boardId: params.id! as string,
@@ -127,7 +131,7 @@ function Board() {
       y: yIndex,
       width: 2,
       height: 3,
-      data_source_id: '6d463973-8fa3-4841-b610-f493d52ea089',
+      data_source_id: dataSourceId,
     });
   };
 
@@ -271,6 +275,14 @@ function Board() {
         isOpen={isDataSourcesModalOpen}
         onClose={() => setIsDataSourcesModalOpen(false)}
       />
+      <TemporalDataSourcesListModal
+        isOpen={isTemporalDataSourcesModalOpen}
+        onClose={() => setIsTemporalDataSourcesModalOpen(false)}
+        onSelectDataSource={(dataSourceId) => {
+          onAddChart(chartTypeCreate, dataSourceId);
+          setIsTemporalDataSourcesModalOpen(false);
+        }}
+      />
       <div>
         <ResponsiveReactGridLayout
           style={{ background: '#F4F5F5' }}
@@ -330,7 +342,13 @@ function Board() {
 
       {openChartTypeMenu && (
         <ChartTypeMenuContainer>
-          <ChartTypeMenu onSelect={onAddChart} onClose={closeChartTypeMenu} />
+          <ChartTypeMenu
+            onSelect={(type: ChartType) => {
+              setChartTypeCreate(type);
+              setIsTemporalDataSourcesModalOpen(true);
+            }}
+            onClose={closeChartTypeMenu}
+          />
         </ChartTypeMenuContainer>
       )}
 
@@ -355,23 +373,3 @@ const BoardPage: NextPageWithLayout = Board;
 
 BoardPage.getLayout = (page) => <TopLayout>{page}</TopLayout>;
 export default BoardPage;
-
-/*
-
-    const xIndexArray = widgetArray.map((widget) => widget.x);
-    const yIndexArray = widgetArray.map((widget) => widget.y);
-    const maxXIndex = Math.max(...xIndexArray);
-    const maxYIndex = Math.max(...yIndexArray);
-
-    if (maxXIndex < 7) {
-      return {
-        xIndex: maxXIndex + 2,
-        yIndex: maxYIndex,
-      };
-    }
-    return {
-      xIndex: maxXIndex - 7,
-      yIndex: maxYIndex + 3,
-    };
-
-*/
