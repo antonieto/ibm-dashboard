@@ -63,7 +63,6 @@ const chartRouter = router({
     .input(ChartSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        // const chartType: 'bar' | 'line' | 'pie' = input.type as 'bar' | 'line' | 'pie';
         const chart = await ctx.chartsRepository.updateChart({
           id: input.id,
           height: input.height,
@@ -76,7 +75,6 @@ const chartRouter = router({
           chart,
         };
       } catch (error) {
-        console.log(error);
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
       }
     }),

@@ -56,8 +56,6 @@ export class PrismaChartRepository implements IChartRepository {
         }
       }
 
-      console.log('chart: ', chart);
-
       const newChart = await this.db.charts.create({
         data: {
           board_id: chart.boardId,
@@ -82,7 +80,6 @@ export class PrismaChartRepository implements IChartRepository {
         type: ChartTypeMapInverted.get(newChart.type) || 'bar',
       };
     } catch (e) {
-      console.error(e);
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to create chart',

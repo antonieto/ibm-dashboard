@@ -19,7 +19,7 @@ export const MOCK_CHART_LIST = [
     height: 3,
     type: 'bar',
     removeChart: () => {
-      console.log('remove chart');
+      // remove chart
     },
     chartProps: {
       className: 'mt-6',
@@ -56,7 +56,7 @@ export const MOCK_CHART_LIST = [
     height: 3,
     type: 'line',
     removeChart: () => {
-      console.log('remove chart');
+      // remove chart
     },
     chartProps: {
       className: 'mt-6',
@@ -97,7 +97,7 @@ export const MOCK_CHART_LIST = [
     height: 3,
     type: 'pie',
     removeChart: () => {
-      console.log('remove chart');
+      // remove chart
     },
     chartProps: {
       className: 'mt-6',
@@ -141,7 +141,7 @@ export const MOCK_CHART_LIST = [
     height: 3,
     type: 'bar',
     removeChart: () => {
-      console.log('remove chart');
+      // remove chart
     },
     chartProps: {
       className: 'mt-6',
@@ -178,7 +178,7 @@ export const MOCK_CHART_LIST = [
     height: 3,
     type: 'line',
     removeChart: () => {
-      console.log('remove chart');
+      // remove chart
     },
     chartProps: {
       className: 'mt-6',

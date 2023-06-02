@@ -16,6 +16,10 @@ import ChartTypeMenu, {
 import { DataSourcesMenuModal } from '@/lib/components';
 import { Chart as ChartModel } from '@/server/models';
 import TemporalDataSourcesListModal from '@/lib/components/TemporalDataSourcesListModal/TemporalDataSourcesListModal';
+import {
+  ChartProps,
+  ChartPropsPie,
+} from '@/lib/components/BoardList/MOCK_CHART_PROPS';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import Chart from '../../lib/components/Chart/Chart';
 import { NextPageWithLayout } from '../_app';
@@ -68,7 +72,6 @@ function Board() {
   const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
   const router = useRouter();
 
-  // const widgetArray = MOCK_CHART_LIST;
   const { data: widgetArrayRes } = trpc.charts.getCharts.useQuery({
     boardId: params.id! as string,
   });
@@ -82,34 +85,19 @@ function Board() {
 
   const { mutate: createChart } = trpc.charts.addChart.useMutation({
     onSuccess: (res) => {
-      console.log('Success!', res);
       setWidgetArray([...widgetArray, res.chart]);
-    },
-    onError: (error) => {
-      console.log(error);
     },
   });
 
   const { mutate: deleteChart } = trpc.charts.deleteChart.useMutation({
     onSuccess: (res) => {
-      console.log('Success!');
       setWidgetArray(
         widgetArray.filter((widget) => widget.id !== res.chart.id),
       );
     },
-    onError: (error) => {
-      console.log(error);
-    },
   });
 
-  const { mutate: updateChart } = trpc.charts.updateChart.useMutation({
-    onSuccess: () => {
-      console.log('Update Success!');
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
+  const { mutate: updateChart } = trpc.charts.updateChart.useMutation({});
 
   const toggleChartTypeMenu = () => {
     setOpenChartTypeMenu(!openChartTypeMenu);
@@ -169,36 +157,6 @@ function Board() {
   };
 
   const boardId = router.query.id as string;
-  interface ChartProps {
-    className: string;
-    index: string;
-    categories: string[];
-    colors: (
-      | 'blue'
-      | 'cyan'
-      | 'fuchsia'
-      | 'gray'
-      | 'green'
-      | 'indigo'
-      | 'lime'
-      | 'orange'
-      | 'pink'
-      | 'purple'
-      | 'red'
-      | 'teal'
-      | 'violet'
-      | 'yellow'
-      | 'slate'
-      | 'zinc'
-      | 'neutral'
-      | 'stone'
-      | 'amber'
-      | 'emerald'
-      | 'sky'
-      | 'rose'
-    )[];
-    yAxisWidth: number;
-  }
 
   const chartProps: ChartProps = {
     className: 'mt-6',
@@ -207,37 +165,6 @@ function Board() {
     colors: ['blue'],
     yAxisWidth: 48,
   };
-
-  interface ChartPropsPie {
-    className: string;
-    index: string;
-    category: string;
-    colors: (
-      | 'blue'
-      | 'cyan'
-      | 'fuchsia'
-      | 'gray'
-      | 'green'
-      | 'indigo'
-      | 'lime'
-      | 'orange'
-      | 'pink'
-      | 'purple'
-      | 'red'
-      | 'teal'
-      | 'violet'
-      | 'yellow'
-      | 'slate'
-      | 'zinc'
-      | 'neutral'
-      | 'stone'
-      | 'amber'
-      | 'emerald'
-      | 'sky'
-      | 'rose'
-    )[];
-    yAxisWidth: number;
-  }
 
   const chartPropsPie: ChartPropsPie = {
     className: 'mt-6',
