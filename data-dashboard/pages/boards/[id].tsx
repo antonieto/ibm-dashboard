@@ -16,10 +16,6 @@ import ChartTypeMenu, {
 import { DataSourcesMenuModal } from '@/lib/components';
 import { Chart as ChartModel } from '@/server/models';
 import TemporalDataSourcesListModal from '@/lib/components/TemporalDataSourcesListModal/TemporalDataSourcesListModal';
-import {
-  ChartProps,
-  ChartPropsPie,
-} from '@/lib/components/BoardList/MOCK_CHART_PROPS';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import Chart from '../../lib/components/Chart/Chart';
 import { NextPageWithLayout } from '../_app';
@@ -55,13 +51,62 @@ const ChartTypeMenuContainer = styled.div`
   left: 20px;
 `;
 
-type DataGridProps = {
+type GridElementProps = {
   id: string;
   xIndex: number;
   yIndex: number;
   width: number;
   height: number;
 };
+
+const MOCK_CHART_DATA = [
+  {
+    name: 'Mammals',
+    'Number of threatened species': 10,
+  },
+  {
+    name: 'Birds',
+    'Number of threatened species': 20,
+  },
+  {
+    name: 'Reptiles',
+    'Number of threatened species': 30,
+  },
+  {
+    name: 'Amphibians',
+    'Number of threatened species': 40,
+  },
+];
+function getGridChartItem({
+  gridElement,
+  chartProps,
+}: {
+  gridElement: GridElementProps;
+  chartProps: React.ComponentProps<typeof Chart>;
+}) {
+  const { id, xIndex, yIndex, width, height } = gridElement;
+
+  return (
+    <div
+      key={id}
+      data-grid={{
+        x: xIndex,
+        y: yIndex,
+        w: width,
+        h: height,
+        i: id,
+        maxW: Infinity,
+        minW: 2,
+        maxH: Infinity,
+        minH: 3,
+        isDraggable: true,
+        isResizable: true,
+      }}
+    >
+      <Chart key={id} {...chartProps} />
+    </div>
+  );
+}
 
 function Board() {
   const params = useRouter().query;
@@ -73,7 +118,7 @@ function Board() {
   const router = useRouter();
 
   const { data: widgetArrayRes } = trpc.charts.getCharts.useQuery({
-    boardId: params.id! as string,
+    boardId: params.id as string,
   });
   const [widgetArray, setWidgetArray] = useState<ChartModel[]>([]);
 
@@ -110,7 +155,7 @@ function Board() {
   const onAddChart = (type: ChartType, dataSourceId: string) => {
     const yIndex = Math.floor(widgetArray.length / cols.lg) * 3;
     createChart({
-      boardId: params.id! as string,
+      boardId: params.id as string,
       type,
       title: 'New Chart',
       x: (widgetArray.length * 2) % cols.lg,
@@ -129,69 +174,7 @@ function Board() {
     deleteChart({ chartId: id });
   };
 
-  const getComponent = (
-    widget: DataGridProps & React.ComponentProps<typeof Chart>,
-  ) => {
-    const { id, xIndex, yIndex, width, height } = widget;
-
-    return (
-      <div
-        key={id}
-        data-grid={{
-          x: xIndex,
-          y: yIndex,
-          w: width,
-          h: height,
-          i: id,
-          maxW: Infinity,
-          minW: 2,
-          maxH: Infinity,
-          minH: 3,
-          isDraggable: true,
-          isResizable: true,
-        }}
-      >
-        <Chart key={id} {...widget} />
-      </div>
-    );
-  };
-
   const boardId = router.query.id as string;
-
-  const chartProps: ChartProps = {
-    className: 'mt-6',
-    index: 'name',
-    categories: ['Number of threatened species'],
-    colors: ['blue'],
-    yAxisWidth: 48,
-  };
-
-  const chartPropsPie: ChartPropsPie = {
-    className: 'mt-6',
-    index: 'name',
-    category: 'Number of threatened species',
-    colors: ['blue'],
-    yAxisWidth: 48,
-  };
-
-  const data = [
-    {
-      name: 'Mammals',
-      'Number of threatened species': 10,
-    },
-    {
-      name: 'Birds',
-      'Number of threatened species': 20,
-    },
-    {
-      name: 'Reptiles',
-      'Number of threatened species': 30,
-    },
-    {
-      name: 'Amphibians',
-      'Number of threatened species': 40,
-    },
-  ];
 
   return (
     <Container>
@@ -239,29 +222,29 @@ function Board() {
           cols={cols}
           margin={margin}
         >
-          {widgetArray !== undefined
-            && widgetArray.map((widget: ChartModel) => {
-              if (widget.type === 'pie') {
-                return getComponent({
-                  ...widget,
-                  xIndex: widget.x,
-                  yIndex: widget.y,
-                  type: widget.type,
-                  data,
-                  chartProps: chartPropsPie,
-                  removeChart: handleRemoveChart,
-                });
-              }
-              return getComponent({
-                ...widget,
-                xIndex: widget.x,
-                yIndex: widget.y,
+          {widgetArray.map((widget) => getGridChartItem({
+            chartProps: {
+              id: widget.id,
+              data: MOCK_CHART_DATA,
+              removeChart: handleRemoveChart,
+              settings: {
+                categories: ['Number of threatened species'],
+                colors: ['blue', 'pink'],
+                index: 'name',
+                twClassName: 'mt-6',
                 type: widget.type,
-                data,
-                chartProps,
-                removeChart: handleRemoveChart,
-              });
-            })}
+                yAxisWidth: widget.width,
+              },
+              title: 'New chart',
+            },
+            gridElement: {
+              height: widget.height,
+              id: widget.id,
+              width: widget.width,
+              xIndex: widget.x,
+              yIndex: widget.y,
+            },
+          }))}
         </ResponsiveReactGridLayout>
       </div>
 
