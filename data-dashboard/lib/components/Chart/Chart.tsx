@@ -8,85 +8,62 @@ import 'react-resizable/css/styles.css';
 
 type ChartType = 'bar' | 'line' | 'pie';
 
-interface ChartProps {
-  className?: string;
-  index: string;
-  colors: (
-    | 'slate'
-    | 'gray'
-    | 'zinc'
-    | 'neutral'
-    | 'stone'
-    | 'red'
-    | 'orange'
-    | 'amber'
-    | 'yellow'
-    | 'lime'
-    | 'green'
-    | 'emerald'
-    | 'teal'
-    | 'cyan'
-    | 'sky'
-    | 'blue'
-    | 'indigo'
-    | 'violet'
-    | 'purple'
-    | 'fuchsia'
-    | 'pink'
-    | 'rose'
-  )[];
-  yAxisWidth?: number;
-}
-
-interface BarChartProps extends ChartProps {
-  categories: string[];
-}
-
-interface PieChartProps extends ChartProps {
-  category: string;
-}
-
-interface ChartData {
+type ChartData = {
   [index: string]: number | string;
-}
+};
 
-type TypeChartProps =
-  | {
-      type: 'bar';
-      chartProps: BarChartProps;
-    }
-  | {
-      type: 'line';
-      chartProps: BarChartProps;
-    }
-  | {
-      type: 'pie';
-      chartProps: PieChartProps;
-    };
+type ChartColor =
+  | 'slate'
+  | 'gray'
+  | 'zinc'
+  | 'neutral'
+  | 'stone'
+  | 'red'
+  | 'orange'
+  | 'amber'
+  | 'yellow'
+  | 'lime'
+  | 'green'
+  | 'emerald'
+  | 'teal'
+  | 'cyan'
+  | 'sky'
+  | 'blue'
+  | 'indigo'
+  | 'violet'
+  | 'purple'
+  | 'fuchsia'
+  | 'pink'
+  | 'rose';
 
-type Props = {
+type ChartSettings = {
+  colors: ChartColor[];
+  type: ChartType;
+  twClassName: string;
+  index: string;
+  yAxisWidth: number;
+  categories: string[];
+};
+
+interface Props {
   id: string;
   title: string;
   data: ChartData[];
   removeChart: (id: string) => void;
-} & TypeChartProps;
-
-const chartTypeMap = new Map<ChartType, any>([
-  ['bar', BarChart],
-  ['line', LineChart],
-  ['pie', DonutChart],
-]);
+  settings: ChartSettings;
+}
 
 export default function Chart({
   id,
-  type,
   title,
-  chartProps,
+  settings,
   data,
   removeChart,
 }: Props): JSX.Element {
-  if (chartTypeMap.has(type as ChartType) === false) {
-    throw new Error(`Chart type ${type} is not supported`);
+  const firstCategory = settings.categories[0];
+
+  if (settings.type === 'pie' && firstCategory === undefined) {
+    throw new Error('Pie chart needs at least one category');
   }
 
   return (
@@ -96,9 +73,28 @@ export default function Chart({
         removeChart(id);
       }}
     >
-      {type === 'bar' && <BarChart {...chartProps} data={data} />}
-      {type === 'line' && <LineChart {...chartProps} data={data} />}
-      {type === 'pie' && <DonutChart {...chartProps} data={data} />}
+      {settings.type === 'bar' && (
+        <BarChart
+          {...{ ...settings, className: settings.twClassName }}
+          data={data}
+        />
+      )}
+      {settings.type === 'line' && (
+        <LineChart
+          {...{ ...settings, className: settings.twClassName }}
+          data={data}
+        />
+      )}
+      {settings.type === 'pie' && (
+        <DonutChart
+          {...{
+            ...settings,
+            className: settings.twClassName,
+            category: firstCategory,
+          }}
+          data={data}
+        />
+      )}
     </ChartCard>
   );
 }
