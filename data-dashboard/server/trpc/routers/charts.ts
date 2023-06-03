@@ -8,6 +8,10 @@ const GetAllByBoardIdSchema = z.object({
   boardId: z.string(),
 });
 
+const GetChartDataSchema = z.object({
+  chartId: z.string().uuid(),
+});
+
 const DeleteChartSchema = z.object({
   chartId: z.string(),
 });
@@ -28,7 +32,11 @@ const AddChartSchema = z.object({
   title: z.string(),
   x: z.number(),
   y: z.number(),
-  type: z.string(),
+  type: z.union([
+    z.literal('bar'),
+    z.literal('line'),
+    z.literal('pie'),
+  ]),
 });
 
 const chartRouter = router({
@@ -82,7 +90,6 @@ const chartRouter = router({
     .input(AddChartSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const chartType: 'bar' | 'line' | 'pie' = input.type as 'bar' | 'line' | 'pie';
         const chart = await ctx.chartsRepository.addChart({
           boardId: input.boardId,
           data_source_id: input.data_source_id,
@@ -91,7 +98,7 @@ const chartRouter = router({
           title: input.title,
           x: input.x,
           y: input.y,
-          type: chartType,
+          type: input.type,
           id: randomUUID(),
         });
         return {
@@ -102,6 +109,19 @@ const chartRouter = router({
         console.log(error);
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message });
       }
+    }),
+  getChartData: privateProcedure
+    .input(GetChartDataSchema)
+    .query(async ({ ctx, input }) => {
+      const user = ctx.user();
+      const { chartId } = input;
+      const charts = await ctx.dataSourcesRepository.list();
+      // TODO: get chart and serialize
+      return {
+        chartId,
+        user,
+        charts,
+      };
     }),
 
 });
