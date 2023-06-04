@@ -9,7 +9,7 @@ const GetAllByBoardIdSchema = z.object({
 });
 
 const GetChartDataSchema = z.object({
-  chartId: z.string().uuid(),
+  chartId: z.string(),
 });
 
 const DeleteChartSchema = z.object({
@@ -115,6 +115,8 @@ const chartRouter = router({
     .query(async ({ ctx, input }) => {
       const user = ctx.user();
       const { chartId } = input;
+      await ctx.chartSerializer.buildChart('Deudas2.xlsx');
+
       const charts = await ctx.dataSourcesRepository.list();
       // TODO: get chart and serialize
       return {

@@ -9,3 +9,9 @@ export type Chart = {
   y: number;
   type: 'bar' | 'line' | 'pie';
 };
+
+export type ChartData = {
+  chartId: string;
+  data: Record<string, string | number>;
+  categories: (keyof ChartData['data'])[];
+}

@@ -1,8 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { XLSX_FILE_TYPE } from '@/lib/constants';
 import { privateProcedure, router } from '..';
-
-const XLSX_FILE_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
 const CreateDataSourceSchema = z.object({
   boardId: z.string(),
