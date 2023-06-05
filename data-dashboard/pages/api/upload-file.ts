@@ -1,6 +1,6 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { createContext } from '@/server/trpc/context';
 import formidable from 'formidable';
+import withContext from '@/lib/utils/withContext';
+import * as fs from 'fs';
 
 export const config = {
   api: {
@@ -8,22 +8,31 @@ export const config = {
   },
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const context = await createContext({ req, res });
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
+export default withContext(async ({ fileStorage, res, req, user }) => {
+  if (!(await user())) {
+    return res.status(401).json({ error: 'Unauthorized' });
   }
-
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
   const form = new formidable.IncomingForm();
 
-  form.parse(req, (err, fields, files) => {
-    if (err !== null) {
-      return res.status(500).json({ message: 'Error uploading file' });
+  return form.parse(req, async (err, _, files) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
     }
-    const { file } = files as { file: formidable.File };
-    console.log({ file, fields, context });
-    return res.status(200).json({ message: 'File uploaded successfully' });
-  });
+    const file = files.file as formidable.File;
+    const { originalFilename } = file;
+    if (!originalFilename) {
+      return res.status(400).json({ error: 'No file provided' });
+    }
 
-  return res.status(200).json({ message: 'File uploaded successfully' });
-}
+    console.log({ file });
+
+    const buffer = fs.readFileSync(file.filepath);
+
+    const handle = await fileStorage.uploadFile(originalFilename, buffer);
+
+    return res.status(200).json({ handle });
+  });
+});
