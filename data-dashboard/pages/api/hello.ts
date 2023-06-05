@@ -1,13 +1,7 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next';
+import withContext from '@/lib/utils/withContext';
 
-type Data = {
-  name: string
-}
-
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>,
-) {
-  res.status(200).json({ name: 'John Doe' });
-}
+export default withContext(async ({ user, res, usersRepository }) => {
+  const users = await usersRepository.findAll();
+  const userData = await user();
+  return res.status(200).json({ hello: 'world', user: userData, users });
+});
