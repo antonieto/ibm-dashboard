@@ -8,6 +8,12 @@ const GetAllByBoardIdSchema = z.object({
   boardId: z.string(),
 });
 
+// Disabling eslint, we are going to use this schema eventually
+// eslint-disable-next-line
+const GetChartDataSchema = z.object({
+  chartId: z.string(),
+});
+
 const DeleteChartSchema = z.object({
   chartId: z.string(),
 });
@@ -28,7 +34,11 @@ const AddChartSchema = z.object({
   title: z.string(),
   x: z.number(),
   y: z.number(),
-  type: z.string(),
+  type: z.union([
+    z.literal('bar'),
+    z.literal('line'),
+    z.literal('pie'),
+  ]),
 });
 
 const chartRouter = router({
@@ -82,7 +92,6 @@ const chartRouter = router({
     .input(AddChartSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const chartType: 'bar' | 'line' | 'pie' = input.type as 'bar' | 'line' | 'pie';
         const chart = await ctx.chartsRepository.addChart({
           boardId: input.boardId,
           data_source_id: input.data_source_id,
@@ -91,7 +100,7 @@ const chartRouter = router({
           title: input.title,
           x: input.x,
           y: input.y,
-          type: chartType,
+          type: input.type,
           id: randomUUID(),
         });
         return {
@@ -103,7 +112,6 @@ const chartRouter = router({
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message });
       }
     }),
-
 });
 
 export default chartRouter;

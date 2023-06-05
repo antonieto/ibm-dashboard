@@ -8,9 +8,7 @@ import 'react-resizable/css/styles.css';
 
 type ChartType = 'bar' | 'line' | 'pie';
 
-type ChartData = {
-  [index: string]: number | string;
-};
+type ChartData = Record<string, string | number>;
 
 type ChartColor =
   | 'slate'

@@ -1,6 +1,6 @@
 import { trpc } from '@/lib/hooks';
 import styled from 'styled-components';
-import fileToBase64 from '@/lib/base64';
+import { useCallback } from 'react';
 import ModalContainer from '../ModalContainer/ModalContainer';
 import IbmTabs, { Tab } from '../IbmTabs';
 import DataSourceItem from '../DataSourceItem/DataSourceItem';
@@ -44,6 +44,23 @@ export default function DataSourcesMenuModal({
   const { data } = trpc.dataSources.listPrivateDataSources.useQuery();
   const { mutate } = trpc.dataSources.createDataSource.useMutation();
 
+  const handleUpload = useCallback(async (file: File) => {
+    const form = new FormData();
+    form.append('file', file);
+    try {
+      const res = await fetch('/api/upload-file', {
+        method: 'POST',
+        body: form,
+      });
+
+      const { handle } = await res.json() as { handle: string };
+      console.log({ handle });
+      mutate({ boardId, fileHandle: handle, fileName: file.name });
+    } catch (e) {
+      console.log('Failed to upload file', e);
+    }
+  }, [mutate, boardId]);
+
   return (
     <ModalContainer open={isOpen} onClose={onClose}>
       <Drawer>
@@ -56,10 +73,7 @@ export default function DataSourcesMenuModal({
           <IbmTabs>
             <Tab title="Tus fuentes de datos">
               <AddNewDataSourceRow
-                onSelectFile={async (file) => {
-                  const encoded = await fileToBase64(file);
-                  mutate({ boardId, fileName: file.name, encodedFile: encoded });
-                }}
+                onSelectFile={handleUpload}
               />
               {data?.dataSources.map((dataSource) => (
                 <RowContainer>
