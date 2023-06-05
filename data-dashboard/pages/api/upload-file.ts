@@ -27,8 +27,6 @@ export default handlerWithAuth(async ({ fileStorage, res, req, user }) => {
       return res.status(400).json({ error: 'No file provided' });
     }
 
-    console.log({ file });
-
     const buffer = fs.readFileSync(file.filepath);
 
     const handle = await fileStorage.uploadFile(originalFilename, buffer);
