@@ -1,5 +1,12 @@
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
+import { XLSX_FILE_TYPE } from '@/lib/constants';
 import env from '@/lib/env';
+
+export interface StorageService {
+  uploadFile(fileName: string, fileBuffer: Buffer): Promise<string>;
+  getFiles(): Promise<string[]>;
+  readFile(fileHandle: string): Promise<Buffer>;
+}
 
 export default class AzureStorageService {
   private readonly blobServiceClient: BlobServiceClient;
@@ -19,7 +26,15 @@ export default class AzureStorageService {
 
       await this.containerClient
         .getBlockBlobClient(blobName)
-        .upload(fileBuffer, fileBuffer.length);
+        .upload(
+          fileBuffer,
+          fileBuffer.length,
+          {
+            blobHTTPHeaders: {
+              blobContentType: XLSX_FILE_TYPE,
+            },
+          },
+        );
 
       return blobName;
     } catch (err) {
@@ -37,6 +52,16 @@ export default class AzureStorageService {
       return files;
     } catch (e) {
       return [];
+    }
+  }
+
+  async readFile(handle: string): Promise<Buffer> {
+    try {
+      const blobClient = this.containerClient.getBlobClient(handle);
+      const buffer = await blobClient.downloadToBuffer();
+      return buffer;
+    } catch (err) {
+      throw new Error('Failed to read file');
     }
   }
 

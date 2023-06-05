@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import type { Chart } from '../models';
-import { type } from 'os';
 
 export interface IChartRepository {
   getAllByBoardId(boardId: string): Promise<Chart[]>;

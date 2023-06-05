@@ -2,11 +2,9 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { privateProcedure, router } from '..';
 
-const XLSX_FILE_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-
 const CreateDataSourceSchema = z.object({
   boardId: z.string(),
-  encodedFile: z.string(), // base64 encoded file
+  fileHandle: z.string(),
   fileName: z.string(),
 });
 
@@ -43,7 +41,7 @@ const dataSourcesRouter = router({
     .mutation(async ({ ctx, input }) => {
       try {
         const user = await ctx.user();
-        const { encodedFile, boardId } = input;
+        const { fileHandle, fileName, boardId } = input;
 
         const board = await ctx.boardsRepository.findOne(input.boardId);
 
@@ -52,17 +50,6 @@ const dataSourcesRouter = router({
             code: 'FORBIDDEN',
           });
         }
-
-        if (!encodedFile.startsWith(`data:${XLSX_FILE_TYPE};base64,`)) {
-          throw new TRPCError({
-            code: 'BAD_REQUEST',
-            message: 'File is not of type XLSX',
-          });
-        }
-
-        const fileBuffer = Buffer.from(encodedFile, 'base64');
-        const { fileName } = input;
-        const fileHandle = await ctx.fileStorage.uploadFile(fileName, fileBuffer);
 
         const createdDataSource = ctx.dataSourcesRepository.create({
           boardId,
