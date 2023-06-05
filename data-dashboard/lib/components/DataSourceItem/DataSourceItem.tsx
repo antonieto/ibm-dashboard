@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import ExcelIcon from '../ExcelIcon/ExcelIcon';
 
 interface Props {
+  // Disabling eslint. Will use id later
+  // eslint-disable-next-line
   id: string;
   fileName: string;
   createdAt: Date;
@@ -57,8 +59,7 @@ const IconsContainer = styled.div`
   gap: 10px;
 `;
 
-export default function DataSourceItem({ id, fileName, createdAt }: Props) {
-  console.log(id);
+export default function DataSourceItem({ fileName, createdAt }: Props) {
   return (
     <Row>
       <DataSourceFlexContainer>

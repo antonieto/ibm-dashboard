@@ -8,6 +8,8 @@ const GetAllByBoardIdSchema = z.object({
   boardId: z.string(),
 });
 
+// Disabling eslint, we are going to use this schema eventually
+// eslint-disable-next-line
 const GetChartDataSchema = z.object({
   chartId: z.string(),
 });
@@ -110,22 +112,6 @@ const chartRouter = router({
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message });
       }
     }),
-  getChartData: privateProcedure
-    .input(GetChartDataSchema)
-    .query(async ({ ctx, input }) => {
-      const user = ctx.user();
-      const { chartId } = input;
-      await ctx.chartSerializer.buildChart('Deudas2.xlsx');
-
-      const charts = await ctx.dataSourcesRepository.list();
-      // TODO: get chart and serialize
-      return {
-        chartId,
-        user,
-        charts,
-      };
-    }),
-
 });
 
 export default chartRouter;

@@ -1,6 +1,6 @@
 import formidable from 'formidable';
-import withContext from '@/lib/utils/withContext';
 import * as fs from 'fs';
+import handlerWithAuth from '@/lib/utils/handlerWithAuth';
 
 export const config = {
   api: {
@@ -8,7 +8,7 @@ export const config = {
   },
 };
 
-export default withContext(async ({ fileStorage, res, req, user }) => {
+export default handlerWithAuth(async ({ fileStorage, res, req, user }) => {
   if (!(await user())) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
