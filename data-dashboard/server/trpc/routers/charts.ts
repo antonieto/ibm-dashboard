@@ -112,6 +112,21 @@ const chartRouter = router({
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message });
       }
     }),
+  getChartData: privateProcedure
+    .input(GetChartDataSchema)
+    .query(async ({ ctx, input }) => {
+      const user = await ctx.user();
+      const chartModel = await ctx.chartsRepository.getById(input.chartId);
+      if (!chartModel) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Chart data was not found' });
+      }
+      const serialized = await ctx.chartSerializer.buildChart('');
+      return {
+        user,
+        chart: chartModel,
+        serialized,
+      };
+    }),
 });
 
 export default chartRouter;
