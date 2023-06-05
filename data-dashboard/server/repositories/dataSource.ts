@@ -5,6 +5,7 @@ export interface DataSourceRepository {
   list(): Promise<DataSource[]>;
   listByUserId(userId: string): Promise<DataSource[]>;
   listPublic(): Promise<DataSource[]>;
+  getById(dataSourceId: string): Promise<DataSource | null>;
   create(dataSource: Pick<DataSource, 'externalHandle' | 'fileName' | 'boardId'>): Promise<DataSource>;
 }
 
@@ -13,6 +14,25 @@ export class PrismaDataSourceRepository implements DataSourceRepository {
 
   constructor(db: PrismaClient) {
     this.db = db;
+  }
+
+  async getById(dataSourceId: string): Promise<DataSource | null> {
+    try {
+      const fetchedDataSource = await this.db.data_sources.findUnique({ where: { data_source_id: dataSourceId } });
+      if (!fetchedDataSource) {
+        return null;
+      }
+      return {
+        id: fetchedDataSource.data_source_id,
+        createdAt: new Date(fetchedDataSource.createdAt),
+        externalHandle: fetchedDataSource.external_handle,
+        fileName: fetchedDataSource.file_name,
+        name: fetchedDataSource.file_name,
+        boardId: fetchedDataSource.board_id,
+      };
+    } catch (e) {
+      return null;
+    }
   }
 
   async list(): Promise<DataSource[]> {

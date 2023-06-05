@@ -1,12 +1,16 @@
 import { PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import type { Chart } from '../models';
+import type { Chart, ChartSettings } from '../models';
 
 export interface IChartRepository {
   getAllByBoardId(boardId: string): Promise<Chart[]>;
   addChart(chart: Chart): Promise<Chart>;
-  deleteChart(chartId: string): Promise<{id:string}>;
-  updateChart(chart: Pick<Chart, 'id' | 'x' | 'y' | 'width' | 'height'>): Promise<Chart>;
+  deleteChart(chartId: string): Promise<{ id: string }>;
+  updateChart(
+    chart: Pick<Chart, 'id' | 'x' | 'y' | 'width' | 'height'>
+  ): Promise<Chart>;
+  getById(chartId: string): Promise<Chart | null>;
+  getChartSettingsByChartId(chartId: string): Promise<ChartSettings | null>;
 }
 
 const ChartTypeMap = new Map<string, 'BAR_CHART' | 'LINE_CHART' | 'PIE_CHART'>([
@@ -26,6 +30,52 @@ export class PrismaChartRepository implements IChartRepository {
 
   constructor(db: PrismaClient) {
     this.db = db;
+  }
+
+  async getById(chartId: string): Promise<Chart | null> {
+    try {
+      const fetchedChart = await this.db.charts.findUnique({
+        where: { chart_id: chartId },
+      });
+      if (!fetchedChart) {
+        return null;
+      }
+      const chartType = ChartTypeMapInverted.get(fetchedChart.type);
+      if (!chartType) {
+        throw new Error(
+          `Stored chart type is invalid (stored type is ${fetchedChart.type})`,
+        );
+      }
+
+      return {
+        id: fetchedChart.chart_id,
+        title: fetchedChart.title,
+        boardId: fetchedChart.board_id,
+        data_source_id: fetchedChart.data_source_id,
+        height: fetchedChart.height,
+        width: fetchedChart.width,
+        type: chartType,
+        x: fetchedChart.x_index,
+        y: fetchedChart.y_index,
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async getChartSettingsByChartId(chartId: string): Promise<ChartSettings | null> {
+    const settings = await this.db.chart_settings.findFirstOrThrow({
+      where: {
+        chart_id: chartId,
+      },
+      include: {
+        data_series: true,
+      },
+    });
+    return {
+      xAxisColumn: settings.x_axis_col,
+      yAxisColumns: settings.data_series.map((series) => series.y_axis_col),
+    };
   }
 
   async getAllByBoardId(boardId: string): Promise<Chart[]> {
@@ -86,7 +136,7 @@ export class PrismaChartRepository implements IChartRepository {
     }
   }
 
-  async deleteChart(chartId: string): Promise<{id:string}> {
+  async deleteChart(chartId: string): Promise<{ id: string }> {
     try {
       await this.db.charts.delete({
         where: {
@@ -104,7 +154,9 @@ export class PrismaChartRepository implements IChartRepository {
     }
   }
 
-  async updateChart(chart: Pick<Chart, 'id' | 'x' | 'y' | 'width' | 'height'>): Promise<Chart> {
+  async updateChart(
+    chart: Pick<Chart, 'id' | 'x' | 'y' | 'width' | 'height'>,
+  ): Promise<Chart> {
     try {
       const updatedChart = await this.db.charts.update({
         where: {

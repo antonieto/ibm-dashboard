@@ -2,6 +2,7 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { randomUUID } from 'crypto';
+import { ChartWithData } from '@/server/models';
 import { privateProcedure, router } from '..';
 
 const GetAllByBoardIdSchema = z.object({
@@ -110,6 +111,33 @@ const chartRouter = router({
       } catch (error:any) {
         console.log(error);
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message });
+      }
+    }),
+  getChartData: privateProcedure
+    .input(GetChartDataSchema)
+    .query<ChartWithData>(async ({ ctx, input }) => {
+      try {
+        const chartModel = await ctx.chartsRepository.getById(input.chartId);
+        if (!chartModel) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Chart data was not found' });
+        }
+        const dataSource = await ctx.dataSourcesRepository.getById(chartModel.data_source_id);
+        if (!dataSource) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Data source was not found' });
+        }
+        const settings = await ctx.chartsRepository.getChartSettingsByChartId(chartModel.id);
+        if (settings === null) {
+          throw new Error('Chart settings were not found');
+        }
+        const serializedData = await ctx.chartSerializer.buildChartData(chartModel, settings);
+
+        return {
+          ...chartModel,
+          ...serializedData,
+        };
+      } catch (e) {
+        console.log(e);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
       }
     }),
 });

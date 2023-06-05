@@ -34,7 +34,7 @@ export const initializeService = (): Service | null => {
     const fileStorage = new AzureStorageService(FILE_STORAGE_CONTAINER_NAME);
     const dataSourcesRepository = new PrismaDataSourceRepository(db);
     const chartsRepository = new PrismaChartRepository(db);
-    const chartSerializer = new ChartSerializer(fileStorage);
+    const chartSerializer = new ChartSerializer(fileStorage, dataSourcesRepository);
 
     return {
       boardsRepository,
