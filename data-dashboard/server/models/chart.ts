@@ -10,8 +10,18 @@ export type Chart = {
   type: 'bar' | 'line' | 'pie';
 };
 
+export type ChartSettings = {
+  xAxisColumn: number;
+  yAxisColumns: number[];
+}
+
+export type TData = Record<string, string | number>;
+
 export type ChartData = {
   chartId: string;
-  data: Record<string, string | number>;
-  categories: (keyof ChartData['data'])[];
+  index: string;
+  data: Array<TData>;
+  categories: Array<string>;
 }
+
+export type ChartWithData = Chart & Omit<ChartData, 'chartId'>;
