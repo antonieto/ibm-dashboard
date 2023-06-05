@@ -43,12 +43,10 @@ const Form = styled.form`
 `;
 
 const InputFields = styled.div`
-  display: inline-grid;
-  grid-template-rows: auto auto auto;
-  grid-auto-flow: column;
-  column-gap: 40px;
+  display: flex;
+  flex-direction: column;
   row-gap: 24px;
-  width: auto;
+  width: 300px;
 `;
 
 const ButtonStyle = {
@@ -81,6 +79,14 @@ const LinkStyle = {
   fontWeight: 'normal',
 };
 
+const Error = styled.div`
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  color: #e71d36;
+  margin-top: 8px;
+`;
+
 function SignUp() {
   const router = useRouter();
   const { mutate, data, isLoading } = trpc.auth.signup.useMutation({
@@ -90,11 +96,55 @@ function SignUp() {
   });
 
   const [credentials, setCredentials] = useState({
-    name: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
+
+  const [error, setError] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const validatePassword = (password: string) => {
+    const passwordRequirements = {
+      min: 8,
+      max: 24,
+      upper: 1,
+      lower: 1,
+      number: 1,
+      special: 1,
+    };
+    // Check password requirements one by one
+    if (password.length < passwordRequirements.min) {
+      return `La contraseña debe tener al menos ${passwordRequirements.min} caracteres`;
+    } else if (password.length > passwordRequirements.max) {
+      return `La contraseña debe tener menos de ${passwordRequirements.max} caracteres`;
+    } else if (password.length - password.replace(/[A-Z]/g, '').length < passwordRequirements.upper) {
+      return `La contraseña debe tener al menos ${passwordRequirements.upper} mayúscula`;
+    } else if (password.length - password.replace(/[a-z]/g, '').length < passwordRequirements.lower) {
+      return `La contraseña debe tener al menos ${passwordRequirements.lower} minúscula`;
+    } else if (password.length - password.replace(/[0-9]/g, '').length < passwordRequirements.number) {
+      return `La contraseña debe tener al menos ${passwordRequirements.number} número`;
+    } else if (password.length - password.replace(/[^a-zA-Z0-9]/g, '').length < passwordRequirements.special) {
+      return `La contraseña debe tener al menos ${passwordRequirements.special} caracter especial`;
+    }
+    return '';
+  };
+
+  const validateEmail = (email: string) => {
+    const emailRegex = new RegExp(
+      // eslint-disable-next-line no-control-regex
+      '^[a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]+@[a-zA-Z0-9]' +
+        '(?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?' +
+        '(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$',
+    );
+    if (!emailRegex.test(email)) {
+      return 'Ingresa un correo electrónico válido';
+    }
+    return '';
+  };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -102,6 +152,22 @@ function SignUp() {
       ...prevCredentials,
       [name]: value,
     }));
+    if (name === 'password') {
+      setError((prevError) => ({
+        ...prevError,
+        password: validatePassword(value),
+      }));
+    } else if (name === 'email') {
+      setError((prevError) => ({
+        ...prevError,
+        email: validateEmail(value),
+      }));
+    } else if (name === 'confirmPassword') {
+      setError((prevError) => ({
+        ...prevError,
+        confirmPassword: value !== credentials.password ? 'Las contraseñas no coinciden' : '',
+      }));
+    }
   };
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
@@ -146,6 +212,9 @@ function SignUp() {
                   required: true,
                 }}
               />
+              {
+                error.email && <Error>{error.email}</Error>
+              }
               <InputField
                 label="Contraseña"
                 name="password"
@@ -159,6 +228,9 @@ function SignUp() {
                   length: { min: 8, max: 24 },
                 }}
               />
+              {
+                error.password && <Error>{error.password}</Error>
+              }
               <InputField
                 label="Confirmar contraseña"
                 name="confirmPassword"
@@ -172,42 +244,9 @@ function SignUp() {
                   length: { min: 8, max: 24 },
                 }}
               />
-              <InputField
-                label="Nombre"
-                name="name"
-                inputChild={TextInput}
-                inputProps={{
-                  type: 'text',
-                  value: credentials.name,
-                  onChange: handleChange,
-                  placeholder: 'e.g. Jane',
-                  required: true,
-                }}
-              />
-              <InputField
-                label="Apellido Paterno"
-                name="firstLastName"
-                inputChild={TextInput}
-                inputProps={{
-                  type: 'text',
-                  value: credentials.name,
-                  onChange: handleChange,
-                  placeholder: 'e.g. Doe',
-                  required: true,
-                }}
-              />
-              <InputField
-                label="Apellido Materno"
-                name="secondLastName"
-                inputChild={TextInput}
-                inputProps={{
-                  type: 'text',
-                  value: credentials.name,
-                  onChange: handleChange,
-                  placeholder: 'e.g. Linn',
-                  required: true,
-                }}
-              />
+              {
+                error.confirmPassword && <Error>{error.confirmPassword}</Error>
+              }
             </InputFields>
             <IbmButton
               text="Crear cuenta"

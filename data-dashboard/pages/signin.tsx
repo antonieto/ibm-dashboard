@@ -9,6 +9,7 @@ import { IbmButton, TextInput, InputField } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
 import { NextPageWithLayout } from './_app';
+import { set } from 'zod';
 
 const Body = styled.main`
   display: grid;
@@ -37,7 +38,7 @@ const Description = styled.legend`
 
 const Form = styled.form`
   margin-top: 56px;
-  max-width: 500px;
+  max-width: 300px;
 `;
 
 const InputFields = styled.div`
@@ -79,13 +80,24 @@ const ImageStyle = {
   marginRight: '202px',
 };
 
+const ErrorMessage = styled.p`
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  color: #e71d36;
+  margin-top: 8px;
+`;
+
 function SignIn() {
   const router = useRouter();
+  const [error, setError] = useState(false);
   const { mutate } = trpc.auth.login.useMutation({
     onError(error) {
+      setError(true);
       console.log(error);
     },
     onSuccess() {
+      setError(false);
       toast.info('Successfully signed in!');
       router.push('/boards');
     },
@@ -146,6 +158,11 @@ function SignIn() {
                 }}
               />
             </InputFields>
+            {
+              error && (
+                <ErrorMessage>Lo sentimos, hubo un error en al iniciar sesión</ErrorMessage>
+              )
+            }
             <IbmButton
               text="Iniciar sesión"
               style={ButtonStyle}
