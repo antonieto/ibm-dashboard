@@ -89,9 +89,6 @@ const ErrorMessage = styled.p`
 function SignIn() {
   const router = useRouter();
   const { mutate, error } = trpc.auth.login.useMutation({
-    onError(error) {
-      console.log(error);
-    },
     onSuccess() {
       toast.info('Successfully signed in!');
       router.push('/boards');
@@ -155,7 +152,7 @@ function SignIn() {
             </InputFields>
             {
               error && (
-                <ErrorMessage className='error-message'>Lo sentimos, hubo un error en al iniciar sesión</ErrorMessage>
+                <ErrorMessage className="error-message">Lo sentimos, hubo un error en al iniciar sesión</ErrorMessage>
               )
             }
             <IbmButton
