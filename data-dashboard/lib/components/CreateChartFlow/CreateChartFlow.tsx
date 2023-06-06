@@ -1,8 +1,13 @@
+/* eslint-disable react/jsx-wrap-multilines */
 import styled from 'styled-components';
 import { Close } from '@carbon/icons-react';
 import ModalContainer from '../ModalContainer/ModalContainer';
 import IbmButton from '../IbmButton/IbmButton';
 import { ChartType } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
+import DataSourceOrigin from '../DataSourceOrigin/DataSourceOrigin';
+import { useState } from 'react';
+import DataSourceSelection from '../DataSourceSelection/DataSourceSelection';
+import ChartConfiguration from '../ChartConfiguration/ChartConfiguration';
 
 const Container = styled.div`
   background-color: #f8f8f8;
@@ -29,6 +34,17 @@ const Header = styled.div`
   padding: 0 20px;
 
   border-bottom: 1px solid #d2d3d4;
+`;
+
+const Body = styled.div`
+  width: 100%;
+  height: 93%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+
+  margin-top: 70px;
 `;
 
 const IconContainerButton = styled.div`
@@ -65,15 +81,26 @@ const GroupRowContainer = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 400;
   color: #4d4d4d;
 `;
 
 const TitleChartType = styled.div`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   color: #4d4d4d;
+`;
+
+const StepNumber = styled.div`
+  font-size: 16px;
+  color: #4d4d4d;
+`;
+
+const StepTitle = styled.div`
+  font-size: 24px;
+  font-weight: 600;
+  color: #393939;
 `;
 
 interface Props {
@@ -93,18 +120,81 @@ export default function CreateChartFlow({
   onClose,
   chartType,
 }: Props): JSX.Element {
+  const [step, setStep] = useState(1);
   const handleOnClose = () => {
+    setStep(1);
     onClose();
   };
 
+  const steps = [
+    {
+      title: 'Selecciona un tipo de gráfica',
+      component: (
+        <DataSourceOrigin
+          onConfirm={() => setStep(2)}
+          header={
+            <>
+              <StepNumber>Paso 1</StepNumber>
+              <StepTitle>Selecciona un tipo de gráfica</StepTitle>
+            </>
+          }
+        />
+      ),
+    },
+    {
+      title: 'Selecciona una fuente de datos',
+      component: (
+        <DataSourceSelection
+          onConfirm={() => setStep(3)}
+          header={
+            <>
+              <StepNumber>Paso 2</StepNumber>
+              <StepTitle>Selecciona una fuente de datos</StepTitle>
+            </>
+          }
+        />
+      ),
+    },
+    {
+      title: 'Configura la gráfica',
+      component: (
+        <ChartConfiguration
+          onConfirm={() => {
+            // Handle chart configuration confirmation
+            // You can perform necessary actions here
+          }}
+          header={
+            <>
+              <StepNumber>Paso 3</StepNumber>
+              <StepTitle>Configura la gráfica</StepTitle>
+            </>
+          }
+        />
+      ),
+    },
+  ];
+
+  const handleConfirm = () => {
+    if (step < steps.length) {
+      setStep(step + 1);
+    } else {
+      // All steps completed, perform final actions
+    }
+  };
+
+  const handleCreateChart = () => {
+    // Handle chart creation
+  };
+
   return (
-    <ModalContainer open={isOpen} onClose={onClose}>
+    <ModalContainer open={isOpen} onClose={handleOnClose}>
       <Container>
         <Header>
           <GroupRowContainer>
             <IconContainerButton onClick={handleOnClose}>
               <Close aria-label="close" size={24} />
             </IconContainerButton>
+
             <GroupRowContainer>
               <Title>Agregar grafica:</Title>
               <TitleChartType>
@@ -112,6 +202,7 @@ export default function CreateChartFlow({
               </TitleChartType>
             </GroupRowContainer>
           </GroupRowContainer>
+
           <GroupRowContainer>
             <IbmButton
               text="Cancelar"
@@ -122,24 +213,43 @@ export default function CreateChartFlow({
                 padding: '0 20px',
                 height: '100%',
                 width: '100px',
-
                 backgroundColor: '#4d4d4d',
               }}
+              onClick={handleOnClose}
             />
-            <IbmButton
-              text="Crear"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '0 20px',
-                height: '100%',
-                width: '100px',
-                opacity: 0.5,
-              }}
-            />
+            {step < steps.length ? (
+              <IbmButton
+                text="Siguiente"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: '0 20px',
+                  height: '100%',
+                  width: '100px',
+                  opacity: step === steps.length ? 0.5 : 1,
+                }}
+                onClick={handleConfirm}
+              />
+            ) : (
+              <IbmButton
+                text="Crear"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: '0 20px',
+                  height: '100%',
+                  width: '100px',
+                  backgroundColor: '#3CD05D',
+                }}
+                onClick={handleCreateChart}
+              />
+            )}
           </GroupRowContainer>
         </Header>
+
+        <Body>{steps[step - 1].component}</Body>
       </Container>
     </ModalContainer>
   );

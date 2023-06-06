@@ -16,7 +16,7 @@ const MenuContainer = styled.div`
 
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
-  border: 1px solid #d2d3d4;
+  border: 2px solid #d2d3d4;
 `;
 
 const MenuItem = styled.div`
