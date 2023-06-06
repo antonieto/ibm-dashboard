@@ -9,7 +9,6 @@ import { IbmButton, TextInput, InputField } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
 import { NextPageWithLayout } from './_app';
-import { set } from 'zod';
 
 const Body = styled.main`
   display: grid;
@@ -81,7 +80,6 @@ const ImageStyle = {
 };
 
 const ErrorMessage = styled.p`
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 14px;
   font-weight: normal;
   color: #e71d36;
@@ -90,14 +88,11 @@ const ErrorMessage = styled.p`
 
 function SignIn() {
   const router = useRouter();
-  const [error, setError] = useState(false);
-  const { mutate } = trpc.auth.login.useMutation({
+  const { mutate, error } = trpc.auth.login.useMutation({
     onError(error) {
-      setError(true);
       console.log(error);
     },
     onSuccess() {
-      setError(false);
       toast.info('Successfully signed in!');
       router.push('/boards');
     },
@@ -160,7 +155,7 @@ function SignIn() {
             </InputFields>
             {
               error && (
-                <ErrorMessage>Lo sentimos, hubo un error en al iniciar sesión</ErrorMessage>
+                <ErrorMessage className='error-message'>Lo sentimos, hubo un error en al iniciar sesión</ErrorMessage>
               )
             }
             <IbmButton

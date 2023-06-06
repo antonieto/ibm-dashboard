@@ -80,8 +80,7 @@ const LinkStyle = {
 };
 
 const Error = styled.div`
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: normal;
   color: #e71d36;
   margin-top: 8px;
@@ -119,15 +118,20 @@ function SignUp() {
     // Check password requirements one by one
     if (password.length < passwordRequirements.min) {
       return `La contraseña debe tener al menos ${passwordRequirements.min} caracteres`;
-    } else if (password.length > passwordRequirements.max) {
+    }
+    if (password.length > passwordRequirements.max) {
       return `La contraseña debe tener menos de ${passwordRequirements.max} caracteres`;
-    } else if (password.length - password.replace(/[A-Z]/g, '').length < passwordRequirements.upper) {
+    }
+    if (password.length - password.replace(/[A-Z]/g, '').length < passwordRequirements.upper) {
       return `La contraseña debe tener al menos ${passwordRequirements.upper} mayúscula`;
-    } else if (password.length - password.replace(/[a-z]/g, '').length < passwordRequirements.lower) {
+    }
+    if (password.length - password.replace(/[a-z]/g, '').length < passwordRequirements.lower) {
       return `La contraseña debe tener al menos ${passwordRequirements.lower} minúscula`;
-    } else if (password.length - password.replace(/[0-9]/g, '').length < passwordRequirements.number) {
+    }
+    if (password.length - password.replace(/[0-9]/g, '').length < passwordRequirements.number) {
       return `La contraseña debe tener al menos ${passwordRequirements.number} número`;
-    } else if (password.length - password.replace(/[^a-zA-Z0-9]/g, '').length < passwordRequirements.special) {
+    }
+    if (password.length - password.replace(/[^a-zA-Z0-9]/g, '').length < passwordRequirements.special) {
       return `La contraseña debe tener al menos ${passwordRequirements.special} caracter especial`;
     }
     return '';
@@ -136,9 +140,9 @@ function SignUp() {
   const validateEmail = (email: string) => {
     const emailRegex = new RegExp(
       // eslint-disable-next-line no-control-regex
-      '^[a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]+@[a-zA-Z0-9]' +
-        '(?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?' +
-        '(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$',
+      '^[a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]+@[a-zA-Z0-9]'
+      + '(?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?'
+      + '(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$',
     );
     if (!emailRegex.test(email)) {
       return 'Ingresa un correo electrónico válido';
@@ -213,7 +217,7 @@ function SignUp() {
                 }}
               />
               {
-                error.email && <Error>{error.email}</Error>
+                error.email && <Error className='error-message'>{error.email}</Error>
               }
               <InputField
                 label="Contraseña"
@@ -229,7 +233,7 @@ function SignUp() {
                 }}
               />
               {
-                error.password && <Error>{error.password}</Error>
+                error.password && <Error className='error-message'>{error.password}</Error>
               }
               <InputField
                 label="Confirmar contraseña"
@@ -245,7 +249,7 @@ function SignUp() {
                 }}
               />
               {
-                error.confirmPassword && <Error>{error.confirmPassword}</Error>
+                error.confirmPassword && <Error className='error-message'>{error.confirmPassword}</Error>
               }
             </InputFields>
             <IbmButton

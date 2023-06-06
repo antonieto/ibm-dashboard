@@ -113,6 +113,10 @@ a {
   text-decoration: none;
 }
 
+.error-message {
+  font-family: 'Verdana', 'Geneva', 'Tahoma', sans-serif;
+}
+
 /*
 @media (prefers-color-scheme: dark) {
   html {
