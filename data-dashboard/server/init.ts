@@ -6,6 +6,8 @@ import { DataSourceRepository, PrismaDataSourceRepository } from './repositories
 import AzureStorageService, { StorageService } from './services/storageService';
 import { IChartRepository, PrismaChartRepository } from './repositories/chart';
 import ChartSerializer from './services/chartSerializer';
+import CacheService, { RedisCacheService } from './services/cacheService';
+import createRedisClient from './internal/redis';
 
 const FILE_STORAGE_CONTAINER_NAME = 'data-sources';
 
@@ -16,9 +18,10 @@ export interface Service {
   dataSourcesRepository: DataSourceRepository;
   chartsRepository: IChartRepository;
   chartSerializer: ChartSerializer;
+  cacheService: CacheService;
 }
 
-export const initializeService = (): Service | null => {
+export const initializeService = async (): Promise<Service | null> => {
   if (process.env.DATABASE_URL === undefined) throw new Error('DATABASE_URL is undefined');
   try {
     const db = new PrismaClient({
@@ -29,12 +32,15 @@ export const initializeService = (): Service | null => {
       },
     });
 
+    const redisClient = await createRedisClient();
+
     const boardsRepository = new PrismaBoardRepository(db);
     const usersRepository = new PrismaUserRepository(db);
     const fileStorage = new AzureStorageService(FILE_STORAGE_CONTAINER_NAME);
     const dataSourcesRepository = new PrismaDataSourceRepository(db);
     const chartsRepository = new PrismaChartRepository(db);
     const chartSerializer = new ChartSerializer(fileStorage, dataSourcesRepository);
+    const cacheService = new RedisCacheService(redisClient);
 
     return {
       boardsRepository,
@@ -43,6 +49,7 @@ export const initializeService = (): Service | null => {
       dataSourcesRepository,
       chartsRepository,
       chartSerializer,
+      cacheService,
     };
   } catch (e) {
     console.error(e);
