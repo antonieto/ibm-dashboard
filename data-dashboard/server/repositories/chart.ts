@@ -59,6 +59,7 @@ export class PrismaChartRepository implements IChartRepository {
         y: fetchedChart.y_index,
       };
     } catch (e) {
+      console.log('Error was ', e);
       return null;
     }
   }

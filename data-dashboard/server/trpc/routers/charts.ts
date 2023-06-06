@@ -117,7 +117,7 @@ const chartRouter = router({
     .input(GetChartDataSchema)
     .query<ChartWithData>(async ({ ctx, input }) => {
       try {
-        const chartModel = await ctx.chartsRepository.getById(input.chartId);
+        const chartModel = await ctx.chartsRepository.getById('bab3d8da-cb55-4e9e-bdf8-79ccdfa7f345');
         if (!chartModel) {
           throw new TRPCError({ code: 'NOT_FOUND', message: 'Chart data was not found' });
         }
