@@ -4,7 +4,7 @@ import { ChartColumn, ChartLine, ChartPie, Close } from '@carbon/icons-react';
 import useOutsideClick from '@/lib/hooks/useOutsideClick';
 
 const MenuContainer = styled.div`
-  background-color: #ffffff;
+  background-color: #f8f8f8;
 
   height: fit-content;
 
@@ -15,6 +15,8 @@ const MenuContainer = styled.div`
   flex-direction: column;
 
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+  border: 1px solid #d2d3d4;
 `;
 
 const MenuItem = styled.div`
