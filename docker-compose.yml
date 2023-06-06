@@ -12,6 +12,19 @@ services:
       - POSTGRES_DB=postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    environment:
+      REDIS_PASSWORD=redispassword
+    command: redis-server --save 20 1 --loglevel warning --requirepass $REDIS_PASSWORD
+    ports:
+      - 6379:6379
+    volumes:
+      - cache:/data
 
 volumes:
   postgres_data:
+    driver: local
+  cache:
+    driver: local
