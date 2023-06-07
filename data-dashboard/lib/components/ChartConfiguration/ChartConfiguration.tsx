@@ -3,6 +3,8 @@ import { ChangeEvent, useState } from 'react';
 import { BarChart, LineChart, DonutChart, Dropdown } from '@tremor/react';
 import { TextInput, InputField } from '@/lib/components';
 import DropdownInput from '../DropdownInput/DropdownInput';
+import PreviewChart from '../PreviewChart/PreviewChart';
+import { ChartSettings } from '../Chart/Chart';
 
 const Container = styled.div`
   width: 100%;
@@ -80,6 +82,30 @@ export default function ChartConfiguration({ onConfirm }: Props): JSX.Element {
     setTitle(event.target.value);
   };
 
+  const data = [
+    {
+      name: 'Amphibians',
+      'Number of threatened species': 2488,
+    },
+    {
+      name: 'Birds',
+      'Number of threatened species': 1445,
+    },
+    {
+      name: 'Crustaceans',
+      'Number of threatened species': 743,
+    },
+  ];
+
+  const chartSettings: ChartSettings = {
+    colors: ['blue'],
+    type: 'bar',
+    twClassName: 'mt-6',
+    index: 'name',
+    yAxisWidth: 48,
+    categories: ['Number of threatened species'],
+  };
+
   return (
     <Container>
       <SettingsContainer>
@@ -109,7 +135,21 @@ export default function ChartConfiguration({ onConfirm }: Props): JSX.Element {
           />
         </SettingsBody>
       </SettingsContainer>
-      <ChartContainer>chart</ChartContainer>
+      <ChartContainer>
+        <PreviewChart title={title} data={data} settings={chartSettings} />
+      </ChartContainer>
     </Container>
   );
 }
+
+/*
+type ChartSettings = {
+    colors: ChartColor[];
+    type: ChartType;
+    twClassName: string;
+    index: string;
+    yAxisWidth: number;
+    categories: string[];
+}
+
+*/
