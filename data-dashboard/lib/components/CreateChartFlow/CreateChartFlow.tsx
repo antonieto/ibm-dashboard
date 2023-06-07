@@ -42,9 +42,6 @@ const Body = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-
-  margin-top: 70px;
 `;
 
 const IconContainerButton = styled.div`
@@ -121,6 +118,9 @@ export default function CreateChartFlow({
   chartType,
 }: Props): JSX.Element {
   const [step, setStep] = useState(1);
+  const [originDataSource, setOriginDataSource] = useState<
+    'files' | 'database'
+  >('files'); // 'files' | 'database
   const handleOnClose = () => {
     setStep(1);
     onClose();
@@ -128,14 +128,17 @@ export default function CreateChartFlow({
 
   const steps = [
     {
-      title: 'Selecciona un tipo de gráfica',
+      title: 'Selecciona el origen de los datos',
       component: (
         <DataSourceOrigin
-          onConfirm={() => setStep(2)}
+          onSelect={(origin) => {
+            setOriginDataSource(origin);
+            console.log(origin);
+          }}
           header={
             <>
               <StepNumber>Paso 1</StepNumber>
-              <StepTitle>Selecciona un tipo de gráfica</StepTitle>
+              <StepTitle>Selecciona el origen de los datos</StepTitle>
             </>
           }
         />
@@ -145,7 +148,8 @@ export default function CreateChartFlow({
       title: 'Selecciona una fuente de datos',
       component: (
         <DataSourceSelection
-          onConfirm={() => setStep(3)}
+          dataSourceOrigin={originDataSource}
+          onSelect={() => {}}
           header={
             <>
               <StepNumber>Paso 2</StepNumber>
@@ -176,9 +180,15 @@ export default function CreateChartFlow({
 
   const handleConfirm = () => {
     if (step < steps.length) {
-      setStep(step + 1);
+      //setStep(step + 1);
     } else {
       // All steps completed, perform final actions
+    }
+  };
+
+  const handleNextStep = () => {
+    if (step < steps.length) {
+      setStep(step + 1);
     }
   };
 
@@ -229,7 +239,7 @@ export default function CreateChartFlow({
                   width: '100px',
                   opacity: step === steps.length ? 0.5 : 1,
                 }}
-                onClick={handleConfirm}
+                onClick={handleNextStep}
               />
             ) : (
               <IbmButton
