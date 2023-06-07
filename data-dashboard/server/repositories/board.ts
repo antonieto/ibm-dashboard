@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import type { Board, User } from '../models';
+import type { Board } from '../models';
 
 export interface IBoardRepository {
   getAllByUserId(userId: string): Promise<Board[]>;
