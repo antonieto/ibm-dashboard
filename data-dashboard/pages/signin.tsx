@@ -37,7 +37,7 @@ const Description = styled.legend`
 
 const Form = styled.form`
   margin-top: 56px;
-  max-width: 500px;
+  max-width: 300px;
 `;
 
 const InputFields = styled.div`
@@ -79,12 +79,16 @@ const ImageStyle = {
   marginRight: '202px',
 };
 
+const ErrorMessage = styled.p`
+  font-size: 14px;
+  font-weight: normal;
+  color: #e71d36;
+  margin-top: 8px;
+`;
+
 function SignIn() {
   const router = useRouter();
-  const { mutate } = trpc.auth.login.useMutation({
-    onError(error) {
-      console.log(error);
-    },
+  const { mutate, error } = trpc.auth.login.useMutation({
     onSuccess() {
       toast.info('Successfully signed in!');
       router.push('/boards');
@@ -146,6 +150,11 @@ function SignIn() {
                 }}
               />
             </InputFields>
+            {
+              error && (
+                <ErrorMessage className="error-message">Lo sentimos, hubo un error en al iniciar sesión</ErrorMessage>
+              )
+            }
             <IbmButton
               text="Iniciar sesión"
               style={ButtonStyle}
