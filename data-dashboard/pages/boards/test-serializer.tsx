@@ -5,7 +5,7 @@ import { NextPageWithLayout } from '../_app';
 
 function TestSerializer() {
   // NOTE: This chart is hard coded
-  const { data } = trpc.charts.getChartData.useQuery({ chartId: 'bab3d8da-cb55-4e9e-bdf8-79ccdfa7f345' });
+  const { data } = trpc.charts.getChartData.useQuery({ chartId: 'e6b8622d-2e38-499c-8715-3d7be3184a11' });
   if (!data) return <div>Loading...</div>;
   return (
     <div>

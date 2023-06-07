@@ -1,10 +1,6 @@
 import { RedisClientType } from 'redis';
 import { z } from 'zod';
-
-interface CacheService {
-  get(key: string): Promise<string | null>;
-  set(key: string, value: string): Promise<void>;
-}
+import { IS_CACHE_ENABLED } from '@/lib/constants';
 
 type JSONSerializable =
   | string
@@ -14,6 +10,14 @@ type JSONSerializable =
   | JSONSerializable[]
   | { [key: string]: JSONSerializable };
 
+interface CacheService {
+  get<T extends JSONSerializable>(
+    key: string,
+    schema: z.ZodSchema<T>,
+  ): Promise<T | null>;
+  set<T extends JSONSerializable>(key: string, value: T): Promise<void>;
+}
+
 export class RedisCacheService implements CacheService {
   private readonly client: RedisClientType;
 
@@ -21,39 +25,27 @@ export class RedisCacheService implements CacheService {
     this.client = client;
   }
 
-  async get(key: string): Promise<string | null> {
+  async get<T extends JSONSerializable>(key: string, schema: z.ZodSchema<T>): Promise<T | null> {
+    if (!IS_CACHE_ENABLED) {
+      return null;
+    }
     try {
-      const result = await this.client.get(key);
-      console.log('result', result);
-      return result;
+      const cachedValue = await this.client.get(key);
+      if (!cachedValue) {
+        return null;
+      }
+      const jsonParsed = JSON.parse(cachedValue);
+      return schema.parse(jsonParsed);
     } catch (e) {
-      console.log('error', e);
       return null;
     }
   }
 
-  async set(key: string, value: string): Promise<void> {
-    try {
-      await this.client.set(key, value);
-    } catch (e) {
-      console.log('error', e);
+  async set<T extends JSONSerializable>(key: string, value: T): Promise<void> {
+    if (!IS_CACHE_ENABLED) {
+      return;
     }
-  }
-
-  async getOrSet<T extends JSONSerializable>(
-    key: string,
-    value: T,
-    ttl: number,
-    schema: z.ZodSchema<T>,
-  ): Promise<T> {
-    const cachedValue = await this.get(key);
-    if (cachedValue) {
-      return schema.parse(JSON.parse(cachedValue));
-    }
-    await this.set(key, JSON.stringify(value));
-    await this.client.expire(key, ttl);
-
-    return value;
+    await this.client.set(key, JSON.stringify(value));
   }
 }
 

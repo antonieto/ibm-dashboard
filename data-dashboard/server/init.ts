@@ -39,8 +39,8 @@ export const initializeService = async (): Promise<Service | null> => {
     const fileStorage = new AzureStorageService(FILE_STORAGE_CONTAINER_NAME);
     const dataSourcesRepository = new PrismaDataSourceRepository(db);
     const chartsRepository = new PrismaChartRepository(db);
-    const chartSerializer = new ChartSerializer(fileStorage, dataSourcesRepository);
     const cacheService = new RedisCacheService(redisClient);
+    const chartSerializer = new ChartSerializer(fileStorage, dataSourcesRepository, cacheService);
 
     return {
       boardsRepository,
