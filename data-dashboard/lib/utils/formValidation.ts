@@ -10,26 +10,22 @@ const passwordRequirements = {
 };
 
 const validatePassword = (password: string) => {
-  // Check password requirements one by one
-  if (password.length < passwordRequirements.min) {
-    return `La contraseña debe tener al menos ${passwordRequirements.min} caracteres`;
+  const passwordValidation = z.string()
+    .min(passwordRequirements.min, { message: `La contraseña debe tener al menos ${passwordRequirements.min} caracteres` })
+    .max(passwordRequirements.max, { message: `La contraseña debe tener menos de ${passwordRequirements.max} caracteres` })
+    .regex(/[A-Z]/, { message: `La contraseña debe tener al menos ${passwordRequirements.upper} mayúscula` })
+    .regex(/[a-z]/, { message: `La contraseña debe tener al menos ${passwordRequirements.lower} minúscula` })
+    .regex(/[0-9]/, { message: `La contraseña debe tener al menos ${passwordRequirements.number} número` })
+    .regex(/[^a-zA-Z0-9]/, { message: `La contraseña debe tener al menos ${passwordRequirements.special} caracter especial` });
+  try {
+    passwordValidation.parse(password);
+    return '';
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return error.issues[0].message;
+    }
+    return 'La contraseña no es válida';
   }
-  if (password.length > passwordRequirements.max) {
-    return `La contraseña debe tener menos de ${passwordRequirements.max} caracteres`;
-  }
-  if (password.length - password.replace(/[A-Z]/g, '').length < passwordRequirements.upper) {
-    return `La contraseña debe tener al menos ${passwordRequirements.upper} mayúscula`;
-  }
-  if (password.length - password.replace(/[a-z]/g, '').length < passwordRequirements.lower) {
-    return `La contraseña debe tener al menos ${passwordRequirements.lower} minúscula`;
-  }
-  if (password.length - password.replace(/[0-9]/g, '').length < passwordRequirements.number) {
-    return `La contraseña debe tener al menos ${passwordRequirements.number} número`;
-  }
-  if (password.length - password.replace(/[^a-zA-Z0-9]/g, '').length < passwordRequirements.special) {
-    return `La contraseña debe tener al menos ${passwordRequirements.special} caracter especial`;
-  }
-  return '';
 };
 
 const validateEmail = (email: string) => {
