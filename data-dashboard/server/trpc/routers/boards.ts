@@ -12,6 +12,9 @@ const UpdatePreviewImgSchema = z.object({
 
 const boardRouter = router({
   getBoards: privateProcedure.query(async ({ ctx }) => {
+    ctx.cacheService.set('test', 'el testeoo');
+    const res = await ctx.cacheService.get('test');
+    console.log({ res });
     const user = await ctx.user();
     const boards = await ctx.boardsRepository.getAllByUserId(user.id);
     return {
