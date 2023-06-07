@@ -7,10 +7,10 @@ import AzureStorageService, { StorageService } from './services/storageService';
 import { IChartRepository, PrismaChartRepository } from './repositories/chart';
 import ChartSerializer from './services/chartSerializer';
 import DataSourceSerializer from './services/dataSourceSerializer';
-
-let db: PrismaClient | null = null;
 import CacheService, { RedisCacheService } from './services/cacheService';
 import createRedisClient from './internal/redis';
+
+let db: PrismaClient | null = null;
 
 const FILE_STORAGE_CONTAINER_NAME = 'data-sources';
 
@@ -45,9 +45,9 @@ export const initializeService = async (): Promise<Service | null> => {
     const fileStorage = new AzureStorageService(FILE_STORAGE_CONTAINER_NAME);
     const dataSourcesRepository = new PrismaDataSourceRepository(db);
     const chartsRepository = new PrismaChartRepository(db);
-    const chartSerializer = new ChartSerializer(fileStorage, dataSourcesRepository);
     const dataSourceSerializer = new DataSourceSerializer(fileStorage, dataSourcesRepository);
     const cacheService = new RedisCacheService(redisClient);
+    const chartSerializer = new ChartSerializer(fileStorage, dataSourcesRepository, cacheService);
 
     return {
       boardsRepository,

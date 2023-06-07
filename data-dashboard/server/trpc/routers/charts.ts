@@ -57,7 +57,7 @@ const chartRouter = router({
           if (settings === null) {
             throw new Error('Chart settings were not found');
           }
-          const serializedData = await ctx.chartSerializer.buildChartData(chart, settings);
+          const serializedData = await ctx.chartSerializer.getData(chart);
           return {
             ...chart,
             ...serializedData,
@@ -146,14 +146,19 @@ const chartRouter = router({
           throw new TRPCError({ code: 'NOT_FOUND', message: 'Data source was not found' });
         }
         const settings = await ctx.chartsRepository.getChartSettingsByChartId(chartModel.id);
+        if (!settings) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Chart settings were not found' });
+        }
+        chartModel.settings = settings;
         if (settings === null) {
           throw new Error('Chart settings were not found');
         }
-        const serializedData = await ctx.chartSerializer.buildChartData(chartModel, settings);
+
+        const chartData = await ctx.chartSerializer.getData(chartModel);
 
         return {
           ...chartModel,
-          ...serializedData,
+          ...chartData,
         };
       } catch (e) {
         console.log('Error in getChartData: ', e);

@@ -1,3 +1,8 @@
+export type ChartSettings = {
+  xAxisColumn: number;
+  yAxisColumns: number[];
+}
+
 export type Chart = {
   id: string;
   boardId: string;
@@ -8,12 +13,8 @@ export type Chart = {
   x: number;
   y: number;
   type: 'bar' | 'line' | 'pie';
+  settings?: ChartSettings;
 };
-
-export type ChartSettings = {
-  xAxisColumn: number;
-  yAxisColumns: number[];
-}
 
 export type TData = Record<string, string | number>;
 

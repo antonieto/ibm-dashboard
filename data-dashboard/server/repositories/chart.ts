@@ -87,18 +87,36 @@ export class PrismaChartRepository implements IChartRepository {
   async getAllByBoardId(boardId: string): Promise<Chart[]> {
     const fetchedCharts = await this.db.charts.findMany({
       where: { board_id: boardId },
+      include: {
+        chart_settings: {
+          take: 1,
+          include: {
+            data_series: true,
+          },
+        },
+      },
     });
-    return fetchedCharts.map((chart) => ({
-      id: chart.chart_id,
-      boardId: chart.board_id,
-      data_source_id: chart.data_source_id,
-      height: chart.height,
-      width: chart.width,
-      title: chart.title,
-      x: chart.x_index,
-      y: chart.y_index,
-      type: ChartTypeMapInverted.get(chart.type) || 'bar',
-    }));
+    return fetchedCharts.map((chart) => {
+      const settings = chart.chart_settings.at(0);
+      if (!settings) {
+        throw new Error('Chart settings not found');
+      }
+      return {
+        id: chart.chart_id,
+        boardId: chart.board_id,
+        data_source_id: chart.data_source_id,
+        height: chart.height,
+        width: chart.width,
+        title: chart.title,
+        x: chart.x_index,
+        y: chart.y_index,
+        type: ChartTypeMapInverted.get(chart.type) || 'bar',
+        settings: {
+          xAxisColumn: settings.x_axis_col,
+          yAxisColumns: settings.data_series.map((series) => series.y_axis_col),
+        },
+      };
+    });
   }
 
   async addChart(chart: Omit<Chart, 'id'>): Promise<Chart> {
