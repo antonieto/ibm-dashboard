@@ -6,6 +6,7 @@ import type { MouseEvent } from 'react';
 import { IbmButton, TextInput, InputField } from '@/lib/components';
 import trpc from '@/lib/hooks/trpc';
 import TopLayout from '@/lib/components/TopLayout/TopLayout';
+import { validateEmail, validatePassword } from '@/lib/utils/formValidation';
 import { NextPageWithLayout } from './_app';
 
 const Body = styled.main`
@@ -43,12 +44,10 @@ const Form = styled.form`
 `;
 
 const InputFields = styled.div`
-  display: inline-grid;
-  grid-template-rows: auto auto auto;
-  grid-auto-flow: column;
-  column-gap: 40px;
+  display: flex;
+  flex-direction: column;
   row-gap: 24px;
-  width: auto;
+  width: 300px;
 `;
 
 const ButtonStyle = {
@@ -81,6 +80,13 @@ const LinkStyle = {
   fontWeight: 'normal',
 };
 
+const Error = styled.div`
+  font-size: 14px;
+  font-weight: normal;
+  color: #e71d36;
+  margin-top: 8px;
+`;
+
 function SignUp() {
   const router = useRouter();
   const { mutate, data, isLoading } = trpc.auth.signup.useMutation({
@@ -90,7 +96,12 @@ function SignUp() {
   });
 
   const [credentials, setCredentials] = useState({
-    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const [error, setError] = useState({
     email: '',
     password: '',
     confirmPassword: '',
@@ -102,6 +113,22 @@ function SignUp() {
       ...prevCredentials,
       [name]: value,
     }));
+    if (name === 'password') {
+      setError((prevError) => ({
+        ...prevError,
+        password: validatePassword(value),
+      }));
+    } else if (name === 'email') {
+      setError((prevError) => ({
+        ...prevError,
+        email: validateEmail(value),
+      }));
+    } else if (name === 'confirmPassword') {
+      setError((prevError) => ({
+        ...prevError,
+        confirmPassword: value !== credentials.password ? 'Las contraseñas no coinciden' : '',
+      }));
+    }
   };
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
@@ -146,6 +173,9 @@ function SignUp() {
                   required: true,
                 }}
               />
+              {
+                error.email && <Error className="error-message">{error.email}</Error>
+              }
               <InputField
                 label="Contraseña"
                 name="password"
@@ -159,6 +189,9 @@ function SignUp() {
                   length: { min: 8, max: 24 },
                 }}
               />
+              {
+                error.password && <Error className="error-message">{error.password}</Error>
+              }
               <InputField
                 label="Confirmar contraseña"
                 name="confirmPassword"
@@ -172,42 +205,9 @@ function SignUp() {
                   length: { min: 8, max: 24 },
                 }}
               />
-              <InputField
-                label="Nombre"
-                name="name"
-                inputChild={TextInput}
-                inputProps={{
-                  type: 'text',
-                  value: credentials.name,
-                  onChange: handleChange,
-                  placeholder: 'e.g. Jane',
-                  required: true,
-                }}
-              />
-              <InputField
-                label="Apellido Paterno"
-                name="firstLastName"
-                inputChild={TextInput}
-                inputProps={{
-                  type: 'text',
-                  value: credentials.name,
-                  onChange: handleChange,
-                  placeholder: 'e.g. Doe',
-                  required: true,
-                }}
-              />
-              <InputField
-                label="Apellido Materno"
-                name="secondLastName"
-                inputChild={TextInput}
-                inputProps={{
-                  type: 'text',
-                  value: credentials.name,
-                  onChange: handleChange,
-                  placeholder: 'e.g. Linn',
-                  required: true,
-                }}
-              />
+              {
+                error.confirmPassword && <Error className="error-message">{error.confirmPassword}</Error>
+              }
             </InputFields>
             <IbmButton
               text="Crear cuenta"
