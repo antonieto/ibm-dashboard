@@ -121,6 +121,7 @@ export default function CreateChartFlow({
   const [originDataSource, setOriginDataSource] = useState<
     'files' | 'database'
   >('files'); // 'files' | 'database
+  const [dataSourceId, setDataSourceId] = useState<string>('');
   const handleOnClose = () => {
     setStep(1);
     onClose();
@@ -133,7 +134,6 @@ export default function CreateChartFlow({
         <DataSourceOrigin
           onSelect={(origin) => {
             setOriginDataSource(origin);
-            console.log(origin);
           }}
           header={
             <>
@@ -149,7 +149,9 @@ export default function CreateChartFlow({
       component: (
         <DataSourceSelection
           dataSourceOrigin={originDataSource}
-          onSelect={() => {}}
+          onSelect={(dataSourceId: string) => {
+            setDataSourceId(dataSourceId);
+          }}
           header={
             <>
               <StepNumber>Paso 2</StepNumber>
@@ -167,12 +169,6 @@ export default function CreateChartFlow({
             // Handle chart configuration confirmation
             // You can perform necessary actions here
           }}
-          header={
-            <>
-              <StepNumber>Paso 3</StepNumber>
-              <StepTitle>Configura la gráfica</StepTitle>
-            </>
-          }
         />
       ),
     },
