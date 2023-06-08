@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { ChangeEvent, useState } from 'react';
-import { BarChart, LineChart, DonutChart, Dropdown } from '@tremor/react';
 import { TextInput, InputField } from '@/lib/components';
 import DropdownInput from '../DropdownInput/DropdownInput';
 import PreviewChart from '../PreviewChart/PreviewChart';
@@ -74,14 +73,10 @@ const ChartContainer = styled.div`
 `;
 
 interface Props {
-  onConfirm: () => void;
   chartType: ChartType;
 }
 
-export default function ChartConfiguration({
-  onConfirm,
-  chartType,
-}: Props): JSX.Element {
+export default function ChartConfiguration({ chartType }: Props): JSX.Element {
   const [title, setTitle] = useState<string>('');
   const handleChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);

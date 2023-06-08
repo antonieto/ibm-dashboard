@@ -1,11 +1,11 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import styled from 'styled-components';
 import { Close } from '@carbon/icons-react';
+import { ChartType } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
+import { useState } from 'react';
 import ModalContainer from '../ModalContainer/ModalContainer';
 import IbmButton from '../IbmButton/IbmButton';
-import { ChartType } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 import DataSourceOrigin from '../DataSourceOrigin/DataSourceOrigin';
-import { useState } from 'react';
 import DataSourceSelection from '../DataSourceSelection/DataSourceSelection';
 import ChartConfiguration from '../ChartConfiguration/ChartConfiguration';
 
@@ -121,7 +121,7 @@ export default function CreateChartFlow({
   const [originDataSource, setOriginDataSource] = useState<
     'files' | 'database'
   >('files');
-  const [_, setDataSourceId] = useState<string>('');
+  const [, setDataSourceId] = useState<string>('');
   const handleOnClose = () => {
     setStep(1);
     onClose();
@@ -163,15 +163,7 @@ export default function CreateChartFlow({
     },
     {
       title: 'Configura la gráfica',
-      component: (
-        <ChartConfiguration
-          chartType={chartType}
-          onConfirm={() => {
-            // Handle chart configuration confirmation
-            // You can perform necessary actions here
-          }}
-        />
-      ),
+      component: <ChartConfiguration chartType={chartType} />,
     },
   ];
 

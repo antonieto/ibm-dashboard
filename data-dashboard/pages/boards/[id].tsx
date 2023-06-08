@@ -1,3 +1,5 @@
+/* eslint-disable function-paren-newline */
+/* eslint-disable implicit-arrow-linebreak */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Add, DataVolume } from '@carbon/icons-react';
@@ -15,12 +17,10 @@ import ChartTypeMenu, {
 } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 import { DataSourcesMenuModal } from '@/lib/components';
 import { Chart as ChartModel } from '@/server/models';
-import TemporalDataSourcesListModal from '@/lib/components/TemporalDataSourcesListModal/TemporalDataSourcesListModal';
+import CreateChartFlow from '@/lib/components/CreateChartFlow/CreateChartFlow';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import Chart from '../../lib/components/Chart/Chart';
 import { NextPageWithLayout } from '../_app';
-import CreateChartFlow from '@/lib/components/CreateChartFlow/CreateChartFlow';
-import { set } from 'zod';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -135,11 +135,13 @@ function Board() {
     }
   }, [widgetArrayRes]);
 
+  /*
   const { mutate: createChart } = trpc.charts.addChart.useMutation({
     onSuccess: (res) => {
       setWidgetArray([...widgetArray, res.chart]);
     },
   });
+  */
 
   const { mutate: deleteChart } = trpc.charts.deleteChart.useMutation({
     onSuccess: (res) => {
@@ -159,6 +161,7 @@ function Board() {
     setOpenChartTypeMenu(false);
   };
 
+  /*
   const onAddChart = (type: ChartType, dataSourceId: string) => {
     const yIndex = Math.floor(widgetArray.length / cols.lg) * 3;
     createChart({
@@ -172,6 +175,7 @@ function Board() {
       data_source_id: dataSourceId,
     });
   };
+  */
 
   const handleShowDataSources = () => {
     setIsDataSourcesModalOpen(true);
