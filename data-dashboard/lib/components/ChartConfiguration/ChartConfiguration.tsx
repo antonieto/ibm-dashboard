@@ -5,6 +5,7 @@ import { TextInput, InputField } from '@/lib/components';
 import DropdownInput from '../DropdownInput/DropdownInput';
 import PreviewChart from '../PreviewChart/PreviewChart';
 import { ChartSettings } from '../Chart/Chart';
+import { ChartType } from '../ChartTypeMenu/ChartTypeMenu';
 
 const Container = styled.div`
   width: 100%;
@@ -74,9 +75,13 @@ const ChartContainer = styled.div`
 
 interface Props {
   onConfirm: () => void;
+  chartType: ChartType;
 }
 
-export default function ChartConfiguration({ onConfirm }: Props): JSX.Element {
+export default function ChartConfiguration({
+  onConfirm,
+  chartType,
+}: Props): JSX.Element {
   const [title, setTitle] = useState<string>('');
   const handleChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -99,7 +104,7 @@ export default function ChartConfiguration({ onConfirm }: Props): JSX.Element {
 
   const chartSettings: ChartSettings = {
     colors: ['blue'],
-    type: 'bar',
+    type: chartType,
     twClassName: 'mt-6',
     index: 'name',
     yAxisWidth: 48,

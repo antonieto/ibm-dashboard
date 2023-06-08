@@ -3,7 +3,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { BarChart, LineChart, DonutChart, Title } from '@tremor/react';
 import { ChartData, ChartSettings } from '../Chart/Chart';
-import { ChartType } from '../ChartTypeMenu/ChartTypeMenu';
 
 const ChartContainer = styled.div`
   width: 70%;
