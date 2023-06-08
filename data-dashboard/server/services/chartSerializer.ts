@@ -1,5 +1,5 @@
 import xlsx from 'xlsx';
-import { Chart, ChartData, ChartSettings, TData } from '../models';
+import { Chart, ChartCategory, ChartData, ChartSettings, DataSource, DataSourceDescription, TData } from '../models';
 import { DataSourceRepository } from '../repositories/dataSource';
 import { StorageService } from './storageService';
 
@@ -14,6 +14,35 @@ export default class ChartSerializer {
   ) {
     this.storageService = storageService;
     this.dataSourceRepository = dataSourceRepository;
+  }
+
+  async getDataSourceDescription(dataSource: DataSource): Promise<DataSourceDescription> {
+    const file = await this.storageService.readFile(dataSource.externalHandle);
+    const workbook = xlsx.read(file, { type: 'buffer' });
+    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+
+    const asJson = xlsx.utils.sheet_to_json(firstSheet, { header: 1 }) as Array<Array<string | number>>;
+
+    const categories: Array<ChartCategory> = asJson[0].map((item, index) => ({
+      column: index,
+      name: String(item),
+    }));
+
+    const data = asJson
+      .slice(1)
+      .map((row) => {
+        const resultObj: Record<string, string | number> = {};
+
+        row.forEach((item, index) => {
+          resultObj[String(asJson[0][index])] = item;
+        });
+        return resultObj;
+      });
+
+    return {
+      categories,
+      data,
+    };
   }
 
   async buildChartData(

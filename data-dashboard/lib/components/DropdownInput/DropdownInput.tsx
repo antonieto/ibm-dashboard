@@ -59,7 +59,7 @@ const Option = styled.option`
 
 interface Props {
   title: string;
-  options: string[];
+  options: Array<{ value: number, label: string }>;
   onSelect: (option: number) => void;
 }
 
@@ -71,16 +71,16 @@ export default function DropdownInput({
   return (
     <Container>
       <FieldLabel htmlFor={title}>{title}</FieldLabel>
-      <DropDownContainer>
+      <DropDownContainer onChange={(e) => onSelect(Number(e.target.value))}>
         {options.map((option, index) => (
           <Option
-            key={option}
-            value={option}
+            key={option.value}
+            value={option.value}
             onClick={() => {
               onSelect(index);
             }}
           >
-            {option}
+            {option.label}
           </Option>
         ))}
       </DropDownContainer>

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { ChangeEvent, useState } from 'react';
 import { TextInput, InputField } from '@/lib/components';
+import { trpc } from '@/lib/hooks';
 import DropdownInput from '../DropdownInput/DropdownInput';
 import PreviewChart from '../PreviewChart/PreviewChart';
 import { ChartSettings } from '../Chart/Chart';
@@ -74,37 +75,46 @@ const ChartContainer = styled.div`
 
 interface Props {
   chartType: ChartType;
+  dataSourceId: string;
 }
 
-export default function ChartConfiguration({ chartType }: Props): JSX.Element {
+export default function ChartConfiguration({
+  chartType,
+  dataSourceId,
+}: Props): JSX.Element {
   const [title, setTitle] = useState<string>('');
+
+  const [settings, setSettings] = useState<ChartSettings>({
+    colors: ['blue'],
+    type: chartType,
+    twClassName: 'mt-6',
+    categories: [],
+    index: '',
+    yAxisWidth: 48,
+  });
+
+  const { data, isLoading, error } = trpc.dataSources.describeDataSource.useQuery(
+    { dataSourceId },
+    {
+      onSuccess: (data) => setSettings({
+        ...settings,
+        index: data.categories.at(0)?.name ?? '',
+        categories: [data.categories.slice(1).at(0)?.name ?? ''],
+      }),
+    },
+  );
+
   const handleChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   };
 
-  const data = [
-    {
-      name: 'Amphibians',
-      'Number of threatened species': 2488,
-    },
-    {
-      name: 'Birds',
-      'Number of threatened species': 1445,
-    },
-    {
-      name: 'Crustaceans',
-      'Number of threatened species': 743,
-    },
-  ];
+  if (error) {
+    return <div>Something happened</div>;
+  }
 
-  const chartSettings: ChartSettings = {
-    colors: ['blue'],
-    type: chartType,
-    twClassName: 'mt-6',
-    index: 'name',
-    yAxisWidth: 48,
-    categories: ['Number of threatened species'],
-  };
+  if (isLoading) return <div>Loading...</div>;
+
+  if (!data) return <div>No data</div>;
 
   return (
     <Container>
@@ -125,18 +135,40 @@ export default function ChartConfiguration({ chartType }: Props): JSX.Element {
           />
           <DropdownInput
             title="Eje X"
-            options={['Barras', 'Lineas', 'Donas']}
-            onSelect={(option: number) => console.log(option)}
+            options={data.categories.map((category) => ({
+              label: category.name,
+              value: category.column,
+            }))}
+            onSelect={(option) => {
+              setSettings({
+                ...settings,
+                index: data.categories.at(option)?.name ?? '',
+              });
+            }}
           />
           <DropdownInput
             title="Eje Y"
-            options={['Barras', 'Lineas', 'Donas']}
-            onSelect={(option: number) => console.log(option)}
+            options={data.categories
+              .map((category) => ({
+                value: category.column,
+                label: category.name,
+              }))
+              .filter((category) => category.label !== settings.index)}
+            onSelect={(option) => {
+              setSettings({
+                ...settings,
+                categories: [data.categories.at(option)?.name ?? ''],
+              });
+            }}
           />
         </SettingsBody>
       </SettingsContainer>
       <ChartContainer>
-        <PreviewChart title={title} data={data} settings={chartSettings} />
+        <PreviewChart
+          title={title}
+          data={data.previewData}
+          settings={settings}
+        />
       </ChartContainer>
     </Container>
   );

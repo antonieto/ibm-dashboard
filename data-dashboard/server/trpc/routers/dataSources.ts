@@ -8,6 +8,10 @@ const CreateDataSourceSchema = z.object({
   fileName: z.string(),
 });
 
+const DescribeDataSourceSchema = z.object({
+  dataSourceId: z.string(),
+});
+
 const dataSourcesRouter = router({
   listPrivateDataSources: privateProcedure.query(async ({ ctx }) => {
     try {
@@ -67,6 +71,37 @@ const dataSourcesRouter = router({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to upload file',
           cause: e,
+        });
+      }
+    }),
+  describeDataSource: privateProcedure
+    .input(DescribeDataSourceSchema)
+    .query(async ({ ctx, input }) => {
+      const { dataSourceId } = input;
+
+      try {
+        const dataSource = await ctx.dataSourcesRepository.getById(dataSourceId);
+
+        if (dataSource === null) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Data source not found',
+          });
+        }
+
+        const { categories, data } = await ctx.chartSerializer.getDataSourceDescription(dataSource);
+
+        return {
+          categories,
+          previewData: data,
+        };
+      } catch (e) {
+        if (e instanceof TRPCError) {
+          throw e;
+        }
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to describe data source',
         });
       }
     }),
