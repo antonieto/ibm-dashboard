@@ -2,7 +2,7 @@
 import styled from 'styled-components';
 import { Close } from '@carbon/icons-react';
 import { ChartType } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import ModalContainer from '../ModalContainer/ModalContainer';
 import IbmButton from '../IbmButton/IbmButton';
 import DataSourceOrigin from '../DataSourceOrigin/DataSourceOrigin';
@@ -127,45 +127,48 @@ export default function CreateChartFlow({
     onClose();
   };
 
-  const steps = [
-    {
-      title: 'Selecciona el origen de los datos',
-      component: (
-        <DataSourceOrigin
-          onSelect={(origin) => {
-            setOriginDataSource(origin);
-          }}
-          header={
-            <>
-              <StepNumber>Paso 1</StepNumber>
-              <StepTitle>Selecciona el origen de los datos</StepTitle>
-            </>
-          }
-        />
-      ),
-    },
-    {
-      title: 'Selecciona una fuente de datos',
-      component: (
-        <DataSourceSelection
-          dataSourceOrigin={originDataSource}
-          onSelect={(dataSourceId: string) => {
-            setDataSourceId(dataSourceId);
-          }}
-          header={
-            <>
-              <StepNumber>Paso 2</StepNumber>
-              <StepTitle>Selecciona una fuente de datos</StepTitle>
-            </>
-          }
-        />
-      ),
-    },
-    {
-      title: 'Configura la gráfica',
-      component: <ChartConfiguration chartType={chartType} />,
-    },
-  ];
+  const steps = useMemo(
+    () => [
+      {
+        title: 'Selecciona el origen de los datos',
+        component: (
+          <DataSourceOrigin
+            onSelect={(origin) => {
+              setOriginDataSource(origin);
+            }}
+            header={
+              <>
+                <StepNumber>Paso 1</StepNumber>
+                <StepTitle>Selecciona el origen de los datos</StepTitle>
+              </>
+            }
+          />
+        ),
+      },
+      {
+        title: 'Selecciona una fuente de datos',
+        component: (
+          <DataSourceSelection
+            dataSourceOrigin={originDataSource}
+            onSelect={(dataSourceId: string) => {
+              setDataSourceId(dataSourceId);
+            }}
+            header={
+              <>
+                <StepNumber>Paso 2</StepNumber>
+                <StepTitle>Selecciona una fuente de datos</StepTitle>
+              </>
+            }
+          />
+        ),
+      },
+      {
+        title: 'Configura la gráfica',
+        component: <ChartConfiguration chartType={chartType} />,
+      },
+    ],
+    [chartType, originDataSource],
+  );
 
   const handleNextStep = () => {
     if (step < steps.length) {
