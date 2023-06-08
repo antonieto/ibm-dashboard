@@ -121,7 +121,7 @@ export default function CreateChartFlow({
   const [originDataSource, setOriginDataSource] = useState<
     'files' | 'database'
   >('files');
-  const [, setDataSourceId] = useState<string>('');
+  const [dataSourceId, setDataSourceId] = useState<string>('');
   const handleOnClose = () => {
     setStep(1);
     onClose();
@@ -164,10 +164,15 @@ export default function CreateChartFlow({
       },
       {
         title: 'Configura la gráfica',
-        component: <ChartConfiguration chartType={chartType} />,
+        component: (
+          <ChartConfiguration
+            chartType={chartType}
+            dataSourceId={dataSourceId}
+          />
+        ),
       },
     ],
-    [chartType, originDataSource],
+    [chartType, originDataSource, dataSourceId],
   );
 
   const handleNextStep = () => {

@@ -6,3 +6,13 @@ export type DataSource = {
   fileName: string;
   boardId: string | null;
 };
+
+export type ChartCategory = {
+  column: number;
+  name: string;
+}
+
+export type DataSourceDescription = {
+  categories: ChartCategory[];
+  data: Record<string, string | number>[];
+}
