@@ -8,9 +8,9 @@ import 'react-resizable/css/styles.css';
 
 type ChartType = 'bar' | 'line' | 'pie';
 
-type ChartData = Record<string, string | number>;
+export type ChartData = Record<string, string | number>;
 
-type ChartColor =
+export type ChartColor =
   | 'slate'
   | 'gray'
   | 'zinc'
@@ -34,7 +34,7 @@ type ChartColor =
   | 'pink'
   | 'rose';
 
-type ChartSettings = {
+export type ChartSettings = {
   colors: ChartColor[];
   type: ChartType;
   twClassName: string;
