@@ -13,7 +13,8 @@ start:
 
 # Stop the Docker containers
 stop:
-	docker-compose down
+	docker-compose down --remove-orphans \
+	
 
 # Show logs from the Docker containers
 logs:
