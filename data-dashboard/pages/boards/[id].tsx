@@ -1,3 +1,5 @@
+/* eslint-disable function-paren-newline */
+/* eslint-disable implicit-arrow-linebreak */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Add, DataVolume } from '@carbon/icons-react';
@@ -15,7 +17,7 @@ import ChartTypeMenu, {
 } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 import { DataSourcesMenuModal } from '@/lib/components';
 import { Chart as ChartModel } from '@/server/models';
-import TemporalDataSourcesListModal from '@/lib/components/TemporalDataSourcesListModal/TemporalDataSourcesListModal';
+import CreateChartFlow from '@/lib/components/CreateChartFlow/CreateChartFlow';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import Chart from '../../lib/components/Chart/Chart';
 import { NextPageWithLayout } from '../_app';
@@ -112,8 +114,13 @@ function Board() {
   const params = useRouter().query;
   const [openChartTypeMenu, setOpenChartTypeMenu] = useState(false);
   const [isDataSourcesModalOpen, setIsDataSourcesModalOpen] = useState(false);
-  const [selectDataSource, setIsTemporalDataSourcesModalOpen] = useState(false);
-  const [chartTypeCreate, setChartTypeCreate] = useState<ChartType>('bar');
+  const [createChartFlow, setCreateChartFlow] = useState<{
+    isOpen: boolean;
+    type: ChartType;
+  }>({
+    isOpen: false,
+    type: 'bar',
+  });
   const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
   const router = useRouter();
 
@@ -128,11 +135,13 @@ function Board() {
     }
   }, [widgetArrayRes]);
 
+  /*
   const { mutate: createChart } = trpc.charts.addChart.useMutation({
     onSuccess: (res) => {
       setWidgetArray([...widgetArray, res.chart]);
     },
   });
+  */
 
   const { mutate: deleteChart } = trpc.charts.deleteChart.useMutation({
     onSuccess: (res) => {
@@ -152,6 +161,7 @@ function Board() {
     setOpenChartTypeMenu(false);
   };
 
+  /*
   const onAddChart = (type: ChartType, dataSourceId: string) => {
     const yIndex = Math.floor(widgetArray.length / cols.lg) * 3;
     createChart({
@@ -165,6 +175,7 @@ function Board() {
       data_source_id: dataSourceId,
     });
   };
+  */
 
   const handleShowDataSources = () => {
     setIsDataSourcesModalOpen(true);
@@ -183,13 +194,10 @@ function Board() {
         isOpen={isDataSourcesModalOpen}
         onClose={() => setIsDataSourcesModalOpen(false)}
       />
-      <TemporalDataSourcesListModal
-        isOpen={selectDataSource}
-        onClose={() => setIsTemporalDataSourcesModalOpen(false)}
-        onSelectDataSource={(dataSourceId) => {
-          onAddChart(chartTypeCreate, dataSourceId);
-          setIsTemporalDataSourcesModalOpen(false);
-        }}
+      <CreateChartFlow
+        isOpen={createChartFlow.isOpen}
+        onClose={() => setCreateChartFlow({ isOpen: false, type: 'bar' })}
+        chartType={createChartFlow.type}
       />
       <div>
         <ResponsiveReactGridLayout
@@ -222,29 +230,31 @@ function Board() {
           cols={cols}
           margin={margin}
         >
-          {widgetArray.map((widget) => getGridChartItem({
-            chartProps: {
-              id: widget.id,
-              data: MOCK_CHART_DATA,
-              removeChart: handleRemoveChart,
-              settings: {
-                categories: ['Number of threatened species'],
-                colors: ['blue', 'pink'],
-                index: 'name',
-                twClassName: 'mt-6',
-                type: widget.type,
-                yAxisWidth: widget.width,
+          {widgetArray.map((widget) =>
+            getGridChartItem({
+              chartProps: {
+                id: widget.id,
+                data: MOCK_CHART_DATA,
+                removeChart: handleRemoveChart,
+                settings: {
+                  categories: ['Number of threatened species'],
+                  colors: ['blue', 'pink'],
+                  index: 'name',
+                  twClassName: 'mt-6',
+                  type: widget.type,
+                  yAxisWidth: widget.width,
+                },
+                title: 'New chart',
               },
-              title: 'New chart',
-            },
-            gridElement: {
-              height: widget.height,
-              id: widget.id,
-              width: widget.width,
-              xIndex: widget.x,
-              yIndex: widget.y,
-            },
-          }))}
+              gridElement: {
+                height: widget.height,
+                id: widget.id,
+                width: widget.width,
+                xIndex: widget.x,
+                yIndex: widget.y,
+              },
+            }),
+          )}
         </ResponsiveReactGridLayout>
       </div>
 
@@ -252,8 +262,7 @@ function Board() {
         <ChartTypeMenuContainer>
           <ChartTypeMenu
             onSelect={(type: ChartType) => {
-              setChartTypeCreate(type);
-              setIsTemporalDataSourcesModalOpen(true);
+              setCreateChartFlow({ isOpen: true, type });
             }}
             onClose={closeChartTypeMenu}
           />
