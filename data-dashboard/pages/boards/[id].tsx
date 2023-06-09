@@ -135,14 +135,6 @@ function Board() {
     }
   }, [widgetArrayRes]);
 
-  /*
-  const { mutate: createChart } = trpc.charts.addChart.useMutation({
-    onSuccess: (res) => {
-      setWidgetArray([...widgetArray, res.chart]);
-    },
-  });
-  */
-
   const { mutate: deleteChart } = trpc.charts.deleteChart.useMutation({
     onSuccess: (res) => {
       setWidgetArray(
@@ -161,22 +153,6 @@ function Board() {
     setOpenChartTypeMenu(false);
   };
 
-  /*
-  const onAddChart = (type: ChartType, dataSourceId: string) => {
-    const yIndex = Math.floor(widgetArray.length / cols.lg) * 3;
-    createChart({
-      boardId: params.id as string,
-      type,
-      title: 'New Chart',
-      x: (widgetArray.length * 2) % cols.lg,
-      y: yIndex,
-      width: 2,
-      height: 3,
-      data_source_id: dataSourceId,
-    });
-  };
-  */
-
   const handleShowDataSources = () => {
     setIsDataSourcesModalOpen(true);
   };
@@ -187,6 +163,8 @@ function Board() {
 
   const boardId = router.query.id as string;
 
+  if (!router.isReady) return <div>Loading...</div>;
+
   return (
     <Container>
       <DataSourcesMenuModal
@@ -195,6 +173,7 @@ function Board() {
         onClose={() => setIsDataSourcesModalOpen(false)}
       />
       <CreateChartFlow
+        boardId={params.id as string}
         isOpen={createChartFlow.isOpen}
         onClose={() => setCreateChartFlow({ isOpen: false, type: 'bar' })}
         chartType={createChartFlow.type}

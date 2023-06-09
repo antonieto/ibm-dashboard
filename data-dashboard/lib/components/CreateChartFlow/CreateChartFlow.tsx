@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Close } from '@carbon/icons-react';
 import { ChartType } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 import { useMemo, useState } from 'react';
+import { trpc } from '@/lib/hooks';
 import ModalContainer from '../ModalContainer/ModalContainer';
 import IbmButton from '../IbmButton/IbmButton';
 import DataSourceOrigin from '../DataSourceOrigin/DataSourceOrigin';
@@ -13,8 +14,7 @@ const Container = styled.div`
   background-color: #f8f8f8;
   border: none;
 
-  height: 95vh;
-  width: 95vw;
+  height: 95vh; width: 95vw;
 
   position: relative;
   z-index: 0;
@@ -104,6 +104,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   chartType: ChartType;
+  boardId: string;
 }
 
 const TypeToTitleMap = new Map<ChartType, string>([
@@ -116,14 +117,14 @@ export default function CreateChartFlow({
   isOpen,
   onClose,
   chartType,
+  boardId,
 }: Props): JSX.Element {
   const [step, setStep] = useState(1);
   const [originDataSource, setOriginDataSource] = useState<
     'files' | 'database'
   >('files');
-  const [dataSourceId, setDataSourceId] = useState<string>('');
   const [chartToCreate, setChartToCreate] = useState<ChartToCreate>({
-    boardId: '',
+    boardId,
     dataSourceId: '',
     height: 0,
     width: 0,
@@ -131,7 +132,12 @@ export default function CreateChartFlow({
     type: chartType,
     x: 0,
     y: 0,
+    columnSettings: {
+      indexColumn: 0,
+      categoryColumns: [],
+    },
   });
+  const { mutate } = trpc.charts.addChart.useMutation();
   const handleOnClose = () => {
     setStep(1);
     onClose();
@@ -161,7 +167,10 @@ export default function CreateChartFlow({
           <DataSourceSelection
             dataSourceOrigin={originDataSource}
             onSelect={(dataSourceId: string) => {
-              setDataSourceId(dataSourceId);
+              setChartToCreate({
+                ...chartToCreate,
+                dataSourceId,
+              });
             }}
             header={
               <>
@@ -177,14 +186,21 @@ export default function CreateChartFlow({
         component: (
           <ChartConfiguration
             chartType={chartType}
-            dataSourceId={dataSourceId}
+            dataSourceId={chartToCreate.dataSourceId}
             chartToCreate={chartToCreate}
             onSetChartToCreate={setChartToCreate}
+            title={chartToCreate.title}
+            onChangeTitle={(title) => {
+              setChartToCreate({
+                ...chartToCreate,
+                title,
+              });
+            }}
           />
         ),
       },
     ],
-    [chartType, originDataSource, dataSourceId, chartToCreate],
+    [chartType, originDataSource, chartToCreate],
   );
 
   const handleNextStep = () => {
@@ -195,6 +211,17 @@ export default function CreateChartFlow({
 
   const handleCreateChart = () => {
     console.log({ chartToCreate });
+    mutate({
+      boardId,
+      columnSettings: chartToCreate.columnSettings,
+      data_source_id: chartToCreate.dataSourceId,
+      height: chartToCreate.height,
+      title: chartToCreate.title,
+      type: chartToCreate.type,
+      width: chartToCreate.width,
+      x: chartToCreate.x,
+      y: chartToCreate.y,
+    });
     // Handle chart creation
   };
 

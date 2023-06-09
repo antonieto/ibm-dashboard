@@ -109,9 +109,15 @@ const chartRouter = router({
           id: randomUUID(),
         });
 
+        const settings = await ctx.chartsRepository.setChartSettings(chart.id, {
+          xAxisColumn: input.columnSettings.indexColumn,
+          yAxisColumns: input.columnSettings.categoryColumns,
+        });
+
         return {
           success: true,
           chart,
+          settings,
         };
       } catch (error:any) {
         console.log(error);
