@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Close } from '@carbon/icons-react';
 import { ChartType } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 import { useMemo, useState } from 'react';
-import { trpc } from '@/lib/hooks';
 import ModalContainer from '../ModalContainer/ModalContainer';
 import IbmButton from '../IbmButton/IbmButton';
 import DataSourceOrigin from '../DataSourceOrigin/DataSourceOrigin';
@@ -105,6 +104,7 @@ interface Props {
   onClose: () => void;
   chartType: ChartType;
   boardId: string;
+  onCreate: (chartToCreate: ChartToCreate) => void;
 }
 
 const TypeToTitleMap = new Map<ChartType, string>([
@@ -118,6 +118,7 @@ export default function CreateChartFlow({
   onClose,
   chartType,
   boardId,
+  onCreate,
 }: Props): JSX.Element {
   const [step, setStep] = useState(1);
   const [originDataSource, setOriginDataSource] = useState<
@@ -137,7 +138,6 @@ export default function CreateChartFlow({
       categoryColumns: [],
     },
   });
-  const { mutate } = trpc.charts.addChart.useMutation();
   const handleOnClose = () => {
     setStep(1);
     onClose();
@@ -209,18 +209,9 @@ export default function CreateChartFlow({
     }
   };
 
-  const handleCreateChart = () => {
-    console.log({ chartToCreate });
-    mutate({
-      boardId,
-      columnSettings: chartToCreate.columnSettings,
-      data_source_id: chartToCreate.dataSourceId,
-      height: chartToCreate.height,
-      title: chartToCreate.title,
-      type: chartToCreate.type,
-      width: chartToCreate.width,
-      x: chartToCreate.x,
-      y: chartToCreate.y,
+  const handleCreateChart = async () => {
+    onCreate({
+      ...chartToCreate,
     });
     // Handle chart creation
   };

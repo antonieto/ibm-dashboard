@@ -28,7 +28,7 @@ model Boards {
   board_id     String   @id @default(uuid())
   createdAt    DateTime @default(now())
   title        String 
-  owner        Users    @relation(fields: [user_id], references: [user_id])
+  owner        Users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   user_id      String
   data_sources Data_sources[]
   charts       Charts[]
@@ -39,7 +39,7 @@ model Data_sources {
   createdAt       DateTime  @default(now())
   file_name       String    @db.VarChar(250)
   external_handle String    @db.VarChar(100)
-  board           Boards?   @relation(fields: [board_id], references: [board_id])
+  board           Boards?   @relation(fields: [board_id], references: [board_id], onDelete: Cascade)
   board_id        String?
   charts          Charts[]
   isPublic        Boolean   @default(false)
@@ -47,9 +47,9 @@ model Data_sources {
 
 model Charts {
   chart_id        String         @id @default(uuid())
-  board           Boards         @relation(fields: [board_id], references: [board_id])
+  board           Boards         @relation(fields: [board_id], references: [board_id], onDelete: Cascade)
   board_id        String
-  data_source     Data_sources   @relation(fields: [data_source_id], references: [data_source_id])
+  data_source     Data_sources   @relation(fields: [data_source_id], references: [data_source_id], onDelete: Cascade)
   data_source_id  String
   height          Int
   width           Int
@@ -63,14 +63,14 @@ model Charts {
 
 model Chart_colors {
   chart_colors_id  String   @id @default(uuid())
-  chart            Charts   @relation(fields: [chart_id], references: [chart_id])
+  chart            Charts   @relation(fields: [chart_id], references: [chart_id], onDelete: Cascade)
   chart_id         String
   y_color          String   @db.VarChar(7)
 }
 
 model Chart_settings {
   chart_setting_id String   @id @default(uuid())
-  chart            Charts   @relation(fields: [chart_id], references: [chart_id])
+  chart            Charts   @relation(fields: [chart_id], references: [chart_id], onDelete: Cascade)
   chart_id         String	@unique
   x_axis_col       Int
   data_series      Data_series[]
@@ -78,7 +78,7 @@ model Chart_settings {
 
 model Data_series {
   data_series_id   String   @id @default(uuid())
-  chart_setting    Chart_settings   @relation(fields: [chart_setting_id], references: [chart_setting_id])
+  chart_setting    Chart_settings   @relation(fields: [chart_setting_id], references: [chart_setting_id], onDelete: Cascade)
   chart_setting_id String
   y_axis_col       Int
 }
