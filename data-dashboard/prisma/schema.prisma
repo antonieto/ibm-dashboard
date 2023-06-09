@@ -71,7 +71,7 @@ model Chart_colors {
 model Chart_settings {
   chart_setting_id String   @id @default(uuid())
   chart            Charts   @relation(fields: [chart_id], references: [chart_id])
-  chart_id         String
+  chart_id         String	@unique
   x_axis_col       Int
   data_series      Data_series[]
 }

@@ -26,3 +26,9 @@ reset-db:
 	&& export DATABASE_URL=postgres://postgres:password@localhost:5432/ibmdashboard-local \
 	&& cd ./data-dashboard \
 	&& npx prisma migrate reset --force && yarn dev
+
+migrate-db:
+	export DATABASE_URL=postgres://postgres:password@localhost:5432/ibmdashboard-local \
+	&& cd ./data-dashboard \
+	&& npx prisma migrate dev \
+	

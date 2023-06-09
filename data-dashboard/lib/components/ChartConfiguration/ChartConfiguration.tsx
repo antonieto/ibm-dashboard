@@ -6,7 +6,21 @@ import DropdownInput from '../DropdownInput/DropdownInput';
 import PreviewChart from '../PreviewChart/PreviewChart';
 import { ChartSettings } from '../Chart/Chart';
 import { ChartType } from '../ChartTypeMenu/ChartTypeMenu';
-import { ChartToCreate } from '../CreateChartFlow/CreateChartFlow';
+
+export type ChartToCreate = {
+  boardId: string;
+  dataSourceId: string;
+  height: number;
+  width: number;
+  title: string;
+  x: number;
+  y: number;
+  type: 'bar' | 'line' | 'pie';
+  columnSettings: {
+    indexColumn: number;
+    categoryColumns: number[];
+  };
+};
 
 const Container = styled.div`
   width: 100%;
@@ -78,12 +92,14 @@ interface Props {
   chartType: ChartType;
   dataSourceId: string;
   chartToCreate: ChartToCreate;
+  onSetChartToCreate: (newChartToCreate: ChartToCreate) => void;
 }
 
 export default function ChartConfiguration({
   chartType,
   dataSourceId,
   chartToCreate,
+  onSetChartToCreate,
 }: Props): JSX.Element {
   const [title, setTitle] = useState<string>('');
 
@@ -108,7 +124,9 @@ export default function ChartConfiguration({
   );
 
   const handleSettingsChange = (newSettings: ChartSettings) => {
-
+    onSetChartToCreate({
+      ...chartToCreate,
+    });
   };
 
   const handleChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {

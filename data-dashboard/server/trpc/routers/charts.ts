@@ -40,6 +40,10 @@ const AddChartSchema = z.object({
     z.literal('line'),
     z.literal('pie'),
   ]),
+  columnSettings: z.object({
+    indexColumn: z.number(),
+    categoryColumns: z.array(z.number()),
+  }),
 });
 
 const chartRouter = router({
@@ -104,6 +108,7 @@ const chartRouter = router({
           type: input.type,
           id: randomUUID(),
         });
+
         return {
           success: true,
           chart,
