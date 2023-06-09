@@ -112,6 +112,17 @@ const TypeToTitleMap = new Map<ChartType, string>([
   ['pie', 'Pastel'],
 ]);
 
+export type ChartToCreate = {
+  boardId: string;
+  dataSourceId: string;
+  height: number;
+  width: number;
+  title: string;
+  x: number;
+  y: number;
+  type: 'bar' | 'line' | 'pie';
+};
+
 export default function CreateChartFlow({
   isOpen,
   onClose,
@@ -122,6 +133,16 @@ export default function CreateChartFlow({
     'files' | 'database'
   >('files');
   const [dataSourceId, setDataSourceId] = useState<string>('');
+  const [chartToCreate, setChartToCreate] = useState<ChartToCreate>({
+    boardId: '',
+    dataSourceId: '',
+    height: 0,
+    width: 0,
+    title: '',
+    type: chartType,
+    x: 0,
+    y: 0,
+  });
   const handleOnClose = () => {
     setStep(1);
     onClose();
@@ -168,11 +189,12 @@ export default function CreateChartFlow({
           <ChartConfiguration
             chartType={chartType}
             dataSourceId={dataSourceId}
+            chartToCreate={chartToCreate}
           />
         ),
       },
     ],
-    [chartType, originDataSource, dataSourceId],
+    [chartType, originDataSource, dataSourceId, chartToCreate],
   );
 
   const handleNextStep = () => {
