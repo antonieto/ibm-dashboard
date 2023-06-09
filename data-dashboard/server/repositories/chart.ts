@@ -11,6 +11,7 @@ export interface IChartRepository {
   ): Promise<Chart>;
   getById(chartId: string): Promise<Chart | null>;
   getChartSettingsByChartId(chartId: string): Promise<ChartSettings | null>;
+  setChartSettings(chartId: string, settings: ChartSettings): Promise<void>;
 }
 
 const ChartTypeMap = new Map<string, 'BAR_CHART' | 'LINE_CHART' | 'PIE_CHART'>([
@@ -63,7 +64,9 @@ export class PrismaChartRepository implements IChartRepository {
     }
   }
 
-  async getChartSettingsByChartId(chartId: string): Promise<ChartSettings | null> {
+  async getChartSettingsByChartId(
+    chartId: string,
+  ): Promise<ChartSettings | null> {
     const settings = await this.db.chart_settings.findFirstOrThrow({
       where: {
         chart_id: chartId,
@@ -151,6 +154,26 @@ export class PrismaChartRepository implements IChartRepository {
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to delete chart',
       });
+    }
+  }
+
+  async setChartSettings(
+    chartId: string,
+    chartSettings: ChartSettings,
+  ): Promise<void> {
+    try {
+      const chart = await this.db.charts.findUnique({
+        where: { chart_id: chartId },
+      });
+      if (chart === null) {
+        throw new Error(`Chart with id ${chartId} not found`);
+      }
+      const settings = await this .db.chart_settings.upsert({
+        where: {  }
+      })
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
   }
 

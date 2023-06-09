@@ -7,7 +7,7 @@ import ModalContainer from '../ModalContainer/ModalContainer';
 import IbmButton from '../IbmButton/IbmButton';
 import DataSourceOrigin from '../DataSourceOrigin/DataSourceOrigin';
 import DataSourceSelection from '../DataSourceSelection/DataSourceSelection';
-import ChartConfiguration from '../ChartConfiguration/ChartConfiguration';
+import ChartConfiguration, { ChartToCreate } from '../ChartConfiguration/ChartConfiguration';
 
 const Container = styled.div`
   background-color: #f8f8f8;
@@ -112,17 +112,6 @@ const TypeToTitleMap = new Map<ChartType, string>([
   ['pie', 'Pastel'],
 ]);
 
-export type ChartToCreate = {
-  boardId: string;
-  dataSourceId: string;
-  height: number;
-  width: number;
-  title: string;
-  x: number;
-  y: number;
-  type: 'bar' | 'line' | 'pie';
-};
-
 export default function CreateChartFlow({
   isOpen,
   onClose,
@@ -190,6 +179,7 @@ export default function CreateChartFlow({
             chartType={chartType}
             dataSourceId={dataSourceId}
             chartToCreate={chartToCreate}
+            onSetChartToCreate={setChartToCreate}
           />
         ),
       },
@@ -204,6 +194,7 @@ export default function CreateChartFlow({
   };
 
   const handleCreateChart = () => {
+    console.log({ chartToCreate });
     // Handle chart creation
   };
 
