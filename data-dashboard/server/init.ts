@@ -7,6 +7,8 @@ import AzureStorageService, { StorageService } from './services/storageService';
 import { IChartRepository, PrismaChartRepository } from './repositories/chart';
 import ChartSerializer from './services/chartSerializer';
 
+let db: PrismaClient | null = null;
+
 const FILE_STORAGE_CONTAINER_NAME = 'data-sources';
 
 export interface Service {
@@ -21,13 +23,15 @@ export interface Service {
 export const initializeService = (): Service | null => {
   if (process.env.DATABASE_URL === undefined) throw new Error('DATABASE_URL is undefined');
   try {
-    const db = new PrismaClient({
-      datasources: {
-        db: {
-          url: `${process.env.DATABASE_URL}`,
+    if (db === null) {
+      db = new PrismaClient({
+        datasources: {
+          db: {
+            url: `${process.env.DATABASE_URL}`,
+          },
         },
-      },
-    });
+      });
+    }
 
     const boardsRepository = new PrismaBoardRepository(db);
     const usersRepository = new PrismaUserRepository(db);
