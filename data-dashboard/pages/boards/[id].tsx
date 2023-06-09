@@ -122,9 +122,10 @@ function Board() {
     type: 'bar',
   });
   const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
+  const { mutateAsync: addChart } = trpc.charts.addChart.useMutation();
   const router = useRouter();
 
-  const { data: widgetArrayRes } = trpc.charts.getCharts.useQuery({
+  const { data: widgetArrayRes, refetch: refetchWidgetArray } = trpc.charts.getCharts.useQuery({
     boardId: params.id as string,
   });
   const [widgetArray, setWidgetArray] = useState<ChartModel[]>([]);
@@ -173,10 +174,29 @@ function Board() {
         onClose={() => setIsDataSourcesModalOpen(false)}
       />
       <CreateChartFlow
-        boardId={params.id as string}
         isOpen={createChartFlow.isOpen}
         onClose={() => setCreateChartFlow({ isOpen: false, type: 'bar' })}
         chartType={createChartFlow.type}
+        boardId={boardId}
+        onCreate={async (chartToCreate) => {
+          try {
+            const yIndex = Math.floor(widgetArray.length / cols.lg) * 3;
+            await addChart({
+              x: (widgetArray.length * 2) % cols.lg,
+              y: yIndex,
+              width: 2,
+              height: 3,
+              data_source_id: chartToCreate.dataSourceId,
+              boardId: chartToCreate.boardId,
+              columnSettings: chartToCreate.columnSettings,
+              title: chartToCreate.title,
+              type: chartToCreate.type,
+            });
+            refetchWidgetArray();
+          } catch (e) {
+            console.log('Handle error here!');
+          }
+        }}
       />
       <div>
         <ResponsiveReactGridLayout
