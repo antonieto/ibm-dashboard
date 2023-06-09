@@ -93,6 +93,8 @@ interface Props {
   dataSourceId: string;
   chartToCreate: ChartToCreate;
   onSetChartToCreate: (newChartToCreate: ChartToCreate) => void;
+  title: string;
+  onChangeTitle: (newTitle: string) => void;
 }
 
 export default function ChartConfiguration({
@@ -100,9 +102,9 @@ export default function ChartConfiguration({
   dataSourceId,
   chartToCreate,
   onSetChartToCreate,
+  title,
+  onChangeTitle,
 }: Props): JSX.Element {
-  const [title, setTitle] = useState<string>('');
-
   const [settings, setSettings] = useState<ChartSettings>({
     colors: ['blue'],
     type: chartType,
@@ -115,22 +117,48 @@ export default function ChartConfiguration({
   const { data, isLoading, error } = trpc.dataSources.describeDataSource.useQuery(
     { dataSourceId },
     {
-      onSuccess: (data) => setSettings({
-        ...settings,
-        index: data.categories.at(0)?.name ?? '',
-        categories: [data.categories.slice(1).at(0)?.name ?? ''],
-      }),
+      onSuccess: (data) => {
+        setSettings({
+          ...settings,
+          index: data.categories.at(0)?.name ?? '',
+          categories: [data.categories.slice(1).at(0)?.name ?? ''],
+        });
+        onSetChartToCreate({
+          ...chartToCreate,
+          columnSettings: {
+            indexColumn: 0,
+            categoryColumns: [1],
+          },
+        });
+      },
     },
   );
 
-  const handleSettingsChange = (newSettings: ChartSettings) => {
+  const handleSettingsChange = ({
+    xAxisColumn,
+    yAxisColumns,
+  }: {
+    xAxisColumn?: number;
+    yAxisColumns?: number[];
+  }) => {
     onSetChartToCreate({
       ...chartToCreate,
+      columnSettings: {
+        categoryColumns: yAxisColumns ?? chartToCreate.columnSettings.categoryColumns,
+        indexColumn: xAxisColumn ?? chartToCreate.columnSettings.indexColumn,
+      },
+    });
+    setSettings({
+      ...settings,
+      index: xAxisColumn ? data?.categories.at(xAxisColumn)?.name ?? '' : settings.index,
+      categories: yAxisColumns
+        ? yAxisColumns.map((column) => data?.categories.at(column)?.name ?? '')
+        : settings.categories,
     });
   };
 
   const handleChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value);
+    onChangeTitle(event.target.value);
   };
 
   if (error) {
@@ -165,9 +193,8 @@ export default function ChartConfiguration({
               value: category.column,
             }))}
             onSelect={(option) => {
-              setSettings({
-                ...settings,
-                index: data.categories.at(option)?.name ?? '',
+              handleSettingsChange({
+                xAxisColumn: option,
               });
             }}
           />
@@ -180,9 +207,8 @@ export default function ChartConfiguration({
               }))
               .filter((category) => category.label !== settings.index)}
             onSelect={(option) => {
-              setSettings({
-                ...settings,
-                categories: [data.categories.at(option)?.name ?? ''],
+              handleSettingsChange({
+                yAxisColumns: [option],
               });
             }}
           />
