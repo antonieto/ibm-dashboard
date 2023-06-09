@@ -6,6 +6,7 @@ import DropdownInput from '../DropdownInput/DropdownInput';
 import PreviewChart from '../PreviewChart/PreviewChart';
 import { ChartSettings } from '../Chart/Chart';
 import { ChartType } from '../ChartTypeMenu/ChartTypeMenu';
+import { ChartToCreate } from '../CreateChartFlow/CreateChartFlow';
 
 const Container = styled.div`
   width: 100%;
@@ -76,11 +77,13 @@ const ChartContainer = styled.div`
 interface Props {
   chartType: ChartType;
   dataSourceId: string;
+  chartToCreate: ChartToCreate;
 }
 
 export default function ChartConfiguration({
   chartType,
   dataSourceId,
+  chartToCreate,
 }: Props): JSX.Element {
   const [title, setTitle] = useState<string>('');
 
@@ -103,6 +106,10 @@ export default function ChartConfiguration({
       }),
     },
   );
+
+  const handleSettingsChange = (newSettings: ChartSettings) => {
+
+  };
 
   const handleChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
