@@ -122,9 +122,10 @@ function Board() {
     type: 'bar',
   });
   const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
+  const { mutateAsync: addChart } = trpc.charts.addChart.useMutation();
   const router = useRouter();
 
-  const { data: widgetArrayRes } = trpc.charts.getCharts.useQuery({
+  const { data: widgetArrayRes, refetch: refetchWidgetArray } = trpc.charts.getCharts.useQuery({
     boardId: params.id as string,
   });
   const [widgetArray, setWidgetArray] = useState<ChartModel[]>([]);
@@ -134,14 +135,6 @@ function Board() {
       setWidgetArray(widgetArrayRes.charts);
     }
   }, [widgetArrayRes]);
-
-  /*
-  const { mutate: createChart } = trpc.charts.addChart.useMutation({
-    onSuccess: (res) => {
-      setWidgetArray([...widgetArray, res.chart]);
-    },
-  });
-  */
 
   const { mutate: deleteChart } = trpc.charts.deleteChart.useMutation({
     onSuccess: (res) => {
@@ -161,22 +154,6 @@ function Board() {
     setOpenChartTypeMenu(false);
   };
 
-  /*
-  const onAddChart = (type: ChartType, dataSourceId: string) => {
-    const yIndex = Math.floor(widgetArray.length / cols.lg) * 3;
-    createChart({
-      boardId: params.id as string,
-      type,
-      title: 'New Chart',
-      x: (widgetArray.length * 2) % cols.lg,
-      y: yIndex,
-      width: 2,
-      height: 3,
-      data_source_id: dataSourceId,
-    });
-  };
-  */
-
   const handleShowDataSources = () => {
     setIsDataSourcesModalOpen(true);
   };
@@ -186,6 +163,8 @@ function Board() {
   };
 
   const boardId = router.query.id as string;
+
+  if (!router.isReady) return <div>Loading...</div>;
 
   return (
     <Container>
@@ -198,6 +177,26 @@ function Board() {
         isOpen={createChartFlow.isOpen}
         onClose={() => setCreateChartFlow({ isOpen: false, type: 'bar' })}
         chartType={createChartFlow.type}
+        boardId={boardId}
+        onCreate={async (chartToCreate) => {
+          try {
+            const yIndex = Math.floor(widgetArray.length / cols.lg) * 3;
+            await addChart({
+              x: (widgetArray.length * 2) % cols.lg,
+              y: yIndex,
+              width: 2,
+              height: 3,
+              data_source_id: chartToCreate.dataSourceId,
+              boardId: chartToCreate.boardId,
+              columnSettings: chartToCreate.columnSettings,
+              title: chartToCreate.title,
+              type: chartToCreate.type,
+            });
+            refetchWidgetArray();
+          } catch (e) {
+            console.log('Handle error here!');
+          }
+        }}
       />
       <div>
         <ResponsiveReactGridLayout

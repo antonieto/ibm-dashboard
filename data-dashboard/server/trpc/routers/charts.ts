@@ -40,6 +40,10 @@ const AddChartSchema = z.object({
     z.literal('line'),
     z.literal('pie'),
   ]),
+  columnSettings: z.object({
+    indexColumn: z.number(),
+    categoryColumns: z.array(z.number()),
+  }),
 });
 
 const chartRouter = router({
@@ -104,9 +108,16 @@ const chartRouter = router({
           type: input.type,
           id: randomUUID(),
         });
+
+        const settings = await ctx.chartsRepository.setChartSettings(chart.id, {
+          xAxisColumn: input.columnSettings.indexColumn,
+          yAxisColumns: input.columnSettings.categoryColumns,
+        });
+
         return {
           success: true,
           chart,
+          settings,
         };
       } catch (error:any) {
         console.log(error);

@@ -11,6 +11,10 @@ export interface IChartRepository {
   ): Promise<Chart>;
   getById(chartId: string): Promise<Chart | null>;
   getChartSettingsByChartId(chartId: string): Promise<ChartSettings | null>;
+  setChartSettings(
+    chartId: string,
+    settings: ChartSettings
+  ): Promise<ChartSettings>;
 }
 
 const ChartTypeMap = new Map<string, 'BAR_CHART' | 'LINE_CHART' | 'PIE_CHART'>([
@@ -63,7 +67,9 @@ export class PrismaChartRepository implements IChartRepository {
     }
   }
 
-  async getChartSettingsByChartId(chartId: string): Promise<ChartSettings | null> {
+  async getChartSettingsByChartId(
+    chartId: string,
+  ): Promise<ChartSettings | null> {
     const settings = await this.db.chart_settings.findFirstOrThrow({
       where: {
         chart_id: chartId,
@@ -151,6 +157,55 @@ export class PrismaChartRepository implements IChartRepository {
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to delete chart',
       });
+    }
+  }
+
+  async setChartSettings(
+    chartId: string,
+    chartSettings: ChartSettings,
+  ): Promise<ChartSettings> {
+    try {
+      const chart = await this.db.charts.findUnique({
+        where: { chart_id: chartId },
+      });
+      if (chart === null) {
+        throw new Error(`Chart with id ${chartId} not found`);
+      }
+      const createdSettings = await this.db.chart_settings.upsert({
+        where: { chart_id: chartId },
+        create: {
+          x_axis_col: chartSettings.xAxisColumn,
+          chart_id: chartId,
+          data_series: {
+            create: chartSettings.yAxisColumns.map((column) => ({
+              y_axis_col: column,
+            })),
+          },
+        },
+        update: {
+          chart_id: chartId,
+          x_axis_col: chartSettings.xAxisColumn,
+          data_series: {
+            deleteMany: {},
+            create: chartSettings.yAxisColumns.map((column) => ({
+              y_axis_col: column,
+            })),
+          },
+        },
+        include: {
+          data_series: true,
+        },
+      });
+
+      return {
+        xAxisColumn: createdSettings.x_axis_col,
+        yAxisColumns: createdSettings.data_series.map(
+          (setting) => setting.y_axis_col,
+        ),
+      };
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
   }
 

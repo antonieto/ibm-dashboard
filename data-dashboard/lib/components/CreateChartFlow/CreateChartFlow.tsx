@@ -7,14 +7,13 @@ import ModalContainer from '../ModalContainer/ModalContainer';
 import IbmButton from '../IbmButton/IbmButton';
 import DataSourceOrigin from '../DataSourceOrigin/DataSourceOrigin';
 import DataSourceSelection from '../DataSourceSelection/DataSourceSelection';
-import ChartConfiguration from '../ChartConfiguration/ChartConfiguration';
+import ChartConfiguration, { ChartToCreate } from '../ChartConfiguration/ChartConfiguration';
 
 const Container = styled.div`
   background-color: #f8f8f8;
   border: none;
 
-  height: 95vh;
-  width: 95vw;
+  height: 95vh; width: 95vw;
 
   position: relative;
   z-index: 0;
@@ -104,6 +103,8 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   chartType: ChartType;
+  boardId: string;
+  onCreate: (chartToCreate: ChartToCreate) => void;
 }
 
 const TypeToTitleMap = new Map<ChartType, string>([
@@ -116,12 +117,27 @@ export default function CreateChartFlow({
   isOpen,
   onClose,
   chartType,
+  boardId,
+  onCreate,
 }: Props): JSX.Element {
   const [step, setStep] = useState(1);
   const [originDataSource, setOriginDataSource] = useState<
     'files' | 'database'
   >('files');
-  const [dataSourceId, setDataSourceId] = useState<string>('');
+  const [chartToCreate, setChartToCreate] = useState<ChartToCreate>({
+    boardId,
+    dataSourceId: '',
+    height: 0,
+    width: 0,
+    title: '',
+    type: chartType,
+    x: 0,
+    y: 0,
+    columnSettings: {
+      indexColumn: 0,
+      categoryColumns: [],
+    },
+  });
   const handleOnClose = () => {
     setStep(1);
     onClose();
@@ -151,7 +167,10 @@ export default function CreateChartFlow({
           <DataSourceSelection
             dataSourceOrigin={originDataSource}
             onSelect={(dataSourceId: string) => {
-              setDataSourceId(dataSourceId);
+              setChartToCreate({
+                ...chartToCreate,
+                dataSourceId,
+              });
             }}
             header={
               <>
@@ -167,12 +186,21 @@ export default function CreateChartFlow({
         component: (
           <ChartConfiguration
             chartType={chartType}
-            dataSourceId={dataSourceId}
+            dataSourceId={chartToCreate.dataSourceId}
+            chartToCreate={chartToCreate}
+            onSetChartToCreate={setChartToCreate}
+            title={chartToCreate.title}
+            onChangeTitle={(title) => {
+              setChartToCreate({
+                ...chartToCreate,
+                title,
+              });
+            }}
           />
         ),
       },
     ],
-    [chartType, originDataSource, dataSourceId],
+    [chartType, originDataSource, chartToCreate],
   );
 
   const handleNextStep = () => {
@@ -181,7 +209,10 @@ export default function CreateChartFlow({
     }
   };
 
-  const handleCreateChart = () => {
+  const handleCreateChart = async () => {
+    onCreate({
+      ...chartToCreate,
+    });
     // Handle chart creation
   };
 
