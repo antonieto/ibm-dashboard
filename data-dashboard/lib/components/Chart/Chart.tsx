@@ -63,7 +63,7 @@ export default function Chart({
   );
 
   const { data } = trpc.charts.getChartData.useQuery({
-    chartId: dataSourceId,
+    chartId: id,
   });
 
   const [settings, setSettings] = React.useState<ChartSettings>({
