@@ -127,6 +127,7 @@ const chartRouter = router({
   getChartData: privateProcedure
     .input(GetChartDataSchema)
     .query<ChartWithData>(async ({ ctx, input }) => {
+      console.log('getChartData');
       try {
         const chartModel = await ctx.chartsRepository.getById(input.chartId);
         if (!chartModel) {
@@ -147,7 +148,8 @@ const chartRouter = router({
           ...serializedData,
         };
       } catch (e) {
-        console.log(e);
+        // console.log(e);
+        console.log('Error in getChartData: ', e);
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
       }
     }),

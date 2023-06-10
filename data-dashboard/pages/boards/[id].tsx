@@ -125,9 +125,10 @@ function Board() {
   const { mutateAsync: addChart } = trpc.charts.addChart.useMutation();
   const router = useRouter();
 
-  const { data: widgetArrayRes, refetch: refetchWidgetArray } = trpc.charts.getCharts.useQuery({
-    boardId: params.id as string,
-  });
+  const { data: widgetArrayRes, refetch: refetchWidgetArray } =
+    trpc.charts.getCharts.useQuery({
+      boardId: params.id as string,
+    });
   const [widgetArray, setWidgetArray] = useState<ChartModel[]>([]);
 
   useEffect(() => {
@@ -233,17 +234,9 @@ function Board() {
             getGridChartItem({
               chartProps: {
                 id: widget.id,
-                data: MOCK_CHART_DATA,
                 removeChart: handleRemoveChart,
-                settings: {
-                  categories: ['Number of threatened species'],
-                  colors: ['blue', 'pink'],
-                  index: 'name',
-                  twClassName: 'mt-6',
-                  type: widget.type,
-                  yAxisWidth: widget.width,
-                },
-                title: 'New chart',
+                title: widget.title,
+                dataSourceId: widget.data_source_id,
               },
               gridElement: {
                 height: widget.height,
