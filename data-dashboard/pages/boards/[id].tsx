@@ -147,7 +147,7 @@ function Board() {
   const { mutate: updateChart } = trpc.charts.updateChart.useMutation({});
 
   const toggleChartTypeMenu = () => {
-    setOpenChartTypeMenu(!openChartTypeMenu);
+    setOpenChartTypeMenu((prevState) => !prevState);
   };
 
   const closeChartTypeMenu = () => {
