@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 import trpc from '@/lib/hooks/trpc';
 
 const Container = styled.nav`
@@ -28,7 +29,12 @@ const Logout = styled.button`
 `;
 
 function NavBar(): JSX.Element {
-  const { mutate } = trpc.auth.logout.useMutation();
+  const router = useRouter();
+  const { mutate } = trpc.auth.logout.useMutation({
+    onSuccess: () => {
+      router.replace('/');
+    },
+  });
   const handleClick = () => {
     mutate();
   };
