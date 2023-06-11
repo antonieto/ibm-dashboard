@@ -42,14 +42,47 @@ const Container = styled.div`
 
 const AddButtonContainer = styled.div`
   position: absolute;
-  bottom: 20px;
-  left: 20px;
+  bottom: 80px;
+  left: 48px;
 `;
 
 const ChartTypeMenuContainer = styled.div`
   position: absolute;
-  bottom: 130px;
+  bottom: 186px;
+  left: 48px;
+`;
+
+// show roate icon 45deg
+const FAB = styled.button`
+  position: absolute;
+  bottom: 20px;
   left: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #0f62fe;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #0540d0;
+  }
+
+  &:active {
+    background-color: #002d9c;
+  }
+
+  &.ShowCancel {
+    transition: all 0.2s ease-in-out;
+    transform: rotate(45deg);
+  }
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 type GridElementProps = {
@@ -102,12 +135,22 @@ function Board() {
     type: 'bar',
   });
 
-  const { data: widgetArrayRes, refetch: refetchWidgetArray } = trpc.charts.getCharts.useQuery({
-    boardId: params.id as string,
+  const { data: widgetArrayRes, refetch: refetchWidgetArray } =
+    trpc.charts.getCharts.useQuery({
+      boardId: params.id as string,
+    });
+  const { mutateAsync: addChart } = trpc.charts.addChart.useMutation({
+    onSuccess: () => refetchWidgetArray(),
   });
-  const { mutateAsync: addChart } = trpc.charts.addChart.useMutation({ onSuccess: () => refetchWidgetArray() });
-  const { mutate: deleteChart } = trpc.charts.deleteChart.useMutation({ onSuccess: () => refetchWidgetArray() });
+  const { mutate: deleteChart } = trpc.charts.deleteChart.useMutation({
+    onSuccess: () => refetchWidgetArray(),
+  });
   const { mutate: updateChart } = trpc.charts.updateChart.useMutation();
+  const [showAddMenu, setShowAddMenu] = useState(false);
+
+  const toggleAddMenu = () => {
+    setShowAddMenu(!showAddMenu);
+  };
 
   const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
 
@@ -195,29 +238,31 @@ function Board() {
           cols={cols}
           margin={margin}
         >
-          {widgetArrayRes.map((widget) => getGridChartItem({
-            chartProps: {
-              data: widget.data,
-              id: widget.id,
-              removeChart: handleRemoveChart,
-              settings: {
-                categories: widget.categories,
-                colors: ['blue'],
-                index: widget.index,
-                twClassName: 'mx-4',
-                type: widget.type,
-                yAxisWidth: widget.width,
+          {widgetArrayRes.map((widget) =>
+            getGridChartItem({
+              chartProps: {
+                data: widget.data,
+                id: widget.id,
+                removeChart: handleRemoveChart,
+                settings: {
+                  categories: widget.categories,
+                  colors: ['blue'],
+                  index: widget.index,
+                  twClassName: 'mx-4',
+                  type: widget.type,
+                  yAxisWidth: widget.width,
+                },
+                title: widget.title,
               },
-              title: widget.title,
-            },
-            gridElement: {
-              height: widget.height,
-              id: widget.id,
-              width: widget.width,
-              xIndex: widget.x,
-              yIndex: widget.y,
-            },
-          }))}
+              gridElement: {
+                height: widget.height,
+                id: widget.id,
+                width: widget.width,
+                xIndex: widget.x,
+                yIndex: widget.y,
+              },
+            }),
+          )}
         </ResponsiveReactGridLayout>
       </div>
 
@@ -232,19 +277,26 @@ function Board() {
         </ChartTypeMenuContainer>
       )}
 
-      <AddButtonContainer>
-        <ButtonWithIcon
-          text="Agregar grafica"
-          icon={Add}
-          onClick={toggleChartTypeMenu}
-        />
-        <ButtonWithIcon
-          text="Data sources"
-          icon={DataVolume}
-          onClick={handleShowDataSources}
-          style={{ marginTop: '10px' }}
-        />
-      </AddButtonContainer>
+      {showAddMenu && (
+        <AddButtonContainer>
+          <ButtonWithIcon
+            text="Agregar grafica"
+            icon={Add}
+            onClick={toggleChartTypeMenu}
+            style={{ width: '100%' }}
+          />
+          <ButtonWithIcon
+            text="Data sources"
+            icon={DataVolume}
+            onClick={handleShowDataSources}
+            style={{ marginTop: '10px', width: '100%' }}
+          />
+        </AddButtonContainer>
+      )}
+
+      <FAB onClick={toggleAddMenu} className={showAddMenu ? 'ShowCancel' : ''}>
+        <Add aria-label="add" size={24} color="#FFFFFF" />
+      </FAB>
     </Container>
   );
 }
