@@ -65,7 +65,7 @@ const authRouter = router({
       return token;
     }),
   logout: privateProcedure.mutation(async ({ ctx }) => {
-    const cookie = serialize('auth-token', '', { httpOnly: true, path: '/' });
+    const cookie = serialize('auth-token', '', { httpOnly: true, path: '/', maxAge: -1 });
     ctx.res.setHeader('Set-Cookie', cookie);
   }),
   me: privateProcedure.query(async ({ ctx }) => {
