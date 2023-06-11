@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BarChart, LineChart, DonutChart } from '@tremor/react';
 import ChartCard from '../ChartCard/ChartCard';
-import trpc from '@/lib/hooks/trpc';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -48,51 +47,21 @@ interface Props {
   id: string;
   title: string;
   removeChart: (id: string) => void;
-  dataSourceId: string;
+  data: Record<string, any>[];
+  settings: ChartSettings;
 }
 
 export default function Chart({
   id,
   title,
   removeChart,
-  dataSourceId,
+  data,
+  settings,
 }: Props): JSX.Element {
-  // const firstCategory = settings.categories[0];
-  const [firstCategory, setFirstCategory] = React.useState<string | undefined>(
-    undefined,
-  );
-
-  const { data } = trpc.charts.getChartData.useQuery({
-    chartId: id,
-  });
-
-  const [settings, setSettings] = React.useState<ChartSettings>({
-    colors: ['blue', 'pink', 'green'],
-    type: 'bar',
-    twClassName: 'mt-6',
-    index: '',
-    yAxisWidth: 48,
-    categories: [],
-  });
-
+  const firstCategory = settings.categories[0];
   if (settings.type === 'pie' && firstCategory === undefined) {
     throw new Error('Pie chart needs at least one category');
   }
-
-  useEffect(() => {
-    if (data) {
-      setSettings({
-        colors: ['blue', 'pink', 'green'],
-        type: data.type,
-        twClassName: 'mt-6',
-        index: data.index,
-        yAxisWidth: 48,
-        categories: data.categories,
-      });
-
-      setFirstCategory(data.categories[0]);
-    }
-  }, [data]);
 
   if (!data) return <div>Loading...</div>;
   return (
@@ -105,13 +74,13 @@ export default function Chart({
       {settings.type === 'bar' && (
         <BarChart
           {...{ ...settings, className: settings.twClassName }}
-          data={data.data}
+          data={data}
         />
       )}
       {settings.type === 'line' && (
         <LineChart
           {...{ ...settings, className: settings.twClassName }}
-          data={data.data}
+          data={data}
         />
       )}
       {settings.type === 'pie' && (
@@ -121,7 +90,7 @@ export default function Chart({
             className: settings.twClassName,
             category: firstCategory,
           }}
-          data={data.data}
+          data={data}
         />
       )}
     </ChartCard>
