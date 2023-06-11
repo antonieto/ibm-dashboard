@@ -1,6 +1,6 @@
 /* eslint-disable function-paren-newline */
 /* eslint-disable implicit-arrow-linebreak */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createContext, useMemo } from 'react';
 import styled from 'styled-components';
 import { Add, DataVolume } from '@carbon/icons-react';
 
@@ -110,10 +110,34 @@ function getGridChartItem({
   );
 }
 
+// Creating an interface for the context that will be used to open the modal
+interface OpenModalContextValue {
+  isDataSourcesModalOpen: boolean;
+  setIsDataSourcesModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+// Creating the context
+const OpenDataSourcesModalContext = createContext<OpenModalContextValue | undefined>(undefined);
+
+// Creating a hook to use the context
+export const useOpenDataSourcesModalContext = () => {
+  const openDataSourcesModalContext = React.useContext(OpenDataSourcesModalContext);
+  if (openDataSourcesModalContext === undefined) {
+    throw new Error('useOnboardingContext must be inside a OpenDataSourcesModalProvider');
+  }
+  return openDataSourcesModalContext;
+};
+
 function Board() {
+  // Creating the provider
+  const [isDataSourcesModalOpen, setIsDataSourcesModalOpen] = useState(false);
+  // Refactoring the previous line to use the hook useMemo
+  const openDataSourcesModalContext = useMemo(() => ({
+    isDataSourcesModalOpen,
+    setIsDataSourcesModalOpen,
+  }), [isDataSourcesModalOpen, setIsDataSourcesModalOpen]);
   const params = useRouter().query;
   const [openChartTypeMenu, setOpenChartTypeMenu] = useState(false);
-  const [isDataSourcesModalOpen, setIsDataSourcesModalOpen] = useState(false);
   const [createChartFlow, setCreateChartFlow] = useState<{
     isOpen: boolean;
     type: ChartType;
@@ -154,10 +178,6 @@ function Board() {
     setOpenChartTypeMenu(false);
   };
 
-  const handleShowDataSources = () => {
-    setIsDataSourcesModalOpen(true);
-  };
-
   const handleRemoveChart = (id: string) => {
     deleteChart({ chartId: id });
   };
@@ -167,121 +187,123 @@ function Board() {
   if (!router.isReady) return <div>Loading...</div>;
 
   return (
-    <Container>
-      <DataSourcesMenuModal
-        boardId={boardId}
-        isOpen={isDataSourcesModalOpen}
-        onClose={() => setIsDataSourcesModalOpen(false)}
-      />
-      <CreateChartFlow
-        isOpen={createChartFlow.isOpen}
-        onClose={() => setCreateChartFlow({ isOpen: false, type: 'bar' })}
-        chartType={createChartFlow.type}
-        boardId={boardId}
-        onCreate={async (chartToCreate) => {
-          try {
-            const yIndex = Math.floor(widgetArray.length / cols.lg) * 3;
-            await addChart({
-              x: (widgetArray.length * 2) % cols.lg,
-              y: yIndex,
-              width: 2,
-              height: 3,
-              data_source_id: chartToCreate.dataSourceId,
-              boardId: chartToCreate.boardId,
-              columnSettings: chartToCreate.columnSettings,
-              title: chartToCreate.title,
-              type: chartToCreate.type,
-            });
-            refetchWidgetArray();
-          } catch (e) {
-            console.log('Handle error here!');
-          }
-        }}
-      />
-      <div>
-        <ResponsiveReactGridLayout
-          style={{ background: '#F4F5F5' }}
-          layouts={layouts}
-          preventCollision={false}
-          onLayoutChange={(currentLayout, allLayouts) => {
-            setLayouts({
-              ...allLayouts,
-            });
-
-            widgetArray.forEach((widget) => {
-              const newLayout = currentLayout.find(
-                (layout) => layout.i === widget.id,
-              );
-              if (newLayout) {
-                updateChart({
-                  id: newLayout.i,
-                  x: newLayout.x,
-                  y: newLayout.y,
-                  width: newLayout.w,
-                  height: newLayout.h,
-                });
-              }
-            });
+    <OpenDataSourcesModalContext.Provider value={openDataSourcesModalContext}>
+      <Container>
+        <DataSourcesMenuModal
+          boardId={boardId}
+          isOpen={isDataSourcesModalOpen}
+          onClose={() => setIsDataSourcesModalOpen(false)}
+        />
+        <CreateChartFlow
+          isOpen={createChartFlow.isOpen}
+          onClose={() => setCreateChartFlow({ isOpen: false, type: 'bar' })}
+          chartType={createChartFlow.type}
+          boardId={boardId}
+          onCreate={async (chartToCreate) => {
+            try {
+              const yIndex = Math.floor(widgetArray.length / cols.lg) * 3;
+              await addChart({
+                x: (widgetArray.length * 2) % cols.lg,
+                y: yIndex,
+                width: 2,
+                height: 3,
+                data_source_id: chartToCreate.dataSourceId,
+                boardId: chartToCreate.boardId,
+                columnSettings: chartToCreate.columnSettings,
+                title: chartToCreate.title,
+                type: chartToCreate.type,
+              });
+              refetchWidgetArray();
+            } catch (e) {
+              console.log('Handle error here!');
+            }
           }}
-          verticalCompact
-          autoSize
-          breakpoints={breakpoints}
-          cols={cols}
-          margin={margin}
-        >
-          {widgetArray.map((widget) =>
-            getGridChartItem({
-              chartProps: {
-                id: widget.id,
-                data: MOCK_CHART_DATA,
-                removeChart: handleRemoveChart,
-                settings: {
-                  categories: ['Number of threatened species'],
-                  colors: ['blue', 'pink'],
-                  index: 'name',
-                  twClassName: 'mt-6',
-                  type: widget.type,
-                  yAxisWidth: widget.width,
-                },
-                title: 'New chart',
-              },
-              gridElement: {
-                height: widget.height,
-                id: widget.id,
-                width: widget.width,
-                xIndex: widget.x,
-                yIndex: widget.y,
-              },
-            }),
-          )}
-        </ResponsiveReactGridLayout>
-      </div>
+        />
+        <div>
+          <ResponsiveReactGridLayout
+            style={{ background: '#F4F5F5' }}
+            layouts={layouts}
+            preventCollision={false}
+            onLayoutChange={(currentLayout, allLayouts) => {
+              setLayouts({
+                ...allLayouts,
+              });
 
-      {openChartTypeMenu && (
-        <ChartTypeMenuContainer>
-          <ChartTypeMenu
-            onSelect={(type: ChartType) => {
-              setCreateChartFlow({ isOpen: true, type });
+              widgetArray.forEach((widget) => {
+                const newLayout = currentLayout.find(
+                  (layout) => layout.i === widget.id,
+                );
+                if (newLayout) {
+                  updateChart({
+                    id: newLayout.i,
+                    x: newLayout.x,
+                    y: newLayout.y,
+                    width: newLayout.w,
+                    height: newLayout.h,
+                  });
+                }
+              });
             }}
-            onClose={closeChartTypeMenu}
-          />
-        </ChartTypeMenuContainer>
-      )}
+            verticalCompact
+            autoSize
+            breakpoints={breakpoints}
+            cols={cols}
+            margin={margin}
+          >
+            {widgetArray.map((widget) =>
+              getGridChartItem({
+                chartProps: {
+                  id: widget.id,
+                  data: MOCK_CHART_DATA,
+                  removeChart: handleRemoveChart,
+                  settings: {
+                    categories: ['Number of threatened species'],
+                    colors: ['blue', 'pink'],
+                    index: 'name',
+                    twClassName: 'mt-6',
+                    type: widget.type,
+                    yAxisWidth: widget.width,
+                  },
+                  title: 'New chart',
+                },
+                gridElement: {
+                  height: widget.height,
+                  id: widget.id,
+                  width: widget.width,
+                  xIndex: widget.x,
+                  yIndex: widget.y,
+                },
+              }),
+            )}
+          </ResponsiveReactGridLayout>
+        </div>
 
-      <AddButtonContainer>
-        <ButtonWithIcon
-          text="Agregar grafica"
-          icon={Add}
-          onClick={toggleChartTypeMenu}
-        />
-        <ButtonWithIcon
-          text="Data sources"
-          icon={DataVolume}
-          onClick={handleShowDataSources}
-          style={{ marginTop: '10px' }}
-        />
-      </AddButtonContainer>
-    </Container>
+        {openChartTypeMenu && (
+          <ChartTypeMenuContainer>
+            <ChartTypeMenu
+              onSelect={(type: ChartType) => {
+                setCreateChartFlow({ isOpen: true, type });
+              }}
+              onClose={closeChartTypeMenu}
+            />
+          </ChartTypeMenuContainer>
+        )}
+
+        <AddButtonContainer>
+          <ButtonWithIcon
+            text="Agregar grafica"
+            icon={Add}
+            onClick={toggleChartTypeMenu}
+          />
+          <ButtonWithIcon
+            text="Data sources"
+            icon={DataVolume}
+            onClick={() => setIsDataSourcesModalOpen(true)}
+            style={{ marginTop: '10px' }}
+          />
+        </AddButtonContainer>
+      </Container>
+    </OpenDataSourcesModalContext.Provider>
   );
 }
 

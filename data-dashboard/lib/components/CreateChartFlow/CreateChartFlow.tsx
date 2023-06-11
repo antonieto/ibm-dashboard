@@ -178,6 +178,7 @@ export default function CreateChartFlow({
                 <StepTitle>Selecciona una fuente de datos</StepTitle>
               </>
             }
+            onClose={handleOnClose}
           />
         ),
       },
@@ -205,7 +206,7 @@ export default function CreateChartFlow({
 
   const handleNextStep = () => {
     if (step < steps.length) {
-      if (steps[step - 1].title === 'Selecciona una fuente de datos' && dataSourceId === ''){
+      if (steps[step - 1].title === 'Selecciona una fuente de datos' && chartToCreate.dataSourceId === '') {
         // Deactivate the button until data source is selected
         return;
       }

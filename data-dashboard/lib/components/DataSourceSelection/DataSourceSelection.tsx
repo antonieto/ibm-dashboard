@@ -3,7 +3,9 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { trpc } from '@/lib/hooks';
+import { useOpenDataSourcesModalContext } from '@/pages/boards/[id]';
 import DataSourceItem from '../DataSourceItem/DataSourceItem';
+import IbmButton from '../IbmButton/IbmButton';
 
 const Container = styled.div`
   width: 100%;
@@ -62,15 +64,18 @@ interface Props {
   dataSourceOrigin: 'files' | 'database';
   onSelect: (dataSourceId: string) => void;
   header?: JSX.Element;
+  onClose: () => void;
 }
 
 export default function DataSourceSelection({
   dataSourceOrigin,
   onSelect,
   header,
+  onClose,
 }: Props): JSX.Element {
   const { data } = trpc.dataSources.listPrivateDataSources.useQuery();
   const [selectedDataSourceId, setSelectedDataSourceId] = useState<string>('');
+  const { setIsDataSourcesModalOpen } = useOpenDataSourcesModalContext();
 
   if (dataSourceOrigin === 'database') {
     return (
@@ -87,22 +92,39 @@ export default function DataSourceSelection({
     <Container>
       <Header>{header}</Header>
       <Body>
-        {data?.dataSources.map((dataSource) => (
-          <OptionCard selected={selectedDataSourceId === dataSource.id}>
-            <RowContainer
-              onClick={() => {
-                setSelectedDataSourceId(dataSource.id);
-                onSelect(dataSource.id);
-              }}
-            >
-              <DataSourceItem
-                id={dataSource.id}
-                fileName={dataSource.fileName}
-                createdAt={new Date(dataSource.createdAt)}
+        {data?.dataSources && data?.dataSources.length > 0
+          ? data.dataSources.map((dataSource) => (
+            <OptionCard selected={selectedDataSourceId === dataSource.id}>
+              <RowContainer
+                onClick={() => {
+                  setSelectedDataSourceId(dataSource.id);
+                  onSelect(dataSource.id);
+                }}
+              >
+                <DataSourceItem
+                  id={dataSource.id}
+                  fileName={dataSource.fileName}
+                  createdAt={new Date(dataSource.createdAt)}
+                />
+              </RowContainer>
+            </OptionCard>
+          )) : (
+            <>
+              <div>No se detectaron fuentes de datos de archivos</div>
+              <IbmButton
+                text="Añade una fuente de datos"
+                onClick={() => {
+                  onClose();
+                  setIsDataSourcesModalOpen(true);
+                }}
+                style={{
+                  marginTop: '20px',
+                  width: 'auto',
+                  paddingRight: '20px',
+                }}
               />
-            </RowContainer>
-          </OptionCard>
-        ))}
+            </>
+          )}
       </Body>
     </Container>
   );
