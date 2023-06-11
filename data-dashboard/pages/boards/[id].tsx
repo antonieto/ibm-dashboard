@@ -52,7 +52,6 @@ const ChartTypeMenuContainer = styled.div`
   left: 48px;
 `;
 
-// show roate icon 45deg
 const FAB = styled.button`
   position: absolute;
   bottom: 20px;
