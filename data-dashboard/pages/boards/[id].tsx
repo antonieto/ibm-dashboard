@@ -134,10 +134,9 @@ function Board() {
     type: 'bar',
   });
 
-  const { data: widgetArrayRes, refetch: refetchWidgetArray } =
-    trpc.charts.getCharts.useQuery({
-      boardId: params.id as string,
-    });
+  const { data: widgetArrayRes, refetch: refetchWidgetArray } = trpc.charts.getCharts.useQuery({
+    boardId: params.id as string,
+  });
   const { mutateAsync: addChart } = trpc.charts.addChart.useMutation({
     onSuccess: () => refetchWidgetArray(),
   });
