@@ -1,11 +1,14 @@
 import { PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import type { Board, User } from '../models';
+import type { Board } from '../models';
+
+type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>;
 
 export interface IBoardRepository {
   getAllByUserId(userId: string): Promise<Board[]>;
   findOne(id: string): Promise<Board>;
   create(board: Pick<Board, 'title' | 'ownerId'>): Promise<Board>;
+  update(board: AtLeast<Board, 'boardId'>): Promise<Board>;
 }
 
 export class PrismaBoardRepository implements IBoardRepository {
@@ -22,6 +25,7 @@ export class PrismaBoardRepository implements IBoardRepository {
       createdAt: new Date(board.createdAt),
       ownerId: board.user_id,
       title: board.title,
+      previewImg: board.preview_img,
     }));
   }
 
@@ -35,6 +39,7 @@ export class PrismaBoardRepository implements IBoardRepository {
         createdAt: new Date(board.createdAt),
         ownerId: board.user_id,
         title: board.title,
+        previewImg: board.preview_img,
       };
     } catch (e) {
       throw new Error('Failed to find board');
@@ -55,6 +60,7 @@ export class PrismaBoardRepository implements IBoardRepository {
         createdAt: newBoard.createdAt,
         ownerId: newBoard.user_id,
         title: newBoard.title,
+        previewImg: newBoard.preview_img,
       };
     } catch (e) {
       throw new TRPCError({
@@ -62,5 +68,24 @@ export class PrismaBoardRepository implements IBoardRepository {
         message: 'Failed to create board',
       });
     }
+  }
+
+  async update(board: AtLeast<Board, 'boardId'>): Promise<Board> {
+    const updated = await this.db.boards.update({
+      data: {
+        title: board.title,
+        preview_img: board.previewImg,
+      },
+      where: {
+        board_id: board.boardId,
+      },
+    });
+    return {
+      boardId: updated.board_id,
+      createdAt: updated.createdAt,
+      ownerId: updated.user_id,
+      title: updated.title,
+      previewImg: updated.preview_img,
+    };
   }
 }

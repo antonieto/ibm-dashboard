@@ -34,7 +34,7 @@ export default function BoardList({ boards }: Props): JSX.Element {
       </div>
       <BoardListComponent>
         {boards.map((board) => (
-          <BoardPreview key={board.boardId} name={board.title} id={board.boardId} />
+          <BoardPreview imgSrc={board.previewImg} key={board.boardId} name={board.title} id={board.boardId} />
         ))}
       </BoardListComponent>
     </BoardListContainer>

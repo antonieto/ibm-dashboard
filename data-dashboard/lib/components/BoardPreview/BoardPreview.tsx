@@ -1,9 +1,11 @@
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 
 interface Props {
   name: string;
   id: string;
+  imgSrc: string;
 }
 
 const BoardPreviewContainer = styled.div`
@@ -33,8 +35,7 @@ const BoardPreviewContent = styled.div`
 const BoardPreviewImage = styled.div`
   width: 60px;
   height: 45px;
-  border-radius: 5px;
-
+  border-radius: 2px;
   background-color: #d4d4d4;
 `;
 
@@ -45,7 +46,7 @@ const BoardPreviewLine = styled.hr`
   border: none;
 `;
 
-export default function BoardPreview({ name, id }: Props): JSX.Element {
+export default function BoardPreview({ name, id, imgSrc }: Props): JSX.Element {
   const router = useRouter();
   const handleClick = () => {
     router.push(`boards/${id}`);
@@ -53,7 +54,9 @@ export default function BoardPreview({ name, id }: Props): JSX.Element {
   return (
     <BoardPreviewContainer onClick={handleClick}>
       <BoardPreviewContent>
-        <BoardPreviewImage />
+        <BoardPreviewImage>
+          <Image src={imgSrc} alt="Preview image" width={60} height={45} className="w-full h-full object-fit" />
+        </BoardPreviewImage>
         <div>
           <p>{name}</p>
         </div>

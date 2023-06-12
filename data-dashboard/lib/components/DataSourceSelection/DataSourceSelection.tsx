@@ -40,6 +40,7 @@ const Body = styled.div`
 
 const RowContainer = styled.div`
   margin: 12px 0;
+  width: 700px;
 `;
 
 const OptionCard = styled.div<{ readonly selected: boolean }>`
