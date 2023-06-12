@@ -215,6 +215,7 @@ export default function CreateChartFlow({
   const handleCreateChart = async () => {
     onCreate({
       ...chartToCreate,
+      type: chartType,
     });
     handleOnClose();
   };
