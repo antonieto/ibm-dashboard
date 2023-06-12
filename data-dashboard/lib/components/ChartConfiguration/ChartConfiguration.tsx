@@ -106,7 +106,7 @@ export default function ChartConfiguration({
   onChangeTitle,
 }: Props): JSX.Element {
   const [settings, setSettings] = useState<ChartSettings>({
-    colors: ['blue'],
+    colors: ['blue', 'pink', 'green', 'violet'],
     type: chartType,
     twClassName: 'mt-6',
     categories: [],
