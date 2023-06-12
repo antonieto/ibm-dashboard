@@ -1,8 +1,6 @@
 /* eslint-disable function-paren-newline */
 /* eslint-disable implicit-arrow-linebreak */
-qimport React, {
-  useCallback,
-  useEffect,
+import React, {
   useRef,
   useState,
 } from 'react';
@@ -22,13 +20,13 @@ import ChartTypeMenu, {
 } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 import { DataSourcesMenuModal } from '@/lib/components';
 import CreateChartFlow from '@/lib/components/CreateChartFlow/CreateChartFlow';
-// eslint-disable-next-line
-// @ts-ignore
-import { useScreenshot } from 'use-react-screenshot';
 import { resizeImage } from '@/lib/base64';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import Chart from '../../lib/components/Chart/Chart';
 import { NextPageWithLayout } from '../_app';
+
+// eslint-disable-next-line
+const { useScreenshot } = require('use-react-screenshot');
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -152,8 +150,21 @@ function Board() {
   const { mutate: deleteChart } = trpc.charts.deleteChart.useMutation({
     onSuccess: () => refetchWidgetArray(),
   });
-  const { mutate: updateChart } = trpc.charts.updateChart.useMutation();
+
+  const router = useRouter();
+
+  const [, takeScreenshot] = useScreenshot();
+  const screenshotRef = useRef(null);
+
   const { mutateAsync: updatePreviewImage } = trpc.boards.updatePreviewImg.useMutation();
+  const { mutate: updateChart } = trpc.charts.updateChart.useMutation({
+    onSuccess: async () => {
+      const image = await takeScreenshot(screenshotRef.current);
+      const resized = await resizeImage(image);
+      const boardId = router.query.id as string;
+      await updatePreviewImage({ boardId, previewImg: resized });
+    },
+  });
 
   const [showAddMenu, setShowAddMenu] = useState(false);
 
@@ -163,26 +174,9 @@ function Board() {
 
   const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
 
-  const router = useRouter();
   const toggleChartTypeMenu = () => {
     setOpenChartTypeMenu(!openChartTypeMenu);
   };
-
-  const [, takeScreenshot] = useScreenshot();
-  const screenshotRef = useRef(null);
-  const getImage = useCallback(async () => {
-    try {
-      const image = (await takeScreenshot(screenshotRef.current)) as string;
-      const resized = await resizeImage(image);
-      const boardId = router.query.id as string;
-      await updatePreviewImage({ boardId, previewImg: resized });
-    } catch (e) {
-      console.log(e);
-    }
-  }, [router.query, screenshotRef]);
-  useEffect(() => {
-    getImage();
-  }, [widgetArrayRes, getImage]);
 
   const closeChartTypeMenu = () => {
     setOpenChartTypeMenu(false);

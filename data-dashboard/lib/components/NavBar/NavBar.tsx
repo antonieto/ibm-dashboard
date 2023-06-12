@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import trpc from '@/lib/hooks/trpc';
@@ -40,10 +41,12 @@ function NavBar(): JSX.Element {
   };
   return (
     <Container>
-      <Logo>
-        IBM
-        <b>Insight Hub</b>
-      </Logo>
+      <Link href="/boards">
+        <Logo>
+          IBM
+          <b>Insight Hub</b>
+        </Logo>
+      </Link>
       <Logout type="button" onClick={handleClick}>Log out</Logout>
     </Container>
   );
