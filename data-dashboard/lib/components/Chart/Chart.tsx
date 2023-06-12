@@ -46,24 +46,24 @@ export type ChartSettings = {
 interface Props {
   id: string;
   title: string;
-  data: ChartData[];
   removeChart: (id: string) => void;
+  data: Record<string, any>[];
   settings: ChartSettings;
 }
 
 export default function Chart({
   id,
   title,
-  settings,
-  data,
   removeChart,
+  data,
+  settings,
 }: Props): JSX.Element {
   const firstCategory = settings.categories[0];
-
   if (settings.type === 'pie' && firstCategory === undefined) {
     throw new Error('Pie chart needs at least one category');
   }
 
+  if (!data) return <div>Loading...</div>;
   return (
     <ChartCard
       title={title}

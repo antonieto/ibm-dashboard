@@ -52,9 +52,18 @@ const chartRouter = router({
     .query(async ({ ctx, input }) => {
       try {
         const charts = await ctx.chartsRepository.getAllByBoardId(input.boardId);
-        return {
-          charts,
-        };
+        const chartsWithData = await Promise.all(charts.map(async (chart) => {
+          const settings = await ctx.chartsRepository.getChartSettingsByChartId(chart.id);
+          if (settings === null) {
+            throw new Error('Chart settings were not found');
+          }
+          const serializedData = await ctx.chartSerializer.buildChartData(chart, settings);
+          return {
+            ...chart,
+            ...serializedData,
+          };
+        }));
+        return chartsWithData;
       } catch (error) {
         console.log(error);
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
@@ -147,7 +156,7 @@ const chartRouter = router({
           ...serializedData,
         };
       } catch (e) {
-        console.log(e);
+        console.log('Error in getChartData: ', e);
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
       }
     }),
