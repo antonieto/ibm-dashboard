@@ -25,10 +25,10 @@ export default function PreviewChart({
   data,
   settings,
 }: Props): JSX.Element {
-  const firstCategory = settings.categories[0];
+  const firstCategory = settings.categories.at(0);
 
-  if (settings.type === 'pie' && firstCategory === undefined) {
-    throw new Error('Pie chart needs at least one category');
+  if (settings.type === 'pie' && settings.categories.length > 1) {
+    throw new Error('Pie Chart can only receive one category');
   }
   return (
     <ChartContainer>

@@ -238,26 +238,26 @@ function Board() {
         >
           {widgetArrayRes.map((widget) =>
             getGridChartItem({
-              chartProps: {
-                data: widget.data,
-                id: widget.id,
-                removeChart: handleRemoveChart,
-                settings: {
-                  categories: widget.categories,
-                  colors: ['blue'],
-                  index: widget.index,
-                  twClassName: 'mx-4',
-                  type: widget.type,
-                  yAxisWidth: widget.width,
-                },
-                title: widget.title,
-              },
               gridElement: {
                 height: widget.height,
                 id: widget.id,
                 width: widget.width,
                 xIndex: widget.x,
                 yIndex: widget.y,
+              },
+              chartProps: {
+                data: widget.data,
+                id: widget.id,
+                removeChart: handleRemoveChart,
+                settings: {
+                  categories: widget.categories,
+                  colors: ['blue', 'green', 'pink', 'purple', 'red'],
+                  index: widget.index,
+                  twClassName: 'mx-4',
+                  type: widget.type,
+                  yAxisWidth: widget.width,
+                },
+                title: widget.title,
               },
             }),
           )}
