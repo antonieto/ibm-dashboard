@@ -6,6 +6,7 @@ import { DataSourceRepository, PrismaDataSourceRepository } from './repositories
 import AzureStorageService, { StorageService } from './services/storageService';
 import { IChartRepository, PrismaChartRepository } from './repositories/chart';
 import ChartSerializer from './services/chartSerializer';
+import DataSourceSerializer from './services/dataSourceSerializer';
 
 let db: PrismaClient | null = null;
 
@@ -18,6 +19,7 @@ export interface Service {
   dataSourcesRepository: DataSourceRepository;
   chartsRepository: IChartRepository;
   chartSerializer: ChartSerializer;
+  dataSourceSerializer: DataSourceSerializer;
 }
 
 export const initializeService = (): Service | null => {
@@ -39,6 +41,7 @@ export const initializeService = (): Service | null => {
     const dataSourcesRepository = new PrismaDataSourceRepository(db);
     const chartsRepository = new PrismaChartRepository(db);
     const chartSerializer = new ChartSerializer(fileStorage, dataSourcesRepository);
+    const dataSourceSerializer = new DataSourceSerializer(fileStorage, dataSourcesRepository);
 
     return {
       boardsRepository,
@@ -47,6 +50,7 @@ export const initializeService = (): Service | null => {
       dataSourcesRepository,
       chartsRepository,
       chartSerializer,
+      dataSourceSerializer,
     };
   } catch (e) {
     console.error(e);

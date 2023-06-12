@@ -105,6 +105,34 @@ const dataSourcesRouter = router({
         });
       }
     }),
+  getDataSource: privateProcedure
+    .input(DescribeDataSourceSchema)
+    .query(async ({ ctx, input }) => {
+      const { dataSourceId } = input;
+
+      try {
+        const dataSource = await ctx.dataSourceSerializer.getDataById(dataSourceId);
+
+        if (dataSource === null) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Data source not found',
+          });
+        }
+
+        return {
+          dataSource,
+        };
+      } catch (e) {
+        if (e instanceof TRPCError) {
+          throw e;
+        }
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to describe data source',
+        });
+      }
+    }),
 });
 
 export default dataSourcesRouter;
