@@ -7,7 +7,7 @@ import TopLayout from '@/lib/components/TopLayout/TopLayout';
 import { trpc } from '@/lib/hooks';
 import { Board } from '@/server/models';
 import BoardTitleModal from '@/lib/components/BoardTitleModal/BoardTitleModal';
-import { NextPageWithLayout } from './_app';
+import { NextPageWithLayout } from '../_app';
 
 const BoardContainer = styled.div`
   display: flex;

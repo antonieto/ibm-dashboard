@@ -10,7 +10,11 @@ export default async function fileToBase64(file: File): Promise<string> {
   });
 }
 
-export const resizeImage = (base64: string, maxWidth = 400, maxHeight = 350): Promise<string> => new Promise((resolve) => {
+export const resizeImage = (
+  base64: string,
+  maxWidth = 400,
+  maxHeight = 350,
+): Promise<string> => new Promise((resolve) => {
   const img = new Image();
   img.src = base64;
   img.onload = () => {
