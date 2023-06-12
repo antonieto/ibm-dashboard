@@ -32,6 +32,7 @@ model Boards {
   user_id      String
   data_sources Data_sources[]
   charts       Charts[]
+  preview_img  String   @db.Text @default("")
 }
 
 model Data_sources {

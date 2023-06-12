@@ -3,4 +3,5 @@ export type Board = {
   title: string;
   boardId: string;
   createdAt: Date;
+  previewImg: string;
 };

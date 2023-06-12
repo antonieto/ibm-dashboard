@@ -1,6 +1,11 @@
 /* eslint-disable function-paren-newline */
 /* eslint-disable implicit-arrow-linebreak */
-import React, { useState } from 'react';
+qimport React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 import { Add, DataVolume } from '@carbon/icons-react';
 
@@ -17,6 +22,10 @@ import ChartTypeMenu, {
 } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 import { DataSourcesMenuModal } from '@/lib/components';
 import CreateChartFlow from '@/lib/components/CreateChartFlow/CreateChartFlow';
+// eslint-disable-next-line
+// @ts-ignore
+import { useScreenshot } from 'use-react-screenshot';
+import { resizeImage } from '@/lib/base64';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import Chart from '../../lib/components/Chart/Chart';
 import { NextPageWithLayout } from '../_app';
@@ -144,6 +153,8 @@ function Board() {
     onSuccess: () => refetchWidgetArray(),
   });
   const { mutate: updateChart } = trpc.charts.updateChart.useMutation();
+  const { mutateAsync: updatePreviewImage } = trpc.boards.updatePreviewImg.useMutation();
+
   const [showAddMenu, setShowAddMenu] = useState(false);
 
   const toggleAddMenu = () => {
@@ -156,6 +167,22 @@ function Board() {
   const toggleChartTypeMenu = () => {
     setOpenChartTypeMenu(!openChartTypeMenu);
   };
+
+  const [, takeScreenshot] = useScreenshot();
+  const screenshotRef = useRef(null);
+  const getImage = useCallback(async () => {
+    try {
+      const image = (await takeScreenshot(screenshotRef.current)) as string;
+      const resized = await resizeImage(image);
+      const boardId = router.query.id as string;
+      await updatePreviewImage({ boardId, previewImg: resized });
+    } catch (e) {
+      console.log(e);
+    }
+  }, [router.query, screenshotRef]);
+  useEffect(() => {
+    getImage();
+  }, [widgetArrayRes, getImage]);
 
   const closeChartTypeMenu = () => {
     setOpenChartTypeMenu(false);
@@ -174,7 +201,7 @@ function Board() {
   if (!router.isReady || !widgetArrayRes) return <div>Loading...</div>;
 
   return (
-    <Container>
+    <Container ref={screenshotRef}>
       <DataSourcesMenuModal
         boardId={boardId}
         isOpen={isDataSourcesModalOpen}

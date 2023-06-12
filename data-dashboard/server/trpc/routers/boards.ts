@@ -5,6 +5,11 @@ const CreateBoardSchema = z.object({
   title: z.string(),
 });
 
+const UpdatePreviewImgSchema = z.object({
+  boardId: z.string(),
+  previewImg: z.string(),
+});
+
 const boardRouter = router({
   getBoards: privateProcedure.query(async ({ ctx }) => {
     const user = await ctx.user();
@@ -24,6 +29,18 @@ const boardRouter = router({
       const board = await ctx.boardsRepository.create({
         title,
         ownerId: user.id,
+      });
+      return {
+        board,
+      };
+    }),
+  updatePreviewImg: privateProcedure
+    .input(UpdatePreviewImgSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { boardId, previewImg } = input;
+      const board = await ctx.boardsRepository.update({
+        boardId,
+        previewImg,
       });
       return {
         board,
