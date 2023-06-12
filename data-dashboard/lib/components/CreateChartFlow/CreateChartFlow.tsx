@@ -7,13 +7,16 @@ import ModalContainer from '../ModalContainer/ModalContainer';
 import IbmButton from '../IbmButton/IbmButton';
 import DataSourceOrigin from '../DataSourceOrigin/DataSourceOrigin';
 import DataSourceSelection from '../DataSourceSelection/DataSourceSelection';
-import ChartConfiguration, { ChartToCreate } from '../ChartConfiguration/ChartConfiguration';
+import ChartConfiguration, {
+  ChartToCreate,
+} from '../ChartConfiguration/ChartConfiguration';
 
 const Container = styled.div`
   background-color: #f8f8f8;
   border: none;
 
-  height: 95vh; width: 95vw;
+  height: 95vh;
+  width: 95vw;
 
   position: relative;
   z-index: 0;
@@ -213,7 +216,7 @@ export default function CreateChartFlow({
     onCreate({
       ...chartToCreate,
     });
-    // Handle chart creation
+    handleOnClose();
   };
 
   return (

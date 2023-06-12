@@ -1,6 +1,6 @@
 /* eslint-disable function-paren-newline */
 /* eslint-disable implicit-arrow-linebreak */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Add, DataVolume } from '@carbon/icons-react';
 
@@ -16,7 +16,6 @@ import ChartTypeMenu, {
   ChartType,
 } from '@/lib/components/ChartTypeMenu/ChartTypeMenu';
 import { DataSourcesMenuModal } from '@/lib/components';
-import { Chart as ChartModel } from '@/server/models';
 import CreateChartFlow from '@/lib/components/CreateChartFlow/CreateChartFlow';
 import ButtonWithIcon from '../../lib/components/ButtonWithIcon/ButtonWithIcon';
 import Chart from '../../lib/components/Chart/Chart';
@@ -61,24 +60,6 @@ type GridElementProps = {
   height: number;
 };
 
-const MOCK_CHART_DATA = [
-  {
-    name: 'Mammals',
-    'Number of threatened species': 10,
-  },
-  {
-    name: 'Birds',
-    'Number of threatened species': 20,
-  },
-  {
-    name: 'Reptiles',
-    'Number of threatened species': 30,
-  },
-  {
-    name: 'Amphibians',
-    'Number of threatened species': 40,
-  },
-];
 function getGridChartItem({
   gridElement,
   chartProps,
@@ -109,7 +90,6 @@ function getGridChartItem({
     </div>
   );
 }
-
 function Board() {
   const params = useRouter().query;
   const [openChartTypeMenu, setOpenChartTypeMenu] = useState(false);
@@ -121,31 +101,17 @@ function Board() {
     isOpen: false,
     type: 'bar',
   });
-  const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
-  const { mutateAsync: addChart } = trpc.charts.addChart.useMutation();
-  const router = useRouter();
 
   const { data: widgetArrayRes, refetch: refetchWidgetArray } = trpc.charts.getCharts.useQuery({
     boardId: params.id as string,
   });
-  const [widgetArray, setWidgetArray] = useState<ChartModel[]>([]);
+  const { mutateAsync: addChart } = trpc.charts.addChart.useMutation({ onSuccess: () => refetchWidgetArray() });
+  const { mutate: deleteChart } = trpc.charts.deleteChart.useMutation({ onSuccess: () => refetchWidgetArray() });
+  const { mutate: updateChart } = trpc.charts.updateChart.useMutation();
 
-  useEffect(() => {
-    if (widgetArrayRes) {
-      setWidgetArray(widgetArrayRes.charts);
-    }
-  }, [widgetArrayRes]);
+  const [layouts, setLayouts] = useState<{ [index: string]: Layout[] }>();
 
-  const { mutate: deleteChart } = trpc.charts.deleteChart.useMutation({
-    onSuccess: (res) => {
-      setWidgetArray(
-        widgetArray.filter((widget) => widget.id !== res.chart.id),
-      );
-    },
-  });
-
-  const { mutate: updateChart } = trpc.charts.updateChart.useMutation({});
-
+  const router = useRouter();
   const toggleChartTypeMenu = () => {
     setOpenChartTypeMenu(!openChartTypeMenu);
   };
@@ -164,7 +130,7 @@ function Board() {
 
   const boardId = router.query.id as string;
 
-  if (!router.isReady) return <div>Loading...</div>;
+  if (!router.isReady || !widgetArrayRes) return <div>Loading...</div>;
 
   return (
     <Container>
@@ -180,9 +146,9 @@ function Board() {
         boardId={boardId}
         onCreate={async (chartToCreate) => {
           try {
-            const yIndex = Math.floor(widgetArray.length / cols.lg) * 3;
+            const yIndex = Math.floor(widgetArrayRes.length / cols.lg) * 3;
             await addChart({
-              x: (widgetArray.length * 2) % cols.lg,
+              x: (widgetArrayRes.length * 2) % cols.lg,
               y: yIndex,
               width: 2,
               height: 3,
@@ -208,7 +174,7 @@ function Board() {
               ...allLayouts,
             });
 
-            widgetArray.forEach((widget) => {
+            widgetArrayRes.forEach((widget) => {
               const newLayout = currentLayout.find(
                 (layout) => layout.i === widget.id,
               );
@@ -229,31 +195,29 @@ function Board() {
           cols={cols}
           margin={margin}
         >
-          {widgetArray.map((widget) =>
-            getGridChartItem({
-              chartProps: {
-                id: widget.id,
-                data: MOCK_CHART_DATA,
-                removeChart: handleRemoveChart,
-                settings: {
-                  categories: ['Number of threatened species'],
-                  colors: ['blue', 'pink'],
-                  index: 'name',
-                  twClassName: 'mt-6',
-                  type: widget.type,
-                  yAxisWidth: widget.width,
-                },
-                title: 'New chart',
+          {widgetArrayRes.map((widget) => getGridChartItem({
+            chartProps: {
+              data: widget.data,
+              id: widget.id,
+              removeChart: handleRemoveChart,
+              settings: {
+                categories: widget.categories,
+                colors: ['blue'],
+                index: widget.index,
+                twClassName: 'mx-4',
+                type: widget.type,
+                yAxisWidth: widget.width,
               },
-              gridElement: {
-                height: widget.height,
-                id: widget.id,
-                width: widget.width,
-                xIndex: widget.x,
-                yIndex: widget.y,
-              },
-            }),
-          )}
+              title: widget.title,
+            },
+            gridElement: {
+              height: widget.height,
+              id: widget.id,
+              width: widget.width,
+              xIndex: widget.x,
+              yIndex: widget.y,
+            },
+          }))}
         </ResponsiveReactGridLayout>
       </div>
 
