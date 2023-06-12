@@ -1,6 +1,9 @@
 import { Download, OverflowMenuHorizontal } from '@carbon/icons-react';
+import { useState } from 'react';
 import styled from 'styled-components';
+import { trpc } from '@/lib/hooks';
 import ExcelIcon from '../ExcelIcon/ExcelIcon';
+import XLSXModal from '../XLSXModal/XLSXModal';
 
 interface Props {
   // Disabling eslint. Will use id later
@@ -59,7 +62,19 @@ const IconsContainer = styled.div`
   gap: 10px;
 `;
 
-export default function DataSourceItem({ fileName, createdAt }: Props) {
+export default function DataSourceItem({ id, fileName, createdAt }: Props) {
+  const { data } = trpc.dataSources.getDataSource.useQuery({ dataSourceId: id });
+
+  const [openModal, setOpenModal] = useState<boolean>(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   return (
     <Row>
       <DataSourceFlexContainer>
@@ -82,7 +97,7 @@ export default function DataSourceItem({ fileName, createdAt }: Props) {
       </DataSourceFlexContainer>
       <IconsFlexContainer>
         <IconsContainer>
-          <button type="button">
+          <button type="button" onClick={handleOpenModal}>
             <OverflowMenuHorizontal size={32} />
           </button>
           <button type="button">
@@ -90,6 +105,7 @@ export default function DataSourceItem({ fileName, createdAt }: Props) {
           </button>
         </IconsContainer>
       </IconsFlexContainer>
+      <XLSXModal open={openModal} onClose={handleCloseModal} data={data?.dataSource ?? []} />
     </Row>
   );
 }
