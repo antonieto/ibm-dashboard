@@ -36,5 +36,6 @@ Things you need to run the project:
 1. Run `docker build ./data-dashboard/prisma -t ibm-dashboard-psql`
 2. Run `docker run -p 5432:5432 ibm-dashboard-psql`
 
+
 ### Prisma
 Create migration: npx prisma migrate dev --name username
