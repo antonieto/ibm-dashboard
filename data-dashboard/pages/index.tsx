@@ -1,6 +1,14 @@
 import Head from 'next/head';
 import styles from '@/styles/Home.module.css';
 import trpc from '@/lib/hooks/trpc';
+import { GetServerSideProps } from 'next';
+
+export const getServerSideProps: GetServerSideProps = async () => ({
+  redirect: {
+    destination: '/boards',
+  },
+  props: {},
+});
 
 export default function Home() {
   const query = trpc.hello.useQuery({ text: 'World!' });
