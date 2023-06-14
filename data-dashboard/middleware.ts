@@ -29,5 +29,5 @@ export default async function middleware(request: NextRequest) {
 export const config = {
   // Note: this regex matches everything except routes starting with /api, /_next/static, /_next/image, /favicon.ico
   // as these are all public routes that don't require authentication
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|images).*)'],
 };
