@@ -75,7 +75,7 @@ export default function DataSourceSelection({
   const [selectedDataSourceId, setSelectedDataSourceId] = useState<string>('');
 
   const currentData = dataSourceOrigin === 'database' ? dataPublic : dataPrivate;
-
+  console.log('xd');
   return (
     <Container>
       <Header>{header}</Header>
