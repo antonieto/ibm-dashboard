@@ -75,12 +75,14 @@ export default function Chart({
         <BarChart
           {...{ ...settings, className: settings.twClassName }}
           data={data}
+          title={title}
         />
       )}
       {settings.type === 'line' && (
         <LineChart
           {...{ ...settings, className: settings.twClassName }}
           data={data}
+          title={title}
         />
       )}
       {settings.type === 'pie' && (
@@ -91,6 +93,7 @@ export default function Chart({
             category: firstCategory,
           }}
           data={data}
+          title={title}
         />
       )}
     </ChartCard>
