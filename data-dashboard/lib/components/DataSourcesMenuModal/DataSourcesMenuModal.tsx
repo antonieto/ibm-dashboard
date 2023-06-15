@@ -16,6 +16,7 @@ const Drawer = styled.div`
   background-color: #fff;
   padding: 20px;
   height: 100vh;
+  overflow-y: scroll;
 `;
 
 const SubTitle = styled.span`
