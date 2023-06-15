@@ -70,25 +70,17 @@ export default function DataSourceSelection({
   onSelect,
   header,
 }: Props): JSX.Element {
-  const { data } = trpc.dataSources.listPrivateDataSources.useQuery();
+  const { data: dataPrivate } = trpc.dataSources.listPrivateDataSources.useQuery();
+  const { data: dataPublic } = trpc.dataSources.listPublicDataSorces.useQuery();
   const [selectedDataSourceId, setSelectedDataSourceId] = useState<string>('');
 
-  if (dataSourceOrigin === 'database') {
-    return (
-      <Container>
-        <Header>{header}</Header>
-        <Body>
-          <div>Datos de la industria</div>
-          <div>Working on it</div>
-        </Body>
-      </Container>
-    );
-  }
+  const currentData = dataSourceOrigin === 'database' ? dataPublic : dataPrivate;
+  console.log('xd');
   return (
     <Container>
       <Header>{header}</Header>
       <Body>
-        {data?.dataSources.map((dataSource) => (
+        {currentData?.dataSources.map((dataSource) => (
           <OptionCard selected={selectedDataSourceId === dataSource.id}>
             <RowContainer
               onClick={() => {
