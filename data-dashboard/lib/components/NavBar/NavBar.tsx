@@ -2,6 +2,7 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import trpc from '@/lib/hooks/trpc';
+import { useAuth } from '@/lib/hooks';
 
 const Container = styled.nav`
   height: 48px;
@@ -24,13 +25,12 @@ const Logout = styled.button`
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 14px;
   font-weight: normal;
-  padding-right: 16px;
-  padding-top: 14px;
-
+  padding-right: 14px;
 `;
 
 function NavBar(): JSX.Element {
   const router = useRouter();
+  const { data } = trpc.auth.me.useQuery();
   const { mutate } = trpc.auth.logout.useMutation({
     onSuccess: () => {
       router.replace('/');
@@ -47,7 +47,7 @@ function NavBar(): JSX.Element {
           <b>Insight Hub</b>
         </Logo>
       </Link>
-      <Logout type="button" onClick={handleClick}>Log out</Logout>
+      {data && <Logout type="button" onClick={handleClick}>Log out</Logout>}
     </Container>
   );
 }
