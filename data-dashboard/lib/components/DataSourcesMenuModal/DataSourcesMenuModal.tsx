@@ -41,7 +41,8 @@ export default function DataSourcesMenuModal({
   isOpen,
   onClose,
 }: Props) {
-  const { data } = trpc.dataSources.listPrivateDataSources.useQuery();
+  const { data: dataPrivate } = trpc.dataSources.listPrivateDataSources.useQuery();
+  const { data: dataPublic } = trpc.dataSources.listPublicDataSorces.useQuery();
   const { mutate } = trpc.dataSources.createDataSource.useMutation();
 
   const handleUpload = useCallback(async (file: File) => {
@@ -75,7 +76,7 @@ export default function DataSourcesMenuModal({
               <AddNewDataSourceRow
                 onSelectFile={handleUpload}
               />
-              {data?.dataSources.map((dataSource) => (
+              {dataPrivate?.dataSources.map((dataSource) => (
                 <RowContainer>
                   <DataSourceItem
                     id={dataSource.id}
@@ -86,7 +87,15 @@ export default function DataSourcesMenuModal({
               ))}
             </Tab>
             <Tab title="Datos de la industria">
-              <p>working on it</p>
+              {dataPublic?.dataSources.map((dataSource) => (
+                <RowContainer>
+                  <DataSourceItem
+                    id={dataSource.id}
+                    fileName={dataSource.fileName}
+                    createdAt={new Date(dataSource.createdAt)}
+                  />
+                </RowContainer>
+              ))}
             </Tab>
           </IbmTabs>
         </TabsContainer>

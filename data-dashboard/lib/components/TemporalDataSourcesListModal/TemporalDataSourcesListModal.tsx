@@ -1,5 +1,5 @@
-import { trpc } from '@/lib/hooks';
 import styled from 'styled-components';
+import { trpc } from '@/lib/hooks';
 import ModalContainer from '../ModalContainer/ModalContainer';
 import IbmTabs, { Tab } from '../IbmTabs';
 import DataSourceItem from '../DataSourceItem/DataSourceItem';
@@ -39,7 +39,8 @@ export default function TemporalDataSourcesListModal({
   onClose,
   onSelectDataSource,
 }: Props) {
-  const { data } = trpc.dataSources.listPrivateDataSources.useQuery();
+  const { data: dataPrivate } = trpc.dataSources.listPrivateDataSources.useQuery();
+  const { data: dataPublic } = trpc.dataSources.listPublicDataSorces.useQuery();
 
   return (
     <ModalContainer open={isOpen} onClose={onClose}>
@@ -52,7 +53,7 @@ export default function TemporalDataSourcesListModal({
         <TabsContainer>
           <IbmTabs>
             <Tab title="Tus fuentes de datos">
-              {data?.dataSources.map((dataSource) => (
+              {dataPrivate?.dataSources.map((dataSource) => (
                 <RowContainer
                   onClick={() => {
                     onSelectDataSource(dataSource.id);
@@ -67,7 +68,19 @@ export default function TemporalDataSourcesListModal({
               ))}
             </Tab>
             <Tab title="Datos de la industria">
-              <p>working on it</p>
+              {dataPublic?.dataSources.map((dataSource) => (
+                <RowContainer
+                  onClick={() => {
+                    onSelectDataSource(dataSource.id);
+                  }}
+                >
+                  <DataSourceItem
+                    id={dataSource.id}
+                    fileName={dataSource.fileName}
+                    createdAt={new Date(dataSource.createdAt)}
+                  />
+                </RowContainer>
+              ))}
             </Tab>
           </IbmTabs>
         </TabsContainer>
