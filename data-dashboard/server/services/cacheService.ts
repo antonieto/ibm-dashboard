@@ -2,7 +2,7 @@ import { RedisClientType } from 'redis';
 import { z } from 'zod';
 import { IS_CACHE_ENABLED } from '@/lib/constants';
 
-type JSONSerializable =
+export type JSONSerializable =
   | string
   | number
   | boolean
@@ -13,7 +13,7 @@ type JSONSerializable =
 interface CacheService {
   get<T extends JSONSerializable>(
     key: string,
-    schema: z.ZodSchema<T>,
+    schema: z.ZodSchema<T>
   ): Promise<T | null>;
   set<T extends JSONSerializable>(key: string, value: T): Promise<void>;
 }
@@ -25,7 +25,10 @@ export class RedisCacheService implements CacheService {
     this.client = client;
   }
 
-  async get<T extends JSONSerializable>(key: string, schema: z.ZodSchema<T>): Promise<T | null> {
+  async get<T extends JSONSerializable>(
+    key: string,
+    schema: z.ZodSchema<T>,
+  ): Promise<T | null> {
     if (!IS_CACHE_ENABLED) {
       return null;
     }
