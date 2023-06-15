@@ -4,7 +4,7 @@ import { initializeService } from '../init';
 import { User } from '../models';
 
 export const createContextInner = async () => {
-  const service = initializeService();
+  const service = await initializeService();
   if (service === null) {
     throw new Error('Service failed to initialize');
   }

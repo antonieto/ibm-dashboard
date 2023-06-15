@@ -11,7 +11,11 @@ const EnvSchema = z.object({
   CUSTOM_ENV_NAME: z.string(),
   AZURE_STORAGE_CONNECTION_STRING: z.string(),
   JWT_SECRET: z.string(),
+  REDIS_CONNECTION_STRING: z.string()
+    .optional()
+    .default('redis://default:redispassword@localhost:6379'),
 });
+
 
 const env = EnvSchema.parse(process.env);
 
